@@ -12,11 +12,11 @@
 ## Team Members
 [Roster](http://tc2017.overnightwebsitechallenge.com/teams/233)
 
-* ADAM RICHARDS / surrealwebs
+* ADAM RICHARDS (CAPTAIN) / surrealwebs
 * RICHARD ABER / richaber
-* AUSTIN ADAMSON / austin-codes
-* TRACY FULLER / tracyfuller
 * ALYSSA FULLER
-* SHAWN MCBURNIE / smcburnie
-* KELLY LAMKINS /klamkins
+* AUSTIN ADAMSON / austin-codes
+* KELLY LAMKINS / klamkins
 * KRIS PETERSON / kpeetee
+* SHAWN MCBURNIE / smcburnie
+* TRACY FULLER / tracyfuller
