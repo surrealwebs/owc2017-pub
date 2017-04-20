@@ -1,7 +1,7 @@
 # Overnight Website Challenge 2017 (Team BaconPress)
 
 ## Summary
-[Twin Cities OWC 2016](http://tc2017.overnightwebsitechallenge.com/)
+[Twin Cities OWC 2017](http://tc2017.overnightwebsitechallenge.com/)
 
 ## Documentation
 
