@@ -1,39 +1,198 @@
+################################################################################
+# WPEngine's suggested .gitignore
+#
+# Ignores WordPress Core!
+#
+# @see  DEPLOY YOUR WP ENGINE HOSTED APPLICATION WITH THE EASE OF GIT
+# @link https://wpengine.com/git/
+# @see  SHOULD I VERSION WORDPRESS CORE ALONG WITH MY THEMES/PLUGINS?
+# @link https://wpengine.com/git/#toc_3
+# @see  DEPLOYING TO PRODUCTION
+# @link https://wpengine.com/git/#production
+# @see  DEPLOYING TO STAGING
+# @link https://wpengine.com/git/#staging
+################################################################################
+
+# Ignore OS files #
+###################
+._*
+.AppleDouble
+.DS_Store
+.DS_Store?
+.LSOverride
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Ignore files specific to IDEs and Editors #
+#############################################
+_notes
+.cache
+.idea
+.project
+.settings
+*.esproj
+*.sublime-*
+*.tmproj
+*.tmproject
+*.vi
+dwsync.xml
+nbproject
+tmtags
+atlassian-ide-plugin.xml
+*.iml
+sftp_config.json
+
+# Miscellaneous garbage to ignore #
+###################################
+.vagrant
+deploy.ini
+*.bak
+*.diff
+*.err
 *.log
+*.orig
+*.rej
+*.sass-cache
+*.sql
+*.swo
+*.swp
+*.zip
+*~
+node_modules
+parameters.yml
+error_log
+
+# Ignore Other VCSs #
+#####################
+.hg
+.svn
+
+# WordPress specific #
+######################
+.htaccess
 wp-config.php
-wp-content/advanced-cache.php
-wp-content/backup-db/
-wp-content/backups/
-wp-content/blogs.dir/
-wp-content/cache/
-wp-content/upgrade/
 wp-content/uploads/
+wp-content/blogs.dir/
+wp-content/upgrade/*
+wp-content/backup-db/*
+wp-content/advanced-cache.php
 wp-content/wp-cache-config.php
-wp-content/plugins/hello.php
+wp-content/cache/*
+wp-content/cache/supercache/*
 
-wp-admin
-wp-includes
+# WPEngine specific #
+#####################
+.smushit-status
+.gitattributes
+_wpeprivate
+wp-content/object-cache.php
+wp-content/mu-plugins/mu-plugin.php
+wp-content/mu-plugins/force-strong-passwords
+wp-content/mu-plugins/slt-force-strong-passwords.php
+wp-content/mu-plugins/limit-login-attempts
+wp-content/mu-plugins/wpengine-common
+wp-content/mysql.sql
+wp-content/plugins/hyperdb/
+wp-content/plugins/hyperdb-1-1/
+
+# WP Core (as of 3.4.1) #
+#########################
+/db-config.php
 /index.php
-wp-activate.php
-wp-blog-header.php
-wp-comments-post.php
-wp-cron.php
-wp-load.php
-wp-login.php
-wp-config-sample.php
-wp-links-opml.php
-wp-mail.php
-wp-settings.php
-wp-signup.php
-wp-trackback.php
-xmlrpc.php
-
-/.idea
-/.htaccess
 /license.txt
 /readme.html
-/sitemap.xml
-/sitemap.xml.gz
+/wp-activate.php
+/wp-app.php
+/wp-atom.php
+/wp-blog-header.php
+/wp-comments-post.php
+/wp-commentsrss2.php
+/wp-config-sample.php
+/wp-cron.php
+/wp-feed.php
+/wp-links-opml.php
+/wp-load.php
+/wp-login.php
+/wp-mail.php
+/wp-rdf.php
+/wp-rss.php
+/wp-rss2.php
+/wp-pass.php
+/wp-register.php
+/wp-settings.php
+/wp-signup.php
+/wp-trackback.php
+/xmlrpc.php
+/wp-admin
+/wp-includes
+/wp-content/index.php
+/wp-content/themes/twentyten
+/wp-content/themes/index.php
+/wp-content/plugins/index.php
+/wp-content/debug.log
 
+# large/disallowed file types    #
+# a CDN should be used for these #
+##################################
+*.hqx
+*.bin
+*.exe
+*.dll
+*.deb
+*.dmg
+*.iso
+*.img
+*.msi
+*.msp
+*.msm
+*.mid
+*.midi
+*.kar
+*.mp3
+*.ogg
+*.m4a
+*.ra
+*.3gpp
+*.3gp
+*.mp4
+*.mpeg
+*.mpg
+*.mov
+*.webm
+*.flv
+*.m4v
+*.mng
+*.asx
+*.asf
+*.wmv
+*.avi
 
-*.DS_Store
+# Ignore Dev Plugins #
+######################
+wp-content/plugins/debug-bar-actions-and-filters-addon
+wp-content/plugins/debug-bar-constants
+wp-content/plugins/debug-bar-console
+wp-content/plugins/debug-bar-cron
+wp-content/plugins/debug-bar-list-dependencies
+wp-content/plugins/debug-bar-post-types
+wp-content/plugins/debug-bar-remote-requests
+wp-content/plugins/debug-bar-roles-and-capabilities
+wp-content/plugins/debug-bar-shortcodes
+wp-content/plugins/debug-bar-transients
+wp-content/plugins/debug-bar-extender
+wp-content/plugins/debug-bar
+wp-content/plugins/developer
+wp-content/plugins/log-deprecated-notices
+wp-content/plugins/monster-widget
+wp-content/plugins/rewrite-rules-inspector
+wp-content/plugins/theme-check
+wp-content/plugins/transients-manager
+wp-content/plugins/query-monitor
+wp-content/plugins/simply-show-ids
+wp-content/plugins/user-switching
+wp-content/plugins/vip-scanner
+wp-content/db.php
+
 /wp-content/themes/bb-theme-child/dev.notes.txt
