@@ -35,3 +35,4 @@ xmlrpc.php
 
 
 *.DS_Store
+/wp-content/themes/bb-theme-child/dev.notes.txt
