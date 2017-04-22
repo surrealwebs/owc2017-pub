@@ -2,6 +2,7 @@
 
 $show_thumbs = FLTheme::get_setting('fl-posts-show-thumbs');
 $meta = get_post_meta($post->ID);
+// dump($meta);
 ?>
 <article <?php post_class( 'fl-post' ); ?> id="fl-post-<?php the_ID(); ?>" itemscope itemtype="http://schema.org/BlogPosting">
 
@@ -23,10 +24,10 @@ $meta = get_post_meta($post->ID);
         if ( isset($meta['event_date'][0]) && !empty($meta['event_date'][0]) ) {
             echo "Date: " . esc_html($meta['event_date'][0]);
         }
-        if ( isset($meta['start_time'][0]) && !empty($meta['start_time'][0]) ) {
+        if ( isset($meta['start_time'][0]) && $meta['start_time'][0] != "00:00:00" ) {
             echo "<br />Start Time: " . esc_html( date("g:i a", strtotime($meta['start_time'][0])));
         }
-        if ( isset($meta['end_time'][0]) && !empty($meta['end_time'][0]) ) {
+        if ( isset($meta['end_time'][0]) && $meta['end_time'][0] != "00:00:00" ) {
             echo "<br />End Time: " . esc_html( date("g:i a", strtotime($meta['end_time'][0])));
         }
         ?>
