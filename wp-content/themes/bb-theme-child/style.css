@@ -54,6 +54,11 @@ template: bb-theme
     margin-right: 8px !important;
 }
 
+.fl-social-icons .fl-icon {
+    transform: scale(1.5);
+    margin-right: 2vw;
+}
+
 /* Top-level event page */
 
 .eventListing {
