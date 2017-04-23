@@ -34,6 +34,12 @@ class BaconPress_Board_Member_Cards extends FLBuilderModule {
 		);
 	}
 
+	public function enqueue_scripts() {
+		$this->add_js('jquery-masonry');
+		// $this->add_js( 'board-member-cards', $this->url . 'js/frontend.js', array(), '', true );
+		//$this->add_js( 'board-member-cards-php', $this->url . 'includes/frontend.js.php', array('jquery-masonry'), '', true );
+	}
+
 	/**
 	 * Get the markup for the board members frontend
 	 * @method the_board_member_cards_markup

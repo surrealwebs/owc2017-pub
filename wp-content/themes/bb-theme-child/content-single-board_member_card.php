@@ -15,11 +15,11 @@ $meta = get_post_meta($post->ID);
 	<?php endif; ?>
 
 	<div class="fl-post-grid-text">
-		<h2 class="fl-post-grid-title" style="visibility: visible;" itemprop="headline">
+		<h2 class="fl-post-grid-title" itemprop="headline">
 			<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
 			<?php edit_post_link( _x( 'Edit', 'Edit post link text.', 'fl-automator' ) ); ?>
 		</h2>
-		<div class="fl-post-grid-content" style="visibility: visible;">
+		<div class="fl-post-grid-content">
 			<?php
 	        // Insert Event Data
 	        if ( isset($meta['position'][0]) && !empty($meta['position'][0]) ) {

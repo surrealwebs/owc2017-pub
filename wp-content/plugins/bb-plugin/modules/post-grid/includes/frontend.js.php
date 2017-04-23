@@ -1,7 +1,7 @@
 (function($) {
 
 	$(function() {
-	
+
 		new FLBuilderPostGrid({
 			id: '<?php echo $id ?>',
 			layout: '<?php echo $settings->layout; ?>',
@@ -17,5 +17,5 @@
 		$('.fl-node-<?php echo $id; ?> .fl-post-<?php echo $settings->layout; ?>').masonry('reloadItems');
 	});
 	<?php endif; ?>
-	
+
 })(jQuery);
