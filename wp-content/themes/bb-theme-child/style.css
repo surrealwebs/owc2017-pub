@@ -75,3 +75,46 @@ template: bb-theme
 .alt-link:hover {
     color: #333;
 }
+
+
+.woocommerce-MyAccount-content .pods-form-front .pods-field-label {
+    width: 48%;
+    min-width: 150px;
+    padding-top: 10px;
+    float: left;
+}
+
+.woocommerce-MyAccount-content .pods-form-front .pods-field-label.pods-data {
+    float: none;
+}
+
+.woocommerce-MyAccount-content .pods-form-front .pods-field-input {
+    width: 50%;
+    min-width: 200px;
+    float: left;
+}
+
+.woocommerce-MyAccount-content .pods-form-front .pods-field-input .pods-boolean,
+.woocommerce-MyAccount-content .pods-form-front .pods-field-input.pods-data {
+    display: inline;
+}
+
+.woocommerce-MyAccount-content .pods-form-front li.pods-field:after {
+    content: '';
+}
+
+.woocommerce-MyAccount-content .pods-form-front li.pods-field {
+    padding: 10px 0;
+    display: block;
+}
+
+.woocommerce-MyAccount-content .pods-form-front ul.pods-form-fields {
+    list-style: none;
+    margin: 0;
+}
+
+.pods-field label {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0 0 4px 2px;
+}
