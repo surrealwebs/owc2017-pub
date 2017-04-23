@@ -54,6 +54,7 @@ function owcbpcpb_load_modules() {
 	}
 
 	require_once OWCBPCPB_PLUGIN_DIR . '/modules/social-links-menu/class-baconpress-social-links-menu.php';
+	require_once OWCBPCPB_PLUGIN_DIR . '/modules/board-member-cards/class-baconpress-board-member-cards.php';
 }
 
 add_action( 'init', 'owcbpcpb_load_modules' );
