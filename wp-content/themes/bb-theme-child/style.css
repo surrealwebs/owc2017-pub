@@ -42,8 +42,24 @@ template: bb-theme
     padding-top: 8px !important;
 }
 
+.fl-widget.Saved_Module_Widget .fl-row-content-wrap {
+    padding: 0 !important;
+}
+
+.fl-widget.Saved_Module_Widget .fl-row-content-wrap .fl-module-content {
+    margin: 0 0 20px !important;    
+}
+
+.fl-widget.Saved_Module_Widget .fl-row-content-wrap .fl-module-content .fl-social-icons a {
+    margin-right: 8px !important;
+}
+
 /* Top-level event page */
 
 .eventListing {
     margin-top: 3vw;
+}
+
+.mix-text_light {
+    color: white;
 }
