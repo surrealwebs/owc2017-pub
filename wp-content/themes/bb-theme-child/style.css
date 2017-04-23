@@ -8,4 +8,38 @@ Author URI: http://www.fastlinemedia.com
 template: bb-theme
 */
 
-/* Add your custom styles here... */ 
+/* Add your custom styles here... */
+
+.fl-button {
+    background-color: #5494a8 !important;
+    color: #f8f4e8 !important;
+}
+
+.fl-button:hover {
+    background-color: #50b5a9 !important;
+    color: #f8f4e8 !important;
+}
+
+
+
+.fl-page-bar-container {
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+}
+.fl-page-bar-container li {
+    padding-bottom: 5px !important;
+    padding-top: 5px !important;
+}
+.fl-page-bar-container li.provider {
+    background: #50b5a9 !important;
+    font-size: 14px !important;
+}
+.fl-page-bar-container li.provider:hover {
+    background: #5494a8 !important;
+}
+.fl-page-bar-container li.provider:hover a {
+    color: #ffffff !important;
+}
+.fl-page-bar-text {
+    padding-top: 8px !important;
+}
