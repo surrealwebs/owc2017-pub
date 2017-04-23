@@ -11,12 +11,13 @@ template: bb-theme
 /* Add your custom styles here... */
 
 .fl-button {
+    background-color: #5494a8 !important;
     color: #f8f4e8 !important;
 }
 
 .fl-button:hover {
-    background-color: #f8f4e8 !important;
-    color: #333333 !important;
+    background-color: #50b5a9 !important;
+    color: #f8f4e8 !important;
 }
 
 
