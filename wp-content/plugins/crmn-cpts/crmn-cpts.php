@@ -16,11 +16,13 @@
 defined('ABSPATH') or die("YOU SHALL NOT PASS");
 
 require_once('includes/event-cpt.php');
+require_once('includes/board-members-cpt.php');
 
 /**
  * Create the Event custom post type
  */
 new CRMN_EVENT_CPT();
+new CRMN_Board_Member_CPT();
 
 
 register_activation_hook( __FILE__, 'crmn_cpt_activation' );
