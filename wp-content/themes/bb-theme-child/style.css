@@ -20,8 +20,6 @@ template: bb-theme
     color: #f8f4e8 !important;
 }
 
-
-
 .fl-page-bar-container {
     padding-bottom: 0 !important;
     padding-top: 0 !important;
@@ -42,4 +40,10 @@ template: bb-theme
 }
 .fl-page-bar-text {
     padding-top: 8px !important;
+}
+
+/* Top-level event page */
+
+.eventListing {
+    margin-top: 3vw;
 }
