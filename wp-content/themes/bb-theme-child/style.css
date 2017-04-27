@@ -120,3 +120,32 @@ template: bb-theme
     padding: 15px 0 0 2px;
 }
 
+.fl-widget.gform_widget .gfield_required {
+    color: #ff8080;
+}
+
+.fl-widget.gform_widget .gform_wrapper li.gfield_error div.ginput_complex.ginput_container label,
+.fl-widget.gform_widget .gform_wrapper li.gfield_error ul.gfield_checkbox,
+.fl-widget.gform_widget .gform_wrapper li.gfield_error ul.gfield_radio,
+.fl-widget.gform_widget .gform_wrapper .validation_message,
+.fl-widget.gform_widget .gfield_error label {
+    color: #ff8080;
+}
+
+.fl-widget.gform_widget .gform_wrapper div.validation_error {
+    color: #ff8080;
+    border-top: 2px solid #ff8080;
+    border-bottom: 2px solid #ff8080;
+}
+
+.fl-widget.gform_widget .gform_wrapper li.gfield.gfield_error,
+.fl-widget.gform_widget .gform_wrapper li.gfield.gfield_error.gfield_contains_required.gfield_creditcard_warning
+{
+    background-color: rgba(221,0,0,.1);
+    margin-bottom: 6px!important;
+    border-top: 1px solid #a94442;
+    border-bottom: 1px solid #a94442;
+    padding-bottom: 6px;
+    padding-top: 8px;
+    box-sizing: border-box;
+}
