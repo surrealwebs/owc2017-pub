@@ -1,10 +1,10 @@
 /*
 Theme Name: Beaver Builder Child Theme
-Theme URI: http://www.wpbeaverbuilder.com
+Theme URI: http://conflictresolutionmn.org
 Version: 1.0
 Description: An example child theme that can be used as a starting point for custom development.
-Author: The Beaver Builder Team
-Author URI: http://www.fastlinemedia.com
+Author: BaconPress Owc2017 <surrealwebs@gmail.com>
+Author URI: http://tc2017.overnightwebsitechallenge.com/teams/233
 template: bb-theme
 */
 
@@ -108,13 +108,15 @@ template: bb-theme
     display: block;
 }
 
-.woocommerce-MyAccount-content .pods-form-front ul.pods-form-fields {
-    list-style: none;
+.woocommerce-MyAccount-content .pods-form-front ul.pods-form-fields,
+.woocommerce-MyAccount-content .pods-form-front ul.pods-form-fields li {
+    list-style-type: none;
     margin: 0;
 }
 
 .pods-field label {
     cursor: pointer;
     display: inline-block;
-    padding: 0 0 4px 2px;
+    padding: 15px 0 0 2px;
 }
+

@@ -29,6 +29,10 @@ class CRMN_Custom_My_Account_Endpoint {
     'is_member_of_acr_international',
     'is_rule_114_qualified_neutral',
     'ever_had_license_revoked',
+    'services_provided',
+    'general_adr_matters',
+    'detailed_adr_matters',
+    'additional_languages_spoken',
   ];
 
 
@@ -85,7 +89,7 @@ class CRMN_Custom_My_Account_Endpoint {
 
     if ( $is_endpoint && ! is_admin() && is_main_query() && in_the_loop() && is_account_page() ) {
       // New page title.
-      $title = __( 'My Custom Endpoint', 'woocommerce' );
+      $title = __( 'Additional Profile Information', 'woocommerce' );
 
       remove_filter( 'the_title', array( $this, 'endpoint_title' ) );
     }
@@ -150,11 +154,13 @@ class CRMN_Custom_My_Account_Endpoint {
       $label = (!empty($podFields[$field]['label'])?$podFields[$field]['label']:'');
       $data  = get_user_meta(get_current_user_id(), $field);
 
-      $dataFormatted = $this->get_data_value_for_type($data, $podFields[$field]['type']);
-
       echo '<li class="pods-field">
                 <div class="pods-field-label pods-data"><label>' . __($label, 'crmn') . '</label></div>
-                <div class="pods-field-input pods-data">' . __($dataFormatted, 'crmn') . '</div>
+                <div class="pods-field-input pods-data">';
+
+      $this->display_data_value_for_type($data, $podFields[$field]['type']);
+
+      echo '</div>
             </li>';
 
     }
@@ -170,7 +176,7 @@ class CRMN_Custom_My_Account_Endpoint {
     echo '<p>Additional membership profile information. Please keep this information up to date so users can find your in the directory.</p>';
 
     $mypod = pods('user', get_current_user_id());
-    echo $mypod->form(self::$display_fields);
+    echo $mypod->form(self::$display_fields, null, '/my-account/additional-profile-info/');
   }
 
   /**
@@ -181,19 +187,63 @@ class CRMN_Custom_My_Account_Endpoint {
     flush_rewrite_rules();
   }
 
-  public function get_data_value_for_type($data, $type) {
+  public function display_data_value_for_type($data, $type) {
     switch($type) {
       case 'boolean':
-        return $this->get_boolean_data_value($data);
+        $this->display_boolean_data_value($data);
+        break;
+      case 'pick':
+        // dump($data);
+        $this->display_pick_data_value($data);
+        break;
+      default:
+// Use this to see what the data looks like for fields not already parsed
+        dump($type);
+        dump($data);
+
         break;
     }
   }
 
-  public function get_boolean_data_value($data) {
+  /**
+   * Take a boolean selection and convert to Yes/No then display
+   *
+   * @param array $data User's selection
+   * @return void
+   */
+  public function display_boolean_data_value($data) {
+    $out = __('No', 'crmn');
     if ($data[0]) {
-      return 'Yes';
+      $out = __('Yes', 'crmn');
     }
-    return 'No';
+    echo esc_html($out);
+  }
+
+  /**
+   * Builds list data to display
+   *
+   * @param array $data User's field data.
+   * @return string Data transformed for display.
+   */
+  public function display_pick_data_value($data) {
+    $out = '<em>' . esc_html(__('You have not selected anything for this section', 'crmn')) . '</em>';
+
+    if (!empty($data[0])) {
+      array_walk($data, 'esc_html');
+
+      $out = '<ul><li>' . implode('</li><li>', $data) . '</li></ul>';
+
+//      $out = '<ul><li>';
+//      foreach( $data as $value ) {
+//        $out .= '<li>' . esc_html($value) . '</li>';
+//      }
+//
+//      $out .= '';
+//
+//      return $out;
+    }
+
+    echo $out;
   }
 
 }
