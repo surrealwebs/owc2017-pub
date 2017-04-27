@@ -33,6 +33,8 @@ class CRMN_Custom_My_Account_Endpoint {
     'general_adr_matters',
     'detailed_adr_matters',
     'additional_languages_spoken',
+    'member_bio',
+    'member_cv',
   ];
 
 
@@ -135,17 +137,21 @@ class CRMN_Custom_My_Account_Endpoint {
   }
 
   /**
-   * Endpoint HTML content.
+   * Method used to display content for the endpoint
    */
   public function endpoint_content() {
 
-    echo '<p>Additional membership profile information. Please keep this information up to date so users can find your in the directory.</p>';
+    echo '<p>Additional membership profile information. Please keep this 
+            information up to date, site visitors will be able to search for you 
+            based on data provided in this section.</p>';
 
     $mypod = pods('user', get_current_user_id());
 
     $podFields = $mypod->fields();
 
-    echo '<a href="' . esc_url( wc_get_endpoint_url( self::$edit_endpoint) ) . '" class="edit">' . __( 'Edit', 'woocommerce' ) . '</a>';
+    ob_start();
+
+    echo '<a href="' . esc_url( wc_get_endpoint_url( self::$edit_endpoint) ) . '" class="edit">' . __( 'Edit profile data.', 'woocommerce' ) . '</a>';
 
     echo '<div class="pods-form-front"><ul class="pods-form-fields">';
 
@@ -166,6 +172,10 @@ class CRMN_Custom_My_Account_Endpoint {
     }
 
     echo '</ul></div>';
+
+    // this will actually display :)
+    echo ob_get_clean();
+
   }
 
   /**
@@ -187,20 +197,28 @@ class CRMN_Custom_My_Account_Endpoint {
     flush_rewrite_rules();
   }
 
+  /**
+   * Determine how to handle the data being passed in.
+   *
+   * @param array $data User data.
+   * @param string $type the the of the data being passed in.
+   */
   public function display_data_value_for_type($data, $type) {
     switch($type) {
       case 'boolean':
         $this->display_boolean_data_value($data);
         break;
       case 'pick':
-        // dump($data);
         $this->display_pick_data_value($data);
         break;
+      case 'wysiwyg':
+        $this->display_wysiwyg_value($data);
+        break;
+      case 'file':
+        $this->display_file_value($data);
+        break;
       default:
-// Use this to see what the data looks like for fields not already parsed
-        dump($type);
-        dump($data);
-
+        // no-op
         break;
     }
   }
@@ -232,15 +250,37 @@ class CRMN_Custom_My_Account_Endpoint {
       array_walk($data, 'esc_html');
 
       $out = '<ul><li>' . implode('</li><li>', $data) . '</li></ul>';
+    }
 
-//      $out = '<ul><li>';
-//      foreach( $data as $value ) {
-//        $out .= '<li>' . esc_html($value) . '</li>';
-//      }
-//
-//      $out .= '';
-//
-//      return $out;
+    echo $out;
+  }
+
+  /**
+   * Handle WYSIWYG data the user may have entered.
+   *
+   * @param array $data User data.
+   */
+  public function display_wysiwyg_value( $data ) {
+    $out = '<em>' . esc_html( __( 'You do not have a Bio at this time.', 'crmn' ) ) . '</em>';
+    if ( ! empty( $data[0] ) ) {
+      $out = wp_kses_post( $data[0] );
+    }
+
+    echo $out;
+  }
+
+  /**
+   * Build a link the file if it exists.
+   *
+   * @param array $data File data if any have been uploaded.
+   */
+  public function display_file_value( $data ) {
+    $out = '<em>' . esc_html( __( 'You have not uploaded a file yet.', 'crmn' ) ) . '</em>';
+    if ( ! empty( $data[0] ) ) {
+      $title = $data[0]['post_title'];
+      $url = $data[0]['guid'];
+
+      $out = '<a href="' . $url . '">' . esc_html( __( 'Click to view your CV', 'crmn' ) ) . '</a>';
     }
 
     echo $out;
