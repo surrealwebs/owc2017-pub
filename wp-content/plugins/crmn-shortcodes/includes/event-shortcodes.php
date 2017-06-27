@@ -56,17 +56,7 @@ class CRMN_Event_Shortcodes{
                     continue; // But there should only be one.
                 }
 
-                $end_date_meta_key = ( !empty($meta['end_date']) && $meta['end_date'] != '0000-00-00' ? 'end_date' : 'event_date' );
-
-                // Get some timestamps so we can format how we choose.
-                $start = $this->get_start_timestamp_from_meta( $meta );
-                $end   = $this->get_end_timestamp_from_meta( $meta, $end_date_meta_key );
-
-                // Build a row for this event.
-                $out = '<div class="eventListing">
-                    <h3><a href="' . get_the_permalink() . '" title="' . the_title_attribute(['echo'=>false]) . '">' . get_the_title() . '</a></h3>
-                    <p>' . $this->get_event_date_string($start, $end) . '</p>
-                    </div>';
+                $out .= $this->get_event_markup( $meta, get_the_excerpt(),true, true, true, true );
             }
             wp_reset_postdata();
         }
@@ -113,17 +103,7 @@ class CRMN_Event_Shortcodes{
                     continue; // But there should only be one.
                 }
 
-                $end_date_meta_key = ( !empty($meta['end_date']) && $meta['end_date'] != '0000-00-00' ? 'end_date' : 'event_date' );
-
-                // Get some timestamps so we can format how we choose.
-                $start = $this->get_start_timestamp_from_meta( $meta );
-                $end   = $this->get_end_timestamp_from_meta( $meta, $end_date_meta_key );
-
-                $out .= '<p>
-                    <span style="font-weight: 400;">
-                        <strong>' . $this->get_event_date_string($start, $end) . '</strong>&nbsp;<a href="' . get_the_permalink() . '" title="' . the_title_attribute(['echo'=>false]) . '">' . get_the_title() . '</a>
-                    </span>
-                    </p>';
+                $out .= $this->get_event_markup( $meta, get_the_excerpt(),true, true, true, true );
             }
             wp_reset_postdata();
         }
@@ -161,23 +141,11 @@ class CRMN_Event_Shortcodes{
 
                 // We have an event without a date? Um, no, let's bail.
                 if ( empty( $meta['event_date'][0] ) ) {
-                    $out = '<p><em>There are no upcoming events.</em></p>';
+                    $out = '<p><em>There are no past events.</em></p>';
                     continue; // But there should only be one.
                 }
 
-                $end_date_meta_key = ( !empty( $meta['end_date'] ) && $meta['end_date'] != '0000-00-00' ? 'end_date' : 'event_date' );
-
-                // Get some timestamps so we can format how we choose.
-                $start = $this->get_start_timestamp_from_meta( $meta );
-                $end   = $this->get_end_timestamp_from_meta( $meta, $end_date_meta_key );
-
-                $partner = $this->get_partnership_label( $meta );
-
-                // Build a row for this event.
-                $out = '<div class="eventListing">
-                    <h3><a href="' . get_the_permalink() . '" title="' . the_title_attribute(['echo'=>false]) . '">' . get_the_title() . '</a>' . esc_html( $partner ) . '</h3>
-                    <p>' . date( 'F j, Y', $start ). ', from ' . date( 'g:ia', $start ) . ' to ' . date( 'g:ia', $end ) . '</p>
-                    </div>';
+                $out .= $this->get_event_markup( $meta, '',false, true, true, true, true );
             }
             wp_reset_postdata();
         }
@@ -227,21 +195,7 @@ class CRMN_Event_Shortcodes{
                     continue; // But there should only be one.
                 }
 
-                $end_date_meta_key = ( !empty($meta['end_date']) && $meta['end_date'] != '0000-00-00' ? 'end_date' : 'event_date' );
-
-                // Get some timestamps so we can format how we choose.
-                $start = $this->get_start_timestamp_from_meta( $meta );
-                $end   = $this->get_end_timestamp_from_meta( $meta, $end_date_meta_key );
-
-                // $meta['partner_name'];
-                $partner = $this->get_partnership_label( $meta );
-
-                // Build a row for this event.
-                $out .= '<p>
-                    <span style="font-weight: 400;">
-                        <strong>' . $this->get_event_date_string($start, $end) . '</strong>&nbsp;<a href="' . get_the_permalink() . '" title="' . the_title_attribute(['echo'=>false]) . '">' . get_the_title() . '</a>' . $partner . '
-                    </span>
-                    </p>';
+                $out .= $this->get_event_markup( $meta, get_the_excerpt(),true, true, true, true );
             }
             wp_reset_postdata();
         }
@@ -388,9 +342,10 @@ class CRMN_Event_Shortcodes{
      *
      * @param int $start_date Timestamp of the start of the event.
      * @param int $end_date Timestamp of the end of the event.
+     * @param bool $include_time If true the time will be included in the output.
      * @return string Formatted date string based on the start and end dates.
      */
-    public function get_event_date_string( $start_date, $end_date ) {
+    public function get_event_date_string( $start_date, $end_date, $include_time = true ) {
         // 1 day in seconds
         $day = (60 * 60 * 24);
 
@@ -399,7 +354,13 @@ class CRMN_Event_Shortcodes{
             return date('F j') . '-' . date('j, Y', $end_date);
         }
 
-        return date('F j, Y', $start_date). ', from ' . date('g:ia', $start_date) . ' to ' . date('g:ia', $end_date);
+        $out = date('F j, Y', $start_date);
+
+        if ($include_time) {
+            $out .= ', from ' . date('g:ia', $start_date) . ' to ' . date('g:ia', $end_date);
+        }
+
+        return $out;
     }
 
     /**
@@ -418,5 +379,142 @@ class CRMN_Event_Shortcodes{
         }
 
         return $partner;
+    }
+
+    /**
+     * Get the common markup for the event listing.
+     *
+     * @param array $event_meta Event meta data.
+     * @param string $excerpt The event excerpt, leave empty if you do not want it displayed.
+     * @param bool $show_time Show or hide the time, true to show false to hide.
+     * @param bool $show_location Show or hide the location, true to show false to hide.
+     * @param bool $show_reg_link Show or hide the registration link, true to show false to hide.
+     * @param bool $show_cle_code Show or hide the CLE Code, true to show false to hide.
+     * @param bool $use_alternate_markup Determine if you want the regular set of markup or the alternate version (e.g. past event).
+     * @return string Assembled markup.
+     */
+    public function get_event_markup($event_meta, $excerpt = '', $show_time = true, $show_location = false, $show_reg_link = false, $show_cle_code = false, $use_alternate_markup = false) {
+        $end_date_meta_key = ( !empty( $event_meta['end_date'] ) && $event_meta['end_date'] != '0000-00-00' ? 'end_date' : 'event_date' );
+
+        // Get some timestamps so we can format how we choose.
+        $start = $this->get_start_timestamp_from_meta( $event_meta );
+        $end   = $this->get_end_timestamp_from_meta( $event_meta, $end_date_meta_key );
+
+        $partner  = $this->get_partnership_label( $event_meta );
+        $cle_code = $this->get_cle_markup( $event_meta, $show_cle_code );
+        $location = $this->get_location_markup( $event_meta, $show_location );
+        $reg_link = $this->get_registration_link( $event_meta, $show_reg_link );
+
+        if ($use_alternate_markup) {
+            return $this->get_alternate_markup($event_meta, $excerpt, false, $location, $reg_link, $cle_code);
+        }
+
+        $line_2 = (!empty($excerpt) ? '<br/>' . esc_html($excerpt) : '');
+        if ( ! empty( $cle_code ) || ! empty( $location ) ) {
+            $line_2 = '<br/>' . $location . ' ' . $cle_code;
+        }
+
+        $out = '<p>
+                    <span style="font-weight: 400;">
+                        <strong>' . $this->get_event_date_string( $start, $end, $show_time ) . '</strong>&nbsp;<a href="' . get_the_permalink() . '" title="' . the_title_attribute(['echo'=>false]) . '">' . get_the_title() . '</a> ' . $partner . ' ' . $reg_link .'
+                        ' . $line_2 . '
+                    </span>
+                </p>';
+
+        return $out;
+    }
+
+    /**
+     * Get an alternate version of the markup for displaying an event.
+     *
+     * @param array $event_meta Event meta data.
+     * @param string $excerpt The post excerpt to display if there is one.
+     * @param bool $show_time Determines if the time should be displayed or not.
+     * @param string $location The location markup to use.
+     * @param string $reg_link The Registration Link markup to use.
+     * @param string $cle_code The CLE Code markup to use.
+     * @return string Assembled _alternate_ event markup.
+     */
+    public function get_alternate_markup($event_meta, $excerpt = '', $show_time = false, $location = '', $reg_link = '', $cle_code = '' ) {
+        $end_date_meta_key = ( !empty( $event_meta['end_date'] ) && $event_meta['end_date'] != '0000-00-00' ? 'end_date' : 'event_date' );
+
+        // Get some timestamps so we can format how we choose.
+        $start = $this->get_start_timestamp_from_meta( $event_meta );
+        $end   = $this->get_end_timestamp_from_meta( $event_meta, $end_date_meta_key );
+
+        // $meta['partner_name'];
+        $partner  = $this->get_partnership_label( $event_meta );
+
+        $out = '<div class="eventListing">
+                    <h3><a href="' . get_the_permalink() . '" title="' . the_title_attribute( [ 'echo' => false ] ) . '">' . get_the_title() . '</a>' . esc_html( $partner ) . '</h3>
+                    <p>' . $this->get_event_date_string( $start, $end, $show_time ) . ' ' . $location . ' ' . $cle_code . '</p>
+                    ' . ( ! empty( $excerpt ) ? '<p>' . esc_html( $excerpt ) . '</p>' : '' ) . '
+                    </div>';
+
+        return $out;
+    }
+
+    /**
+     * Get the markup for the CLE code, if we want to show it. Otherwise you get an empty string.
+     *
+     * @param array $event_meta Meta data for the event.
+     * @param bool $show_cle_code Determine if we want the CLE code, if false an empty string is returned.
+     * @return string Markup if we want to show the code otherwise an empty string.
+     */
+    public function get_cle_markup($event_meta, $show_cle_code = true) {
+        $out = '';
+
+        if (!$show_cle_code) {
+            return $out;
+        }
+
+        if (!empty($event_meta['cle_code'])) {
+            $out = '<span class="cle_code">CLE Code: ' . esc_html($event_meta['cle_code']) . '</span>';
+        }
+
+        return $out;
+    }
+
+    /**
+     * Get the markup for the location, if we want to show it. Otherwise you get an empty string.
+     *
+     * @param array $event_meta Meta data for the event.
+     * @param bool $show_location Determine if we want the location, if false an empty string is returned.
+     * @return string Markup if we want to show the location otherwise an empty string.
+     */
+    public function get_location_markup($event_meta, $show_location = true) {
+        $out = '';
+
+        if (!$show_location) {
+            return $out;
+        }
+
+        if (!empty($event_meta['location'])) {
+            $out = '<span class="event_location">Location: ' . esc_html($event_meta['location']) . '</span>';
+        }
+
+        return $out;
+    }
+
+    /**
+     * Get the markup for the registration link, if we want to show it. Otherwise you get an empty string.
+     *
+     * @param array $event_meta Meta data for the event.
+     * @param bool $show_reg_link Determine if we want the registration link, if false an empty string is returned.
+     * @return string Markup if we want to show the registration link otherwise an empty string.
+     */
+    public function get_registration_link($event_meta, $show_reg_link = true) {
+        $out = '';
+
+        if (!$show_reg_link) {
+            return $out;
+        }
+
+        if (!empty($event_meta['registration_link'])) {
+            $out = '<span class="registration_link">
+                        <a href="' . esc_attr($event_meta['registration_link']) . '">Register Here</a></span>';
+        }
+
+        return $out;
     }
 }
