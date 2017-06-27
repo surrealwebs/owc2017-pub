@@ -149,3 +149,8 @@ template: bb-theme
     padding-top: 8px;
     box-sizing: border-box;
 }
+
+.fl-rich-text .wp-caption {
+    border: none !important;
+    background: none !important;
+}
