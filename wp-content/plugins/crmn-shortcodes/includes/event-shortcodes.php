@@ -371,9 +371,9 @@ class CRMN_Event_Shortcodes{
      */
     public function get_partnership_label( $meta ) {
         $partner = '';
-        if ( ! empty( $meta['is_partner_event'] ) ) {
+        if ( ! empty( $meta['is_partner_event'][0] ) ) {
             $partner = ' (a CRM partner event)';
-            if ( ! empty( $meta['parnter_name'] ) ) {
+            if ( ! empty( $meta['parnter_name'][0] ) ) {
                 $partner = ' (in partnership with ' . $meta['parnter_name'] . ')';
             }
         }
@@ -436,7 +436,7 @@ class CRMN_Event_Shortcodes{
      * @return string Assembled _alternate_ event markup.
      */
     public function get_alternate_markup($event_meta, $excerpt = '', $show_time = false, $location = '', $reg_link = '', $cle_code = '' ) {
-        $end_date_meta_key = ( !empty( $event_meta['end_date'] ) && $event_meta['end_date'] != '0000-00-00' ? 'end_date' : 'event_date' );
+        $end_date_meta_key = ( !empty( $event_meta['end_date'][0] ) && $event_meta['end_date'][0] != '0000-00-00' ? 'end_date' : 'event_date' );
 
         // Get some timestamps so we can format how we choose.
         $start = $this->get_start_timestamp_from_meta( $event_meta );
@@ -468,8 +468,8 @@ class CRMN_Event_Shortcodes{
             return $out;
         }
 
-        if (!empty($event_meta['cle_code'])) {
-            $out = '<span class="cle_code">CLE Code: ' . esc_html($event_meta['cle_code']) . '</span>';
+        if (!empty($event_meta['cle_code'][0])) {
+            $out = '<span class="cle_code">CLE Code: ' . esc_html($event_meta['cle_code'][0]) . '</span>';
         }
 
         return $out;
@@ -489,8 +489,8 @@ class CRMN_Event_Shortcodes{
             return $out;
         }
 
-        if (!empty($event_meta['location'])) {
-            $out = '<span class="event_location">Location: ' . esc_html($event_meta['location']) . '</span>';
+        if (!empty($event_meta['location'][0])) {
+            $out = '<span class="event_location">Location: ' . esc_html($event_meta['location'][0]) . '</span>';
         }
 
         return $out;
@@ -510,9 +510,9 @@ class CRMN_Event_Shortcodes{
             return $out;
         }
 
-        if (!empty($event_meta['registration_link'])) {
+        if (!empty($event_meta['registration_link'][0])) {
             $out = '<span class="registration_link">
-                        <a href="' . esc_attr($event_meta['registration_link']) . '">Register Here</a></span>';
+                        <a href="' . esc_attr($event_meta['registration_link'][0]) . '">Register Here</a></span>';
         }
 
         return $out;
