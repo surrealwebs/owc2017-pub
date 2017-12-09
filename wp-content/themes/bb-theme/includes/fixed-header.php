@@ -9,17 +9,17 @@
 				</div>
 				<div class="fl-page-fixed-nav-wrap col-md-9 col-sm-12">
 					<div class="fl-page-nav-wrap">
-						<nav class="fl-page-nav fl-nav navbar navbar-default" role="navigation">
+						<nav class="fl-page-nav fl-nav navbar navbar-default">
 							<div class="fl-page-nav-collapse collapse navbar-collapse">
-								<?php 
-								
+								<?php
+
 								wp_nav_menu(array(
 									'theme_location' => 'header',
 									'items_wrap' => '<ul id="%1$s" class="nav navbar-nav navbar-right %2$s">%3$s</ul>',
 									'container' => false,
-									'fallback_cb' => 'FLTheme::nav_menu_fallback'
-								)); 
-								
+									'fallback_cb' => 'FLTheme::nav_menu_fallback',
+								));
+
 								?>
 							</div>
 						</nav>
