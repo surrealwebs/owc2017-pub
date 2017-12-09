@@ -269,7 +269,7 @@ function gformDeleteUploadedFile(formId, fieldId, deleteButton){
     parent.find(".ginput_preview").eq(fileIndex).remove();
 
     //displaying single file upload field
-    parent.find('input[type="file"],#extensions_message,.validation_message').removeClass("gform_hidden");
+    parent.find('input[type="file"],.validation_message,#extensions_message_' + formId + '_' + fieldId).removeClass("gform_hidden");
 
     //displaying post image label
     parent.find(".ginput_post_image_file").show();
@@ -1295,8 +1295,9 @@ function renderRecaptcha() {
 
         var $elem      = jQuery( this ),
             parameters = {
-                'sitekey': $elem.data( 'sitekey' ),
-                'theme':   $elem.data( 'theme' )
+                'sitekey':  $elem.data( 'sitekey' ),
+                'theme':    $elem.data( 'theme' ),
+	            'tabindex': $elem.data( 'tabindex' )
             };
 
         if( ! $elem.is( ':empty' ) ) {
@@ -1309,6 +1310,10 @@ function renderRecaptcha() {
 
         grecaptcha.render( this.id, parameters );
 
+	    if( parameters.tabindex ) {
+		    $elem.find( 'iframe' ).attr( 'tabindex', parameters.tabindex );
+	    }
+
         gform.doAction( 'gform_post_recaptcha_render', $elem );
 
     } );
@@ -1320,12 +1325,13 @@ function renderRecaptcha() {
 //----------------------------------------
 
 function gformValidateFileSize( field, max_file_size ) {
-	
+	var validation_element;
+
 	// Get validation message element.
 	if ( jQuery( field ).closest( 'div' ).siblings( '.validation_message' ).length > 0 ) {
-		var validation_element = jQuery( field ).closest( 'div' ).siblings( '.validation_message' );
+		validation_element = jQuery( field ).closest( 'div' ).siblings( '.validation_message' );
 	} else {
-		var validation_element = jQuery( field ).siblings( '.validation_message' );
+		validation_element = jQuery( field ).siblings( '.validation_message' );
 	}
 	
 	
@@ -1338,10 +1344,10 @@ function gformValidateFileSize( field, max_file_size ) {
 	var file = field.files[0];
 	
 	// If selected file is larger than maximum file size, set validation message and unset file selection.
-	if ( file.size > max_file_size ) {
-		
+	if ( file && file.size > max_file_size ) {
+
 		// Set validation message.
-		validation_element.html( file.name + " - " + gform_gravityforms.strings.file_exceeds_limit );
+		validation_element.text( file.name + " - " + gform_gravityforms.strings.file_exceeds_limit );
 		
 		// Unset file selection.
 		var input = jQuery( field );
@@ -1350,7 +1356,7 @@ function gformValidateFileSize( field, max_file_size ) {
 	} else {
 		
 		// Reset validation message.
-		validation_element.html( '' );
+		validation_element.text( '' );
 		
 	}
 	
@@ -1442,7 +1448,7 @@ function gformValidateFileSize( field, max_file_size ) {
         };
 
         function addMessage(messagesID, message){
-            $("#" + messagesID).prepend("<li>" + message + "</li>");
+            $("#" + messagesID).prepend("<li>" + htmlEncode(message) + "</li>");
         }
 
         uploader.init();
@@ -1480,7 +1486,7 @@ function gformValidateFileSize( field, max_file_size ) {
                 var status = '<div id="'
                     + file.id
                     + '" class="ginput_preview">'
-                    + file.name
+                    + htmlEncode(file.name)
                     + ' (' + size + ') <b></b> '
                     + '<a href="javascript:void(0)" title="' + strings.cancel_upload + '" onclick=\'$this=jQuery(this); var uploader = gfMultiFileUploader.uploaders.' + up.settings.container + ';uploader.stop();uploader.removeFile(uploader.getFile("' + file.id +'"));$this.after("' + strings.cancelled + '"); uploader.start();$this.remove();\' onkeypress=\'$this=jQuery(this); var uploader = gfMultiFileUploader.uploaders.' + up.settings.container + ';uploader.stop();uploader.removeFile(uploader.getFile("' + file.id +'"));$this.after("' + strings.cancelled + '"); uploader.start();$this.remove();\'>' + strings.cancel + '</a>'
                     + '</div>';
@@ -1530,10 +1536,9 @@ function gformValidateFileSize( field, max_file_size ) {
             } else if (err.code === plupload.FILE_SIZE_ERROR) {
                 addMessage(up.settings.gf_vars.message_id, err.file.name + " - " + strings.file_exceeds_limit);
             } else {
-                var m = "<li>Error: " + err.code +
+                var m = "Error: " + err.code +
                     ", Message: " + err.message +
-                    (err.file ? ", File: " + err.file.name : "") +
-                    "</li>";
+                    (err.file ? ", File: " + err.file.name : "");
 
                 addMessage(up.settings.gf_vars.message_id, m);
             }
@@ -1550,7 +1555,7 @@ function gformValidateFileSize( field, max_file_size ) {
                 return;
             }
 
-            var html = '<strong>' + file.name + '</strong>';
+            var html = '<strong>' + htmlEncode(file.name) + '</strong>';
             var formId = up.settings.multipart_params.form_id;
             var fieldId = up.settings.multipart_params.field_id;
             html = "<img "
@@ -1590,7 +1595,6 @@ function gformValidateFileSize( field, max_file_size ) {
 
 			return files;
 		}
-
 
         function getFiles(fieldID){
             var allFiles = getAllFiles();
@@ -1645,6 +1649,9 @@ function gformValidateFileSize( field, max_file_size ) {
         });
     }
 
+	function htmlEncode(value){
+		return $('<div/>').text(value).html();
+	}
 
 }(window.gfMultiFileUploader = window.gfMultiFileUploader || {}, jQuery));
 

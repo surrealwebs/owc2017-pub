@@ -3,7 +3,7 @@
 Plugin Name: Gravity Forms
 Plugin URI: http://www.gravityforms.com
 Description: Easily create web forms and manage form entries within the WordPress admin.
-Version: 2.2.1.6
+Version: 2.2.5.14
 Author: rocketgenius
 Author URI: http://www.rocketgenius.com
 Text Domain: gravityforms
@@ -132,7 +132,7 @@ define( 'GF_SUPPORTED_WP_VERSION', version_compare( get_bloginfo( 'version' ), G
  *
  * @var string GF_MIN_WP_VERSION_SUPPORT_TERMS The version number
  */
-define( 'GF_MIN_WP_VERSION_SUPPORT_TERMS', '4.6' );
+define( 'GF_MIN_WP_VERSION_SUPPORT_TERMS', '4.7' );
 
 
 if ( ! defined( 'GRAVITY_MANAGER_URL' ) ) {
@@ -153,6 +153,7 @@ if ( ! defined( 'GRAVITY_MANAGER_PROXY_URL' ) ) {
 	define( 'GRAVITY_MANAGER_PROXY_URL', 'http://proxy.gravityplugins.com' );
 }
 
+require_once( plugin_dir_path( __FILE__ ) . 'currency.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'common.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'forms_model.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'widget.php' );
@@ -208,7 +209,7 @@ class GFForms {
 	 *
 	 * @var string $version The version number.
 	 */
-	public static $version = '2.2.1.6';
+	public static $version = '2.2.5.14';
 
 	/**
 	 * Runs after Gravity Forms is loaded.
@@ -479,7 +480,7 @@ class GFForms {
 	 */
 	public static function load_first() {
 		$plugin_path    = basename( dirname( __FILE__ ) ) . '/gravityforms.php';
-		$active_plugins = get_option( 'active_plugins' );
+		$active_plugins = array_values( maybe_unserialize( self::get_wp_option( 'active_plugins' ) ) );
 		$key            = array_search( $plugin_path, $active_plugins );
 		if ( $key > 0 ) {
 			array_splice( $active_plugins, $key, 1 );
@@ -786,6 +787,7 @@ class GFForms {
 				'media-views',
 				'buttons',
 				'wp-pointer',
+				'gform_chosen'
 			),
 			'gf_edit_forms_notification' => array(
 				'thickbox',
@@ -795,7 +797,7 @@ class GFForms {
 				'buttons',
 			),
 			'gf_new_form'                => array( 'thickbox' ),
-			'gf_entries'                 => array( 'thickbox' ),
+			'gf_entries'                 => array( 'thickbox', 'gform_chosen' ),
 			'gf_settings'                => array(),
 			'gf_export'                  => array(),
 			'gf_help'                    => array(),
@@ -858,7 +860,8 @@ class GFForms {
 				'wp-plupload',
 				'wpdialogs-popup',
 				'wplink',
-				'wp-pointer'
+				'wp-pointer',
+				'gform_chosen'
 			),
 			'gf_edit_forms_notification' => array(
 				'editor',
@@ -900,11 +903,13 @@ class GFForms {
 				'gform_json',
 				'gform_field_filter',
 				'plupload-all',
-				'postbox'
+				'postbox',
+				'gform_chosen'
 			),
 			'gf_settings'                => array(),
 			'gf_export'                  => array( 'gform_form_admin', 'jquery-ui-datepicker', 'gform_field_filter' ),
 			'gf_help'                    => array(),
+			'gf_system_status'           => array( 'gform_system_report_clipboard' )
 		);
 
 		self::no_conflict_mode( $wp_scripts, $wp_required_scripts, $gf_required_scripts, 'scripts' );
@@ -1376,8 +1381,6 @@ class GFForms {
 			$parent = array( 'name' => 'gf_settings', 'callback' => array( 'GFForms', 'settings_page' ) );
 		} else if ( GFCommon::current_user_can_any( 'gravityforms_export_entries' ) ) {
 			$parent = array( 'name' => 'gf_export', 'callback' => array( 'GFForms', 'export_page' ) );
-		} else if ( GFCommon::current_user_can_any( 'gravityforms_view_updates' ) ) {
-			$parent = array( 'name' => 'gf_update', 'callback' => array( 'GFForms', 'update_page' ) );
 		} else if ( GFCommon::current_user_can_any( 'gravityforms_view_addons' ) ) {
 			$parent = array( 'name' => 'gf_addons', 'callback' => array( 'GFForms', 'addons_page' ) );
 		} else if ( GFCommon::current_user_can_any( 'gravityforms_system_status' ) ) {
@@ -1952,7 +1955,8 @@ class GFForms {
 		wp_register_script( 'gform_form_admin', $base_url . "/js/form_admin{$min}.js", array(
 			'jquery',
 			'jquery-ui-autocomplete',
-			'gform_placeholder'
+			'gform_placeholder',
+			'gform_gravityforms',
 		), $version );
 		wp_register_script( 'gform_form_editor', $base_url . "/js/form_editor{$min}.js", array(
 			'jquery',
@@ -2241,6 +2245,10 @@ class GFForms {
 			return 'notification_list';
 		}
 
+		if ( rgget( 'page' ) == 'gf_edit_forms' && rgget( 'view' ) == 'settings' && rgget( 'subview' ) ) {
+			return 'form_settings_' . rgget( 'subview' );
+		}
+
 		if ( rgget( 'page' ) == 'gf_entries' && ( ! rgget( 'view' ) || rgget( 'view' ) == 'entries' ) ) {
 			return 'entry_list';
 		}
@@ -2273,12 +2281,12 @@ class GFForms {
 			return 'import_form';
 		}
 
-		if ( rgget( 'page' ) == 'gf_update' ) {
-			return 'updates';
+		if ( rgget( 'page' ) == 'gf_system_status' ) {
+			return rgget( 'subview' ) === 'updates' ? 'updates' : 'system_status';
 		}
 
-		if ( rgget( 'page' ) == 'gf_system_status' ) {
-			return 'system_status';
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ( ( isset( $_POST['form_id'] ) && rgpost( 'action' ) === 'rg_select_export_form' ) || ( isset( $_POST['export_form'] ) && rgpost( 'action' ) === 'gf_process_export' ) ) ) {
+			return 'export_entry_ajax';
 		}
 
 		return false;
@@ -4071,17 +4079,7 @@ class GFForms {
 
 		$wp_admin_bar->add_node( $args );
 
-		$current_user_id = get_current_user_id();
-		$recent_form_ids = get_user_meta( $current_user_id, 'gform_recent_forms', true );
-
-		if ( empty( $recent_form_ids ) ) {
-			$all_form_ids    = GFFormsModel::get_form_ids();
-			$all_form_ids    = array_reverse( $all_form_ids );
-			$recent_form_ids = array_slice( $all_form_ids, 0, 10 );
-			if ( $recent_form_ids ) {
-				update_user_meta( $current_user_id, 'gform_recent_forms', $recent_form_ids );
-			}
-		}
+		$recent_form_ids = GFFormsModel::get_recent_forms();
 
 		if ( $recent_form_ids ) {
 			$forms = GFFormsModel::get_form_meta_by_id( $recent_form_ids );
@@ -4501,11 +4499,11 @@ class GFForms {
 				'tooltip' => __( 'Whether or not to display the form description.', 'gravityforms' )
 			),
 			array(
-				'label'   => __( 'Enable AJAX', 'gravityforms' ),
+				'label'   => __( 'Enable Ajax', 'gravityforms' ),
 				'attr'    => 'ajax',
 				'section' => 'standard',
 				'type'    => 'checkbox',
-				'tooltip' => __( 'Specify whether or not to use AJAX to submit the form.', 'gravityforms' )
+				'tooltip' => __( 'Specify whether or not to use Ajax to submit the form.', 'gravityforms' )
 			),
 			array(
 				'label'   => 'Tabindex',
@@ -5119,7 +5117,7 @@ if ( ! function_exists( 'rgblank' ) ) {
 	 * @return bool True if empty.  False otherwise.
 	 */
 	function rgblank( $text ) {
-		return empty( $text ) && strval( $text ) != '0';
+		return empty( $text ) && ! is_array( $text ) && strval( $text ) != '0';
 	}
 }
 
@@ -5176,7 +5174,7 @@ if ( ! function_exists( 'gf_apply_filters' ) ) {
 	 * @since  Unknown
 	 * @access public
 	 *
-	 * @param string $filter The name of the filter.
+	 * @param string|array $filter The name of the filter.
 	 * @param mixed  $value  The value to filter.
 	 *
 	 * @return mixed The filtered value.
