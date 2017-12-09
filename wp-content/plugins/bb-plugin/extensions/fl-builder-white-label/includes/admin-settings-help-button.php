@@ -1,6 +1,6 @@
-<?php 
-	
-$settings = FLBuilderWhiteLabel::get_help_button_settings(); 
+<?php
+
+$settings = FLBuilderWhiteLabel::get_help_button_settings();
 
 ?>
 <div id="fl-help-button-form" class="fl-settings-form">

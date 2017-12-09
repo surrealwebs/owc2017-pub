@@ -8,6 +8,13 @@
  */
 final class FLBuilderTimezones {
 
+	// We are adding the phpcs ignore here as this code uses translate() and will fail tests.
+	// The function was originally copied from WordPress Core wp-includes/functions.php
+	// Original function wp_timezone_choice() is not pluggable or filterable and will
+	// return data that breaks the module options.
+
+	// @codingStandardsIgnoreStart
+
 	/**
 	 * An array of continents.
 	 * @var array
@@ -117,10 +124,10 @@ final class FLBuilderTimezones {
 		$selected = '';
 		if ( 'UTC' === $selected_zone )
 			$selected = 'selected="selected" ';
-		$structure[] = '<option ' . $selected . 'value="' . esc_attr( 'UTC', 'fl-builder' ) . '">' . __( 'UTC', 'fl-builder' ) . '</option>';
+		$structure[] = '<option ' . $selected . 'value="' . esc_attr__( 'UTC', 'fl-builder' ) . '">' . __( 'UTC', 'fl-builder' ) . '</option>';
 		$structure[] = '</optgroup>';
 
 		return join( "\n", $structure );
 	}
-
+	// @codingStandardsIgnoreEnd
 }

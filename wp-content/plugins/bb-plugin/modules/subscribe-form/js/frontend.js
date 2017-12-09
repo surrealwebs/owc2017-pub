@@ -5,21 +5,37 @@
 			widgetID;
 
 		if ( reCaptchaFields.length > 0 ) {
-			reCaptchaFields.each(function(){
-				var attrWidget = $(this).attr('data-widgetid');
+			reCaptchaFields.each(function(i){
+				var self 		= $( this ),
+				 	attrWidget 	= self.attr('data-widgetid');
 
 				// Avoid re-rendering as it's throwing API error
 				if ( (typeof attrWidget !== typeof undefined && attrWidget !== false) ) {
 					return;
 				}
 				else {
-					widgetID = grecaptcha.render( $(this).attr('id'), { 
-						sitekey : $(this).data('sitekey'),
-						theme	: 'light'
+
+					widgetID = grecaptcha.render( $(this).attr('id'), {
+						sitekey : self.data( 'sitekey' ),
+						theme	: self.data( 'theme' ),
+						size	: self.data( 'validate' ),
+						callback: function( response ){
+							if ( response != '' ) {
+								self.attr( 'data-fl-grecaptcha-response', response );
+
+								// Re-submitting the form after a successful invisible validation.
+								if ( 'invisible' == self.data( 'validate' ) ) {
+									self.closest( '.fl-subscribe-form' ).find( 'a.fl-button' ).trigger( 'click' );
+								}
+
+								grecaptcha.reset( widgetID );
+							}
+						}
 					});
-					
-					$(this).attr('data-widgetid', widgetID);					
-				}							
+
+					self.attr( 'data-widgetid', widgetID );
+
+				}
 			});
 		}
 	};
@@ -34,17 +50,18 @@
 	};
 
 	FLBuilderSubscribeForm.prototype = {
-	
+
 		settings	: {},
 		nodeClass	: '',
 		form		: null,
 		button		: null,
-		
+
 		_init: function()
 		{
 			this.button.on( 'click', $.proxy( this._submitForm, this ) );
+			this.form.find( 'input[type="email"]' ).on( 'keypress', $.proxy( this._onEnterKey, this) );
 		},
-		
+
 		_submitForm: function( e )
 		{
 			var postId      	= this.form.closest( '.fl-builder-content' ).data( 'post-id' ),
@@ -56,15 +73,17 @@
 				name        	= this.form.find( 'input[name=fl-subscribe-form-name]' ),
 				email       	= this.form.find( 'input[name=fl-subscribe-form-email]' ),
 				recaptcha 		= this.form.find( '.fl-grecaptcha' ),
+				reCaptchaValue	= recaptcha.data( 'fl-grecaptcha-response' ),
 				re          	= /\S+@\S+\.\S+/,
 				valid       	= true,
 				ajaxData 		= null;
-				
+
 			e.preventDefault();
 
 			if ( this.button.hasClass( 'fl-form-button-disabled' ) ) {
 				return; // Already submitting
 			}
+
 			if ( name.length > 0 && name.val() == '' ) {
 				name.addClass( 'fl-form-error' );
 				name.siblings( '.fl-form-error-message' ).show();
@@ -75,23 +94,32 @@
 				email.siblings( '.fl-form-error-message' ).show();
 				valid = false;
 			}
-			if ( recaptcha.length > 0 && typeof grecaptcha !== 'undefined' && '' == grecaptcha.getResponse( recaptcha.data('widgetid') ) ) {
-				recaptcha.addClass( 'fl-form-error' );
-				recaptcha.siblings( '.fl-form-error-message' ).show();
-				valid = false;
+
+			if ( recaptcha.length > 0 && valid ) {
+				if ( 'undefined' === typeof reCaptchaValue || reCaptchaValue === false ) {
+					if ( 'normal' == recaptcha.data( 'validate' ) ) {
+						recaptcha.addClass( 'fl-form-error' );
+						recaptcha.siblings( '.fl-form-error-message' ).show();
+					} else if ( 'invisible' == recaptcha.data( 'validate' ) ) {
+
+						// Invoke the reCAPTCHA check.
+						grecaptcha.execute( recaptcha.data( 'widgetid' ) );
+					}
+
+					valid = false;
+				} else {
+					recaptcha.removeClass( 'fl-form-error' );
+					recaptcha.siblings( '.fl-form-error-message' ).hide();
+				}
 			}
-			else {
-				recaptcha.removeClass( 'fl-form-error' );
-				recaptcha.siblings( '.fl-form-error-message' ).hide();
-			}
-			
+
 			if ( valid ) {
-				
+
 				this.form.find( '> .fl-form-error-message' ).hide();
 				this.button.find( '.fl-button-text' ).text( waitText );
 				this.button.data( 'original-text', buttonText );
 				this.button.addClass( 'fl-form-button-disabled' );
-				
+
 				ajaxData = {
 					action  			: 'fl_builder_subscribe_form_submit',
 					name    			: name.val(),
@@ -102,25 +130,25 @@
 					node_id 			: nodeId
 				};
 
-				if ( typeof grecaptcha !== 'undefined' ) {
-					ajaxData.recaptcha = grecaptcha.getResponse( recaptcha.data('widgetid') );
+				if ( reCaptchaValue ) {
+					ajaxData.recaptcha = reCaptchaValue;
 				}
 
 				$.post( FLBuilderLayoutConfig.paths.wpAjaxUrl, ajaxData, $.proxy( this._submitFormComplete, this ) );
 			}
 		},
-		
+
 		_submitFormComplete: function( response )
 		{
 			var data        = JSON.parse( response ),
 				buttonText  = this.button.data( 'original-text' );
-				
+
 			if ( data.error ) {
-				
+
 				if ( data.error ) {
 					this.form.find( '> .fl-form-error-message' ).text( data.error );
 				}
-				
+
 				this.form.find( '> .fl-form-error-message' ).show();
 				this.button.removeClass( 'fl-form-button-disabled' );
 				this.button.find( '.fl-button-text' ).text( buttonText );
@@ -132,7 +160,14 @@
 			else if ( 'redirect' == data.action ) {
 				window.location.href = data.url;
 			}
+		},
+
+		_onEnterKey: function( e )
+		{
+			if (e.which == 13) {
+		    	this.button.trigger( 'click' );
+		  	}
 		}
 	}
-	
+
 })( jQuery );

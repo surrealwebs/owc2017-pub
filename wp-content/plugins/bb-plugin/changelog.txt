@@ -1,3 +1,555 @@
+<h4>2.0.2.2 - 12/06/2017</h4>
+<p>Beaver Builder 2.0 is now available for remote update!</p>
+
+<h4>2.0.2.1 - 11/27/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed responsive editing mode not working correctly.</li>
+	<li>Fixed white labeling not working correctly on the updates page.</li>
+</ul>
+
+<h4>2.0.2 - 11/16/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added <code>fl_builder_cache_cleared</code> action.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed settings config not loading when query strings are removed from script URLs.</li>
+	<li>Fixed widgets not showing when site language is not in English.</li>
+	<li>Fixed error when using namespaced widgets.</li>
+	<li>Fixed JS errors in IE.</li>
+	<li>Fixed keyboard shortcut formatting in IE.</li>
+	<li>Fixed capitalization issues with translations.</li>
+	<li>Fixed character encoding issues with strtolower.</li>
+</ul>
+
+<h4>2.0.1.1 - 11/07/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Hotfix for a change in 2.0.1 that broke loading of the settings for the Subscribe Form module.</li>
+</ul>
+
+<h4>2.0.1 - 11/06/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed errors caused by settings config not completely loading on certain server setups.</li>
+	<li>Fixed PHP warnings when attachment meta doesn't have a width or height set.</li>
+</ul>
+
+<h4>2.0 - 11/01/2017</h4>
+<p><strong>Beaver Builder 2.0 is here!</strong></p>
+<p>Please note that 2.0 is currently only available from your My Account page or via remote update if you already have 2.0 installed. We'll be releasing remote updates for older versions of Beaver Builder within the next few weeks.</p>
+
+<h4>2.0-beta.3 - 10/31/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Updated the help video for 2.0.</li>
+	<li>Added fl_row_resize_settings filter.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed various UI styling issues.</li>
+	<li>Fixed editing global rows not working properly.</li>
+	<li>Fixed template override settings not working on multisite.</li>
+	<li>Fixed repeater fields in nested forms not working.</li>
+	<li>Fixed stylesheets in the body tag not being parsed for responsive preview.</li>
+	<li>Fixed content panel showing during preview or unpinning during preview when not expected.</li>
+	<li>Fixed anchor links in the layout causing the builder to launch again after publish.</li>
+</ul>
+
+<h4>2.0-beta.2 - 10/12/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Publish button now says 'Submit for Review' if a user doesn't have permission to publish.</li>
+	<li>Pinned settings are now responsive for smaller devices.</li>
+	<li>Moved WordPress widgets into their own group.</li>
+	<li>Moved Themer modules into their own group (coming in Themer 1.0.3).</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed row actions being covered by modules when the row has no padding.</li>
+	<li>Fixed values in text inputs not being escaped which breaks the markup.</li>
+	<li>Fixed settings being dragged or resized so you can't access the drag handle anymore.</li>
+	<li>Fixed browser zoom triggering the action overflow menu when it shouldn't.</li>
+	<li>Fixed multiple issues with saving new templates.</li>
+	<li>Fixed styling issues with dark mode.</li>
+	<li>Fixed module aliases not showing in the content panel.</li>
+	<li>Fixed widgets not showing in the content panel.</li>
+</ul>
+
+<h4>2.0-beta.1 - 10/04/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added keyboard shortcut UI to the builder menu.</li>
+	<li>Reworked keyboard shortcut system to support displaying shortcuts with labels and modifier key symbols.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed various styling issues.</li>
+	<li>Fixed photo and video fields that aren't in node settings not showing saved data when opened again after the page is refreshed.</li>
+	<li>Fixed error when saving a template with no category set.</li>
+	<li>Fixed saved values for medium and responsive in dimension fields not showing when going back to edit a node.</li>
+	<li>Fixed module templates not showing in the content panel.</li>
+	<li>Fixed issue with module hover in the content panel being covered by siblings.</li>
+	<li>Fixed a major issue with secondary loops triggering the builder's content filter when they shouldn't. This caused a number of issues including an infinite loop in Themer and the incorrect posts being displayed on standard builder pages.</li>
+	<li>Fixed FLBuilder::render_query so it doesn't have to override $wp_query which was causing incorrect connection data for Themer layouts.</li>
+</ul>
+
+<h4>2.0-alpha.7 - 09/21/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added the ability to match posts in the loop settings by related taxonomy terms.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed page scrolling breaking when opening the main menu.</li>
+	<li>Fixed field connections not rendering in nested settings forms.</li>
+</ul>
+
+<h4>2.0-alpha.6.1 - 09/19/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a bug with the option labels in select option groups not showing.</li>
+</ul>
+
+<h4>2.0-alpha.6 - 09/19/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a bug breaking the Pods integration.</li>
+	<li>Fixed an issue causing the builder UI to break on SiteGround servers.</li>
+</ul>
+
+<h4>2.0-alpha.5 - 09/06/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Settings panel tabs no longer become a drop-down menu when slim. Tabs that cannot fit into the available space are pushed into a menu.</li>
+	<li>You can now move between settings tabs with the keyboard shortcuts "CMD + Left Arrow" or "CMD + Right Arrow" (CTRL on Windows).</li>
+	<li>You can now reset row or column widths from the module overlay.</li>
+	<li>"CMD + i" (CTRL on Windows) shortcut will take you directly to module search.</li>
+	<li>Module search is now case-insensitive.</li>
+	<li>Duplicated items that appear off screen will now scroll into view.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed scrolling not working when hovering over the content panel and then back into the layout.</li>
+	<li>Hovering over the content panel should no longer cause screen jitter in Windows browsers.</li>
+	<li>Icon selector search/filter has been restored.</li>
+	<li>J, K, L, and ; keys now show content panel tabs even when the panel has been collapsed.</li>
+	<li>Dropping a row template into the layout immediately loads fonts.</li>
+	<li>Overriding core templates now works again when applying a template.<li>
+	<li>Fixed ACE editor resize causing incorrect cursor position.</li>
+	<li>Fixed multiple issues with pinning in Safari and Firefox.</li>
+</ul>
+
+<h4>2.0-alpha.4 - 08/29/2017</h4>
+<ul>
+	<li>A new slimmer version of the settings panels now opens when clicking to edit content.</li>
+	<li>Settings panels can now be resized to any size that you desire.</li>
+	<li>We'll remember the size and position you set for the settings panels even after reloading the page.</li>
+	<li>The content panel and settings can now be pinned together on either the left or right side of the screen. You can resize the pinned sidebar when you need a little more room.</li>
+	<li>You can now work with the toolbar or in the layout even when settings are open.</li>
+	<li>If settings are open and you take action anywhere else in the builder, we'll save and close them for you. This means you can edit one module and click to edit another without ever needing to click save in between.</li>
+	<li>Module search has been moved into the modules tab for more intuitive access.</li>
+</ul>
+
+<h4>2.0-alpha.3 - 08/07/2017</h4>
+<ul>
+	<li>Settings forms now load instantly! We've completely rewritten the settings forms in JavaScript so they don’t need to be loaded from the server anymore. The only time something needs to load is if you’re using a third party add-on that introduces legacy PHP fields. We’ll have docs on the new JavaScript settings APIs when 2.0 is released and hope that all major add-on authors will convert their fields to JavaScript so everything loads instantly! :)</li>
+	<li>Added an initial set of core row templates.</li>
+	<li>Various bug fixes and style tweaks.</li>
+</ul>
+
+<h4>2.0-alpha.2 - 07/24/2017</h4>
+<ul>
+	<li>Added the ability to duplicate columns.</li>
+	<li>Increased contrast to light and dark UI modes.</li>
+	<li>Added module icons.</li>
+	<li>Restyled content group selector.</li>
+	<li>Reworked how group labels are displayed in search results.</li>
+	<li>Style hardening for GeneratePress theme.</li>
+	<li>Publishing out of the builder now moves the history state and updates the url. Re-entering will move back.</li>
+</ul>
+
+<h4>1.11.1 11/29/17</h4>
+<p><strong>Hot Fix</strong></p>
+<ul>
+	<li>Fixed issue with ScrollTo links.</li>
+</ul>
+
+<h4>1.11 11/28/17</h4>
+<p><strong>This will be the final 1.x release before 2.x is made available to all customers via remote update.</strong></p>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added new invisible theme type to Contact Form reCAPTCHA.</li>
+	<li>New filter <code>fl_builder_menu_item_id</code>.</li>
+	<li>Changed MailChimp double opt-in to default to Off, inline with MailChimps API.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed PHP notice in <code>fl_builder_user_access_capabilities</code> filter.</li>
+	<li>Fixed Content Slider CTA not working on mobile.</li>
+	<li>Fixed ScrollTo links not working if an SVG on the page contains a link.</li>
+	<li>Fixed responsive menu no working if used in a widget.</li>
+	<li>Fixed javascript error when row background contains a video URL.</li>
+	<li>Fixed javascript issues when layout shortcode is used twice or more on a page.</li>
+	<li>Fixed PHP notice when using PHP 7.1 and posts module.</li>
+	<li>Fixed Post Module style tab being hidden if using a custom layout.</li>
+	<li>Fixed missing space causing broken markup in Photo Module.</li>
+</ul>
+
+<h4>1.10.9.2 10/26/17</h4>
+<p><strong>Hot Fix</strong></p>
+<ul>
+	<li>Fixed error when saving column settings after deleting a row.</li>
+	<li>Fixed post module pagination not working if multiple post modules are on the same page.</li>
+</ul>
+
+<h4>1.10.9.1 10/12/17</h4>
+<p><strong>Hot Fix</strong></p>
+<ul>
+	<li>Fixed hide page title in global settings.</li>
+</ul>
+
+<h4>1.10.9 10/10/17</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Disable Auto-Optimize when the builder is active.</li>
+	<li>Numbers Module now supports decimals.</li>
+	<li>New filter <code>fl_builder_render_module_css</code>.</li>
+	<li>New filter <code>fl_is_debug</code>. This allows developers to run site with no caching without having to use WP_DEBUG.</li>
+	<li>Plugin info lightbox and plugin updates list are now white labeled correctly.</li>
+	<li>Contact Form Module placeholders are now configurable.</li>
+	<li>Added Themer field connection to video lightbox URL.</li>
+	<li>Updated language files.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed an issue with Contact Form Module reCAPTCHA when cURL is not available.</li>
+	<li>Fixed possible JS error when more than one video is set to autoplay.</li>
+	<li>Fixed some PHP warnings in WP admin area on Windows servers.</li>
+	<li>Fixed an importer issue when PHP PCRE limit is set too low.</li>
+	<li>Fixed an issue where pages that are not under builder control inherit global settings when a theme layout is on the page.</li>
+	<li>Fixed issue with row background not waiting for images to be loaded before starting slideshow effect.</li>
+	<li>Fixed Menus Module disappearing on device orientation change.</li>
+	<li>Fixed module positioning issue with multiple nested columns.</li>
+	<li>Fixed row background video issues with Safari.</li>
+	<li>Fixed possible JS issue in Numbers Module, switched to using wp_add_inline_script()</li>
+	<li>Fixed possible XSS exploit on links that use _blank by adding noopener to rel.</li>
+	<li>Fixed the active class on hamburger toggle. Making sure that active class toggles only when clicking the hamburger icon.</li>
+	<li>Fixed issue with custom width for column not working if equal height is enabled.</li>
+	<li>Fixed submenu hover when the next row is using background overlay.</li>
+</ul>
+
+<h4>1.10.8.3 09/29/17</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a minor security issue with <code>fl_builder_export_templates_data</code> action.</li>
+</ul>
+
+<h4>1.10.8.2 09/12/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Update language files.</li>
+	<li>Make module frontend filterable.</li>
+	<li>New filters <code>fl_builder_module_frontend_custom_{slug}</code>, <code>fl_builder_module_frontend_file</code>.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed fatal error in debug class if bb-theme is not available.</li>
+	<li>Fixed issue with media uploads if file extension is uppercase.</li>
+	<li>Fixed an issue with Posts Module load more button.</li>
+</ul>
+
+<h4>1.10.8.1 09/07/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed a PHP 5.2 issue. Debug class using PHP 5.3 and above code.</li>
+</ul>
+
+<h4>1.10.8 09/06/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+  <li>Added new debug setting in WP admin. Once enabled it allows support staff to see basic server info.</li>
+  <li>Introduce <code>fl_builder_ace_options</code> filter. Allows aces editor options to be filtered.</li>
+  <li>Introduce <code>fl_get_wp_widgets_exclude</code> filter.</li>
+  <li>Added new reCAPTCHA theme to subscribe module.</li>
+  <li>Added nav arrow style options for Post Carousel, Post Slider and Content Slider.</li>
+  <li>Added option Load More Button as another Pagination Style in Post Grid module.</li>
+  <li>Introduce <code>FLBuilder::default_image_html()</code> if no image exists.</li>
+  <li>Google Fonts are now updated whenever we push an update automagically.</li>
+  <li>Updated translation files.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+  <li>Remove WP HTML widget from available widgets in builder.</li>
+  <li>Fixed missing module info when the call_module_delete method is called in FLBuilderModel.</li>
+  <li>Fixed duplicate template id when cloning post using Duplicate posts plugin.</li>
+  <li>Fixed a PHP warning if a settings form contains no tabs.</li>
+  <li>Fixed a PHP warning if a widget is registered non CamelCase.</li>
+  <li>Fixed issue with SendinBlue API, namespace class in case other plugins use same library.</li>
+  <li>Fixed AJAX save issue if no icons are enabled.</li>
+  <li>Fixed Menu Module. Mobile menu was not rendering between 993px and 1007px.</li>
+  <li>Fixed image/video upload validation issues.</li>
+  <li>Fixed a SiteGround Staging issue with thumbnails.</li>
+  <li>Fixed Menu Module. If a page has same ID as a category and both are in a menu, both had current-menu-item class.</li>
+</ul>
+
+<h4>1.10.7.1 8/11/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+  <li>Fixed malformed From header in Contact Form Module.</li>
+</ul>
+
+<h4>1.10.7 8/08/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+  <li>Safemode for the builder added. If you append <code>&safemode</code> to your url when the builder is active all modules will be safely rendered without content.</li>
+  <li>Added custom field support for Map Module and SmugMug feed urls.</li>
+  <li>Reworked featured image placement options in Posts Module.</li>
+  <li>Updated language files.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+  <li>Fixed Menu Module, mega menu only works with horizontal nav menus.</li>
+  <li>Fixed the missing image alt on Callout Module.</li>
+  <li>Fixed Contact Form Reply-To headers incorrectly set.</li>
+  <li>Fixed an issue with Agency version not being able to rename a child theme if the theme is not network enabled.</li>
+  <li>Fixed a JS error if Countdown Module visibility is set to never.</li>
+  <li>Fixed RTL issues in Post Grid Module.</li>
+  <li>Fixed issue with YouTube background videos showing related content on certain versions of IE.</li>
+  <li>Fixed PHP warning in Subscribe Module.</li>
+  <li>Fixed Posts Module pagination issues.</li>
+  <li>Fixed saving issue. Any modules using non UTF-8 chars would cause a JS fatal error when using `FL_BUILDER_MODSEC_FIX`.</li>
+  <li>Fixed a fatal PHP error when duplicating Woocommerce products.</li>
+  <li>Fixed repeater fields not working when registered in the global settings.</li>
+	<li>Fixed Text Editor Module z-index issue introduced in WordPress 4.8.1</li>
+</ul>
+
+<h4>1.10.6.4 7/28/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+  <li>Fixed PHP error produced by canonical redirection if the post_type is changed to an array by a plugin.</li>
+</ul>
+
+<h4>1.10.6.3 7/05/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+  <li>Fixed google fonts script logic introduced in 1.10</li>
+</ul>
+
+<h4>1.10.6.2 6/21/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+  <li>Fixed a minor bug with adding new rows, sometimes they would appear below the content</li>
+</ul>
+
+<h4>1.10.6.1 6/21/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+  <li>Fix broken markup caused by changes to posts module list mode introduced in 1.10.6</li>
+</ul>
+
+<h4>1.10.6 6/19/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+    <li>Subscribe Form module: New service for iContact Pro.</li>
+    <li>Subscribe Form module: Added support for Godaddy Email Marketing.</li>
+    <li>Saved rows in Builder UI now sorted alphabetically.</li>
+    <li>Enhanced WP-CLI support. See <a href="http://kb.wpbeaverbuilder.com/article/504-wp-cli">documentation</a>.</li>
+    <li>New action <code>fl_builder_subscribe_form_submission_complete</code> added to Subscribe Form module.</li>
+    <li>New filter <code>fl_builder_render_module_settings_assets</code> added to settings form assets.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+    <li>Removed the new core media widgets from the builder since they don’t work in the builder and we have modules that do the same thing.</li>
+    <li>Fixed the core text widget form in the builder so the legacy form loads since the new form in 4.8 doesn’t. The text widget is also removed from the module list in favor of the Text Editor and HTML modules. Sites previously using the text widget will still render and they can still be edited, they just won’t be able to add new text widgets.</li>
+    <li>Fixed Slideshow module not showing in the Tabs module.</li>
+    <li>Fixed JS error in Row > Background > Slideshow  on touch-enabled devices.</li>
+    <li>Increased the video ratio to 16:9 to fix the top/bottom black border on responsive layout.</li>
+    <li>Changed span to div element for the Accordion label to avoid possible W3C validation error.</li>
+    <li>Disabled click event while transitioning on Posts Carousel and Posts Slider.</li>
+    <li>Fixed a row duplication issue if the row contains a layout shortcode.</li>
+    <li>Fixed Posts module infinite scroll if Posts Slider module is on same page.</li>
+    <li>Added sans-serif as Google Fonts fallback.</li>
+    <li>Throw an error if wrong type of Icomoon icons are uploaded.</li>
+    <li>Fixed PHP notice on 404 pages if layout shortcode is used via a hook.</li>
+    <li>Reduced encoding issues when copying template.dat files between Windows and UNIX servers.</li>
+    <li>Disabled click event on Testimonial module's navigation dots and arrows while transitioning to avoid skipping slide item.</li>
+    <li>Pagination issue with Posts module if page URL has a query parameter.</li>
+    <li>Fixed menu current item class not working on front page when menu is rendered via a hook.</li>
+    <li>Fixed menu overlay layout issue on responsive style.</li>
+    <li>Make sure submenu closes on pages with scroll-to link.</li>
+    <li>Featured image should now be displayed below title and beside text for both left and right position Posts module list.</li>
+    <li>Fixed pagination on single custom post types with Posts module caused by canonical redirection.</li>
+</ul>
+
+<h4>1.10.5.1 - 6/5/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed new loop actions introduced in 1.10.5</li>
+</ul>
+
+<h4>1.10.5 - 6/5/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added color connection for row backgrounds.</li>
+	<li>Added responsive breakpoint settings to Menu Module.</li>
+	<li>Subscribe form module - enable enter key to submit form.</li>
+	<li>Added campaign field for Drip email service on subscribe module.</li>
+	<li>Added filter <code>fl_builder_loop_before_query_settings</code>.</li>
+	<li>Added filter <code>fl_builder_loop_settings</code>.</li>
+	<li>Added action <code>fl_builder_loop_settings_before_form</code>.</li>
+	<li>Added action <code>fl_builder_loop_settings_after_form</code>.</li>
+	<li>Updated language files, new language added: <code>en_GB</code>.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed password protected posts breaking Themer layouts.</li>
+	<li>Fixed conflict with WP Courseware.</li>
+	<li>Fixed setting toggles not working in nested forms.</li>
+	<li>Fixed broken images in the Zen Life template.</li>
+	<li>Fixed hidden nodes showing when the builder is active for layouts that aren't currently being edited.</li>
+	<li>Fixed not being able to save user access settings with no role set.</li>
+	<li>Fixed subscription downloads showing up when the builder is white labeled.</li>
+	<li>Fixed issue with cropped images when Jetpacks Photon module is enabled.</li>
+	<li>Fixed posts module when multiple authors are selected.</li>
+	<li>Fixed menu module becoming unresponsive when right-clicked.</li>
+	<li>Fixed hidden content slider module controls if margin is set to 0.</li>
+	<li>Fixed JS error when menu module visibility is set to never.</li>
+	<li>Fixed WP updates reporting compatibility: Unknown when updating plugins and themes.</li>
+	<li>Fixed menu nav background color on mobile since it's overridden by the main bg color.</li>
+	<li>Fixed partial refresh issue where it's duplicating menu module when selecting Below Row layout.</li>
+	<li>Fixed JS error on older versions of WordPress.</li>
+</ul>
+
+<h4>1.10.4 - 5/18/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed the builder admin menu not showing up for some people with Beaver Themer installed.</li>
+</ul>
+
+<h4>1.10.3 - 5/17/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added 'bottom' as an alignment option for row contents.</li>
+	<li>Testimonials Module, new setting added to control slider direction.</li>
+	<li>Subscribe module MailPoet 3 beta support added.</li>
+	<li>Updated pt_PT translation.</li>
+	<li>Added the same <a href="http://kb.wpbeaverbuilder.com/article/139-set-up-a-mega-menu" target="_blank">mega menu logic as the theme</a> to the Menu module.</li>
+	<li>Added a submenu spacing setting to the Menu module.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed the column width for reversed stacking order on mobile.</li>
+	<li>Fixed a translation error in wp-admin. 'This is a global %s' was not being parsed.</li>
+	<li>Fixed RTL issue with testimonials module.</li>
+	<li>Fixed a js error if breakpoint was left blank in global settings. Now a required numeric field.</li>
+	<li>Fixed an issue where it was possible to have two versions of the plugin active on GoDaddy.</li>
+	<li>Fixed an issue with mobile menu flashing unstyled content on initial load.</li>
+	<li>Fixed reCaptcha errors in Subscribe & Contact Form Modules.</li>
+	<li>Fixed vertical alignment center on full height rows in IE11.</li>
+	<li>Fixed an issue with BuddyPress. Builder activate link removed from BuddyPress generated pages.</li>
+	<li>Fixed a padding issue on reverse stacked video module.</li>
+	<li>Fixed Subscribe Module, GetRespone API would throw an error and not subscribe if name field is hidden.</li>
+	<li>Fixed a translation compatibility issue with Beaver Themer plugin.</li>
+	<li>Fixed read more link in the Posts module not going below the content and causing line-height issues in the list layout.</li>
+	<li>Fixed color picker closing when the mouse goes outside of the picker during drag.</li>
+	<li>Fixed hidden global row and module labels when they have long titles.</li>
+</ul>
+
+<h4>1.10.2 - 5/2/2017</h4>
+<p><strong>Enhancements</strong></p>
+<ul>
+	<li>Added dot indicating whether the builder is enabled or not on builder launch links.</li>
+	<li>Added field connections for row background videos.</li>
+	<li>Added tinyPNG compatibility for images stored in the builder's cache folder.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed memory exhausted fatal error when loading templates on servers without enough memory.</li>
+	<li>Fixed comments showing in the Posts module when they should not.</li>
+	<li>Fixed Posts module pagination when WPML's URL variable is set to lang= rather than directories.</li>
+	<li>Fixed JS error in the Posts module when switching from the gallery layout.</li>
+	<li>Fixed JetPack sharing icons not showing in the Posts module.</li>
+	<li>Fixed line height issue with the Map module.</li>
+	<li>Fixed editing templates in the Beaver Builder theme not going full width.</li>
+	<li>Fixed some module assets not being re-rendered when working in the builder.</li>
+	<li>Fixed issues with preview refresh and responsive editing.</li>
+	<li>Fixed subscription check if the site has no internet access and cannot check the subscription state.</li>
+	<li>Fixed PHP warning when rendering CSS/JS assets.</li>
+	<li>Fixed misc translation issues.</li>
+	<li>Fixed image uploads if FORCE_SSL_ADMIN is true and site is non-ssl.</li>
+</ul>
+
+<h4>1.10.1 - 4/25/2017</h4>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed issue with super admins on multisite that aren't admins of a site not being able to use the full builder.</li>
+</ul>
+
+<h4>1.10 - 04/24/2017</h4>
+<p><strong>General Enhancements</strong></p>
+<ul>
+	<li>Added User Access settings to the Page Builder admin settings for choosing which user roles can access certain features.</li>
+	<li>Saved rows and modules can now be created via the Builder admin menu (formerly Templates admin menu).</li>
+	<li>Templates, saved rows and saved modules now have their on individual pages in the admin.</li>
+	<li>Added caching for registering templates to prevent issues with servers that have low memory.</li>
+	<li>Changed priority of UI script loading to try and prevent issues with themes that load scripts that should be loaded from WordPress core.</li>
+	<li>Added field connections to video module embed field.</li>
+	<li>Added the ability to order posts in the post modules by meta value.</li>
+	<li>Paged post modules are now scrolled to when clicking a link to the next page.</li>
+	<li>Added Enormail integration to the Subscribe Form module.</li>
+	<li>Multiple calls to Google Fonts from the theme and plugin are now combined into one request.</li>
+	<li>Added connections to Number Counter module fields.</li>
+	<li>Added fl_builder_loop_query filter.</li>
+	<li>Removed the loading graphic when saving settings. Elements are now slightly faded until they are updated.</li>
+	<li>Module and row duplicating is now instantaneous instead of having to wait with a loading graphic.</li>
+	<li>All drag and drop operations now load inline instead of taking over the page with a loader.</li>
+	<li>Added module name to the module settings overlay tooltip.</li>
+	<li>Added custom field connections to Contact Form module email field.</li>
+	<li>Added support for exporting a single theme layout or a group of theme layouts.</li>
+	<li>Added support for theme layouts to the template data exporter.</li>
+</ul>
+<p><strong>Post Module Enhancements</strong></p>
+<ul>
+	<li>Added “columns” layout to the layout setting.</li>
+	<li>Added more layout and styling settings.</li>
+	<li>The “no results” message is now shown when no posts are found.</li>
+	<li>Added a setting to show a search form if no posts are found.</li>
+	<li>Added the ability to exclude posts in the content filter for the query.</li>
+</ul>
+<p><strong>Menu Module Enhancements</strong></p>
+<ul>
+	<li>Added “below row" option for mobile menu position.</li>
+	<li>Added font family setting.</li>
+	<li>Misc CSS improvements.</li>
+</ul>
+<p><strong>Changes</strong></p>
+<ul>
+	<li>Changed Templates to Builder in the admin menu.</li>
+	<li>Merged Uninstall and Cache into Tools in the Page Builder admin settings.</li>
+	<li>Removed Editing section in the Page Builder admin settings in favor of the new User Access settings.</li>
+	<li>Removed Templates Admin setting in the Page Builder admin settings in favor of the new User Access settings.</li>
+	<li>Removed Template Data Exporter setting in the Page Builder admin settings in favor of the new User Access settings.</li>
+	<li>Changed edit button text on the admin edit screen for templates to say Launch Page Builder.</li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul>
+	<li>Fixed the builder layout shortcode not working with Beaver Themer.</li>
+	<li>Fixed some photos not going full-width on mobile.</li>
+	<li>Fixed pre-instantiated widgets not working.</li>
+	<li>Fixed anchor links in the theme header causing the builder done actions to show.</li>
+	<li>Fixed multisite issues with render query.</li>
+	<li>Fixed post list spacing not working when using a custom post layout.</li>
+	<li>Fixed layout JS breaking when you save a JS array in the code field.</li>
+	<li>Fixed color picker alpha slider.</li>
+	<li>Fixed parallax background position being applied to child rows inserted using a shortcode.</li>
+	<li>Fixed unescaped attributes in the heading module causing HTML errors.</li>
+	<li>Fixed fatal error when inserting layouts via shortcode in certain cases.</li>
+	<li>Fixed PHP warning when first dropping a post module on the page.</li>
+</ul>
+
 <h4>1.9.5.3 - 4/4/2017</h4>
 <p><strong>Bug Fixes</strong></p>
 <ul>

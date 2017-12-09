@@ -12,7 +12,7 @@
 		});
 	});
 
-	<?php if($settings->layout == 'grid') : ?>
+	<?php if ( 'grid' == $settings->layout ) : ?>
 	$(window).on('load', function() {
 		$('.fl-node-<?php echo $id; ?> .fl-post-<?php echo $settings->layout; ?>').masonry('reloadItems');
 	});
