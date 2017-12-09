@@ -55,13 +55,13 @@
 }
 
 <?php if( $settings->arrow_position == 'inside' ) { ?>
-	.fl-node-<?php echo $id; ?> .uabb-image-carousel .slick-prev,
-	.fl-node-<?php echo $id; ?> [dir='rtl'] .uabb-image-carousel .slick-next {
+	.fl-node-<?php echo $id; ?> div.uabb-image-carousel .slick-prev,
+	.fl-node-<?php echo $id; ?> [dir='rtl'] div.uabb-image-carousel .slick-next {
 	    left: <?php echo $settings->photo_spacing / 2; ?>px;
 
 	}
-	.fl-node-<?php echo $id; ?> .uabb-image-carousel .slick-next,
-	.fl-node-<?php echo $id; ?> [dir='rtl'] .uabb-image-carousel .slick-prev
+	.fl-node-<?php echo $id; ?> div.uabb-image-carousel .slick-next,
+	.fl-node-<?php echo $id; ?> [dir='rtl'] div.uabb-image-carousel .slick-prev
 	{
 	    right: <?php echo $settings->photo_spacing / 2; ?>px;
 	    transform: translate(50%, -50%);
@@ -136,13 +136,13 @@
 	}
 	@media ( max-width: <?php echo $global_settings->responsive_breakpoint .'px'; ?> ) {
 		
-		.fl-node-<?php echo $id; ?> .uabb-image-carousel .slick-prev,
-		.fl-node-<?php echo $id; ?> [dir='rtl'] .uabb-image-carousel .slick-next {
+		.fl-node-<?php echo $id; ?> div.uabb-image-carousel .slick-prev,
+		.fl-node-<?php echo $id; ?> [dir='rtl'] div.uabb-image-carousel .slick-next {
 		    left: <?php echo $settings->photo_spacing / 2; ?>px;
 			
 		}
-		.fl-node-<?php echo $id; ?> .uabb-image-carousel .slick-next,
-		.fl-node-<?php echo $id; ?> [dir='rtl'] .uabb-image-carousel .slick-prev
+		.fl-node-<?php echo $id; ?> div.uabb-image-carousel .slick-next,
+		.fl-node-<?php echo $id; ?> [dir='rtl'] div.uabb-image-carousel .slick-prev
 		{
 		    right: <?php echo $settings->photo_spacing / 2; ?>px;
 		    transform: translate(50%, -50%);

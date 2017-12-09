@@ -2046,9 +2046,9 @@ a.bsf-purchase-link {
 
 .bend,
 .bend * {
-	box-sizing: border-box !important;
-	-webkit-box-sizing: border-box !important;
-	-moz-box-sizing: border-box !important;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
 .bend {
@@ -2063,50 +2063,6 @@ a.bsf-purchase-link {
 	-webkit-box-shadow: none !important;
 	-moz-box-shadow: none !important;
 	box-shadow: none !important;
-}
-
-/* Button */
-.bend .button-primary {
-	display: inline-block;
-	width: auto;
-	height: auto;
-	margin: 0 !important;
-	padding: 16px 25px;
-	background: #2F9DD2;
-	color: #FFF;
-	border: 1px solid #2695CA !important;
-	box-shadow: none !important;
-	border-radius: 3px;
-	font-size: 17px !important;
-	font-weight: 300 !important;
-	text-align: center !important;
-	text-decoration: none !important;
-	text-shadow: none !important;
-	line-height: 1em !important;
-	letter-spacing: 0 !important;
-	vertical-align: top !important;
-	-webkit-transition: all 100ms linear;
-	-moz-transition: all 100ms linear;
-	transition: all 100ms linear;
-}
-
-.bend .button-primary:hover,
-.bend .button-primary:active,
-.bend .button-primary:focus {
-	color: #FFF !important;
-	background: #007FBB !important;
-	vertical-align: top !important;
-}
-
-.bend .button-primary[disabled] {
-	color: #8AC4DF !important;
-	background: #1F7CA8 !important;
-	border-color: #1E77A1 !important;
-	-webkit-box-shadow: none !important;
-	-moz-box-shadow: none !important;
-	box-shadow: none !important;
-	text-shadow: none !important;
-	cursor: not-allowed;
 }
 
 .bend-heading-section {
@@ -2253,3 +2209,31 @@ a.bsf-purchase-link {
 }
 
 /* Resources Section Design End */
+
+.envato-alternate-method {
+    padding: 20px 0;
+    display: block;
+}
+
+.bsf-system-info-wrapper {
+    margin-top: 30px;
+}
+
+.license-form-field {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.license-form-field h4 {
+    margin-top: 0;
+    margin-bottom: 6px;
+}
+
+h3.envato-oauth-heading span.active {
+    color: #3cb341;
+    font-style: italic;
+}
+h3.envato-oauth-heading span.not-active {
+    color: #ae5842;
+    font-style: italic;
+}

@@ -13,11 +13,14 @@ class UABBCtaModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          => __('Call to Action', 'uabb'),
 			'description'   => __('Display a heading, subheading and a button.', 'uabb'),
-			'category'      => UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$lead_generation ),
+            'group'         => UABB_CAT,
 			'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/uabb-call-to-action/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/uabb-call-to-action/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'  => true,
+            'icon'             => 'megaphone.svg',
 		));
 	}
 
@@ -48,6 +51,7 @@ class UABBCtaModule extends FLBuilderModule {
             /* Link Section */
             'link'              => $this->settings->btn_link,
             'link_target'       => $this->settings->btn_link_target,
+            'link_nofollow'     => $this->settings->btn_link_nofollow,
             
             /* Style Section */
             'style'             => $this->settings->btn_style,
@@ -103,7 +107,8 @@ FLBuilder::register_module('UABBCtaModule', array(
 						'preview'       => array(
 							'type'          => 'text',
 							'selector'      => '.uabb-cta-title'
-						)
+						),
+                        'connections'   => array( 'string', 'html' )
 					)
 				)
 			),
@@ -116,10 +121,11 @@ FLBuilder::register_module('UABBCtaModule', array(
 						'media_buttons' => false,
 						'rows'			=> 8,
 						'default'       => __('Enter description text here.', 'uabb'),
-						/*'preview'       => array(
+                        'connections'   => array( 'string', 'html' ),
+						'preview'       => array(
 							'type'          => 'text',
 							'selector'      => '.uabb-cta-text-content'
-						)*/
+						)
 					)
 				)
 			)
@@ -158,7 +164,12 @@ FLBuilder::register_module('UABBCtaModule', array(
 							'left'      =>  __('Left', 'uabb'),
 							'center'    =>  __('Center', 'uabb'),
 							'right'     =>  __('Right', 'uabb')
-						)
+						),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-cta-left',
+                            'property'      => 'text-align',
+                        )
 					),
 					'spacing'       => array(
 						'type'          => 'text',
@@ -180,6 +191,11 @@ FLBuilder::register_module('UABBCtaModule', array(
                         'label'      => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.fl-module-content',
+                            'property'      => 'background',
+                        )
 					),
                     'bg_color_opc'    => array( 
 						'type'        => 'text',
@@ -204,6 +220,11 @@ FLBuilder::register_module('UABBCtaModule', array(
 		                'type'          => 'text',
 		                'label'         => __('Text', 'uabb'),
 		                'default'       => __('Click Here', 'uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-button-text',
+                        )
 		            ),
 		        )
 		    ),
@@ -216,7 +237,8 @@ FLBuilder::register_module('UABBCtaModule', array(
 		                'placeholder'   => 'http://www.example.com',
 		                'preview'       => array(
 		                    'type'          => 'none'
-		                )
+		                ),
+                        'connections'   => array( 'url' )
 		            ),
 		            'btn_link_target'   => array(
 		                'type'          => 'select',
@@ -229,7 +251,18 @@ FLBuilder::register_module('UABBCtaModule', array(
 		                'preview'       => array(
 		                    'type'          => 'none'
 		                )
-		            )
+		            ),
+                    'btn_link_nofollow'   => array(
+                        'type'          => 'uabb-toggle-switch',
+                        'label'         => __('Link nofollow', 'uabb'),
+                        'description'   => '',
+                        'default'       => '0',
+                        'help'          => __('Enable this to make this link nofollow', 'uabb'),
+                        'options'       => array(
+                            '1'       => __('Yes','uabb'),
+                            '0'       => __('No','uabb'),
+                        ),
+                    ),
 		        )
 		    ),
             'btn-style'      => array(
@@ -327,6 +360,11 @@ FLBuilder::register_module('UABBCtaModule', array(
                         'label'      => __('Text Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a *',
+                            'property'      => 'color'
+                        )
                     ),
                     'btn_text_hover_color'        => array( 
                         'type'       => 'color',
@@ -342,6 +380,11 @@ FLBuilder::register_module('UABBCtaModule', array(
                         'label'      => __('Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'background'
+                        )
                     ),
                     'btn_bg_color_opc'    => array( 
                         'type'        => 'text',
@@ -351,7 +394,6 @@ FLBuilder::register_module('UABBCtaModule', array(
                         'maxlength'   => '3',
                         'size'        => '5',
                     ),
-
                     'btn_bg_hover_color'        => array( 
                         'type'       => 'color',
                         'label'         => __('Background Hover Color', 'uabb'),
@@ -411,7 +453,13 @@ FLBuilder::register_module('UABBCtaModule', array(
                         'default'       => '200',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'width',
+                            'unit'          => 'px'
+                        )
                     ),
                     'btn_custom_height'  => array(
                         'type'          => 'text',
@@ -419,7 +467,13 @@ FLBuilder::register_module('UABBCtaModule', array(
                         'default'       => '45',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'height',
+                            'unit'          => 'px'
+                        )
                     ),
                     'btn_padding_top_bottom'       => array(
                         'type'          => 'text',
@@ -435,14 +489,35 @@ FLBuilder::register_module('UABBCtaModule', array(
                         'placeholder'   => '0',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'rules'           => array(
+                                array(
+                                    'selector'     => '.selector-1',
+                                    'property'     => 'padding-top',
+                                    'unit'          => 'px'
+                                ),
+                                array(
+                                    'selector'     => '.selector-2',
+                                    'property'     => 'padding-bottom',
+                                    'unit'          => 'px'
+                                ),    
+                            )
+                        )
                     ),
                     'btn_border_radius' => array(
                         'type'          => 'text',
                         'label'         => __('Round Corners', 'uabb'),
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'border-radius',
+                            'unit'          => 'px'
+                        )
                     ),
                 )
             ),
@@ -489,6 +564,12 @@ FLBuilder::register_module('UABBCtaModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-cta-title',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
                         )
                     ),
                     'title_line_height'    => array(
@@ -498,6 +579,12 @@ FLBuilder::register_module('UABBCtaModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-cta-title',
+                            'property'        => 'line-height',
+                            'unit'            => 'px'
                         )
                     ),
                     'title_color'        => array( 
@@ -505,6 +592,11 @@ FLBuilder::register_module('UABBCtaModule', array(
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-cta-title',
+                            'property'        => 'color',
+                        )
                     ),
                 )
             ),
@@ -530,6 +622,12 @@ FLBuilder::register_module('UABBCtaModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'        => 'css',
+                            'selector'    => '.uabb-cta-text-content p',
+                            'property'    => 'font-size',
+                            'unit'        =>  'px'
                         )
                     ),
                     'subhead_line_height'    => array(
@@ -539,6 +637,12 @@ FLBuilder::register_module('UABBCtaModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'        => 'css',
+                            'selector'    => '.uabb-cta-text-content p',
+                            'property'    => 'line-height',
+                            'unit'        => 'px'
                         )
                     ),
                     'subhead_color'        => array( 
@@ -546,6 +650,11 @@ FLBuilder::register_module('UABBCtaModule', array(
                         'label'      => __('Description Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'        => 'css',
+                            'selector'    => '.uabb-cta-text-content p',
+                            'property'    => 'color',
+                        )
                     ),
                 )
             ),
@@ -571,6 +680,12 @@ FLBuilder::register_module('UABBCtaModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a, .uabb-creative-button-wrap a:visited',
+                            'property'      =>   'font-size',
+                            'unit'          => 'px',
                         )
                     ),
                     'btn_line_height'    => array(
@@ -580,6 +695,12 @@ FLBuilder::register_module('UABBCtaModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a, .uabb-creative-button-wrap a:visited',
+                            'property'      =>  'line-height',
+                            'unit'          => 'px',
                         )
                     ),
                 )

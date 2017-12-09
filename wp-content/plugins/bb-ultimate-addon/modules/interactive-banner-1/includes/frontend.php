@@ -1,6 +1,6 @@
 <div class="uabb-module-content uabb-ib1-outter">
 	<?php if( $settings->show_button == 'complete' ) : ?>
-	<a href="<?php echo $settings->cta_link; ?>" target="<?php echo $settings->cta_link_target; ?>">
+	<a href="<?php echo $settings->cta_link; ?>" target="<?php echo $settings->cta_link_target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $settings->cta_link_target, 0, 1 ); ?>>
 	<?php endif; ?>
 	<div class="uabb-banner-<?php echo $settings->banner_style; ?> <?php echo ( $settings->banner_height_options == 'custom' ) ? ( ( $settings->banner_height != '' ) ? 'uabb-banner-block-custom-height' : '' ) : ''; ?> uabb-adjust-bottom-margin uabb-bb-box uabb-ib1-block <?php echo ( $settings->banner_height_options == 'custom' && $settings->image_size_compatibility == 'yes' ) ? 'uabb-ib1-img-compatibility' : ''; ?>" data-style="<?php echo $settings->banner_height_options; ?>">
 		<div class="uabb-image-wrap">
@@ -8,7 +8,10 @@
 			if( isset( $settings->banner_image_src ) ) {
 				if( $settings->banner_image_src != '' ) {
 			?>
-			<img src="<?php echo $settings->banner_image_src; ?>" alt="">
+			<?php
+				$alt      = $module->get_alt();
+			?>
+			<img src="<?php echo $settings->banner_image_src; ?>" alt="<?php echo $alt; ?>">
 			<?php
 				}
 			}

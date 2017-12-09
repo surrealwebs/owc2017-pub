@@ -17,20 +17,46 @@
 		{
 			var form        = $('.fl-builder-settings'),
 				btn_style   = form.find('select[name=style]'),
+				icon_type   = form.find('select[name=icon_type]'),
 				transparent_button_options = form.find('select[name=transparent_button_options]'),
 				hover_attribute = form.find('select[name=hover_attribute]'),
 				btn_style_opt   = form.find('select[name=flat_button_options]');
 
-			
 			// Init validation events.
 			this._btn_styleChanged();
+			this._icon_typeChanged();
 			this.imgicon_postion();
 			
 			// Validation events.
+			icon_type.on('change',  $.proxy( this._icon_typeChanged, this ) );
+			btn_style.on('change',  $.proxy( this._icon_typeChanged, this ) );
 			btn_style.on('change',  $.proxy( this._btn_styleChanged, this ) );
 			btn_style_opt.on('change',  $.proxy( this._btn_styleChanged, this ) );
 			transparent_button_options.on( 'change', $.proxy( this._btn_styleChanged, this ) );
 			hover_attribute.on( 'change', $.proxy( this._btn_styleChanged, this ) );
+		},
+
+		_icon_typeChanged: function()
+		{
+			var form        = $('.fl-builder-settings'),
+				btn_style   = form.find('select[name=style]').val(),
+				icon_type   = form.find('select[name=icon_type]').val();
+			if( btn_style == 'flat' && icon_type != 'photo' ) {
+				form.find('#fl-field-flat_button_options').show();
+			}
+			else {
+				form.find('#fl-field-flat_button_options').hide();
+			}
+
+			if( btn_style == 'flat' ) {
+				if( icon_type == 'photo' ) {
+
+					jQuery("#fl-field-icon_position").show();
+				}
+				else {
+					jQuery("#fl-field-icon_position").hide();
+				}
+			}
 		},
 
 		_btn_styleChanged: function()
@@ -90,14 +116,15 @@
             	form.find('#fl-field-threed_button_options').hide();
             	form.find('#fl-field-flat_button_options').hide();
             }
-
+            this._icon_typeChanged();
 			this.imgicon_postion();
 		},
 		imgicon_postion: function () {
             var form        = $('.fl-builder-settings'),
                 creative_button_styles     = form.find('select[name=style]').val(),
                 transparent_button_options = form.find().val('select[name=transparent_button_options]'),
-                flat_button_options     = form.find('select[name=flat_button_options]').val();
+                flat_button_options     = form.find('select[name=flat_button_options]').val(),
+                icon_type   = form.find('select[name=icon_type]').val();
 
                 if ( creative_button_styles == 'flat' && flat_button_options != 'none' ) {
                     setTimeout(function(){
@@ -105,6 +132,9 @@
                     },100);
                 }else{
                     jQuery("#fl-field-icon_position").show();
+                }
+                if( icon_type == 'photo' ) {
+					jQuery("#fl-field-icon_position").show();
                 }
         },
 

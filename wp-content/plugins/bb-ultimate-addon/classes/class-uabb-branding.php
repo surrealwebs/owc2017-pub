@@ -84,13 +84,13 @@ final class UABBBranding {
 
 		$uabb = BB_Ultimate_Addon_Helper::get_builder_uabb_branding();
 		if ( is_array( $uabb ) ) {
-			$uabb_knowledge_base_url             = ( array_key_exists( 'uabb-knowledge-base-url' , $uabb ) && $uabb['uabb-knowledge-base-url' ] != ''  ) ? $uabb['uabb-knowledge-base-url' ] : 'https://www.ultimatebeaver.com/docs/';
-			$uabb_contact_support_url            = ( array_key_exists( 'uabb-contact-support-url' , $uabb ) && $uabb['uabb-contact-support-url' ] != '' ) ? $uabb['uabb-contact-support-url' ] : 'https://store.brainstormforce.com/support/';
+			$uabb_knowledge_base_url             = ( array_key_exists( 'uabb-knowledge-base-url' , $uabb ) && $uabb['uabb-knowledge-base-url' ] != ''  ) ? $uabb['uabb-knowledge-base-url' ] : 'https://www.ultimatebeaver.com/docs/?utm_source=uabb-pro-dashboard&utm_medium=editor&utm_campaign=knowledge-base-help-link';
+			$uabb_contact_support_url            = ( array_key_exists( 'uabb-contact-support-url' , $uabb ) && $uabb['uabb-contact-support-url' ] != '' ) ? $uabb['uabb-contact-support-url' ] : 'https://www.ultimatebeaver.com/contact/?utm_source=uabb-pro-dashboard&utm_medium=editor&utm_campaign=contact-help-link';
 			$js_strings['uabbKnowledgeBaseUrl']  = $uabb_knowledge_base_url;
 			$js_strings['uabbContactSupportUrl'] = $uabb_contact_support_url;
 		}else{
-			$js_strings['uabbKnowledgeBaseUrl']  = 'https://www.ultimatebeaver.com/docs/';
-			$js_strings['uabbContactSupportUrl'] = 'https://store.brainstormforce.com/support/';
+			$js_strings['uabbKnowledgeBaseUrl']  = 'https://www.ultimatebeaver.com/docs/?utm_source=uabb-pro-dashboard&utm_medium=editor&utm_campaign=knowledge-base-help-link';
+			$js_strings['uabbContactSupportUrl'] = 'https://www.ultimatebeaver.com/contact/?utm_source=uabb-pro-dashboard&utm_medium=editor&utm_campaign=contact-help-link';
 		}
 		return $js_strings;
 	}

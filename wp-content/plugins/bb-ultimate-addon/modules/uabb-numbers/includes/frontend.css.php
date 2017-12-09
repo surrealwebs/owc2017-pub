@@ -69,7 +69,9 @@ if( $settings->layout == "default" ) {
 
 /* Before After Text Typography */
 .fl-node-<?php echo $id; ?> .uabb-number-before-text,
-.fl-node-<?php echo $id; ?> .uabb-number-after-text {
+.fl-node-<?php echo $id; ?> .uabb-number-after-text,
+.fl-node-<?php echo $id; ?> .uabb-counter-before-text,
+.fl-node-<?php echo $id; ?> .uabb-counter-after-text {
    	<?php if( $settings->ba_font_family['family'] != "Default") : ?>
 		<?php UABB_Helper::uabb_font_css( $settings->ba_font_family ); ?>
 	<?php endif; ?>
@@ -126,7 +128,7 @@ if( $settings->layout == "default" ) {
 <?php if ( $settings->image_type == 'icon' ) { ?>
 	<?php 
 		$pos = '';
-		if( $settings->layout == 'circle' ){
+		if( $settings->layout == 'circle' || $settings->layout == 'semi-circle'  ){
 			$pos = $settings->circle_position;
 		}elseif( $settings->layout == 'default' ){
 			$pos = $settings->img_icon_position;
@@ -142,7 +144,7 @@ if( $settings->layout == "default" ) {
 <?php if ( $settings->image_type == 'photo' ) { ?>
 	<?php 
 		$pos = '';
-		if( $settings->layout == 'circle' ){
+		if( $settings->layout == 'circle' || $settings->layout == 'semi-circle'  ){
 			$pos = $settings->circle_position;
 		}elseif( $settings->layout == 'default' ){
 			$pos = $settings->img_icon_position;
@@ -245,24 +247,32 @@ if( $settings->layout == "default" ) {
 	}
 <?php } ?>
 
-<?php if( isset( $settings->layout ) && $settings->layout == 'circle' ) : ?>
-	.fl-node-<?php echo $id ?> .uabb-number-text{
+<?php if( isset( $settings->layout ) && $settings->layout == 'circle' || $settings->layout == 'semi-circle'  ) : ?>
+	.fl-node-<?php echo $id ?> .uabb-number-text {
 		position: absolute;
-		top: 50%;
 		left: 50%;
+		<?php if( $settings->layout == 'semi-circle' ) {
+		?>
+		top: 100%;
+		-webkit-transform: translate(-50%,-100%);
+		   -moz-transform: translate(-50%,-100%);
+		    -ms-transform: translate(-50%,-100%);
+		        transform: translate(-50%,-100%);
+		<?php }
+		else { ?>
+		top: 50%;
 		-webkit-transform: translate(-50%,-50%);
 		   -moz-transform: translate(-50%,-50%);
 		    -ms-transform: translate(-50%,-50%);
 		        transform: translate(-50%,-50%);
+        <?php } ?>
 	}
-	.fl-node-<?php echo $id ?> .uabb-number-circle-container{
+	.fl-node-<?php echo $id ?> .uabb-number-circle-container, .fl-node-<?php echo $id ?> .uabb-number-semi-circle-container {
 		<?php 
 			if( !empty( $settings->circle_width ) ) {
 				echo 'max-width: '. $settings->circle_width .'px;';
-				echo 'max-height: '. $settings->circle_width .'px;';
 			} else {
 				echo 'max-width: 100px;';
-				echo 'max-height: 100px;';				
 			}
 		?>
 		text-align: <?php echo $settings->align; ?>;
@@ -272,7 +282,28 @@ if( $settings->layout == "default" ) {
 		margin-right: <?php echo ( $settings->align != 'right' ) ? 'auto' : '0' ?>;
 	}
 
-	.fl-node-<?php echo $id ?> .svg circle{
+	.fl-node-<?php echo $id ?> .uabb-number-circle-container {
+		<?php 
+			if( !empty( $settings->circle_width ) ) {
+				echo 'max-height: '. $settings->circle_width .'px;';
+			} else {
+				echo 'max-height: 100px;';
+			}
+		?>
+	}
+
+	.fl-node-<?php echo $id ?> .uabb-number-semi-circle-container {
+		<?php 
+			if( !empty( $settings->circle_width ) ) {
+				$circle_height = $settings->circle_width / 2;
+				echo 'max-height: '. $circle_height .'px;';
+			} else {
+				echo 'max-height: 50px;';
+			}
+		?>
+	}
+
+	.fl-node-<?php echo $id ?> .svg circle, .fl-node-<?php echo $id ?> .semi-circle-svg circle{
 	<?php 
 		if( !empty( $settings->circle_dash_width ) ) {
 			echo 'stroke-width: '. $settings->circle_dash_width .'px;';
@@ -280,7 +311,7 @@ if( $settings->layout == "default" ) {
 	?>
 	}
 
-	.fl-node-<?php echo $id ?> .svg .uabb-bar-bg{
+	.fl-node-<?php echo $id ?> .svg .uabb-bar-bg, .fl-node-<?php echo $id ?> .semi-circle-svg .uabb-bar-bg{
 	<?php 
 		if( !empty( $settings->circle_bg_color ) ) {
 			echo 'stroke: '. $settings->circle_bg_color .';';
@@ -290,7 +321,7 @@ if( $settings->layout == "default" ) {
 	?>
 	}
 
-	.fl-node-<?php echo $id ?> .svg .uabb-bar{
+	.fl-node-<?php echo $id ?> .svg .uabb-bar, .fl-node-<?php echo $id ?> .semi-circle-svg .uabb-bar{
 	<?php 
 			echo 'stroke: '. uabb_theme_base_color( $settings->circle_color ).';';
 	?>
@@ -368,7 +399,7 @@ die();*/
 	if( $settings->num_font_size['medium'] != "" || $settings->num_line_height['medium'] != "" || 
 		$settings->ba_font_size['medium'] != "" || $settings->ba_line_height['medium'] != "" )
 	{
-		/* Medium Breakpoint media query */	
+		/* Medium Breakpoint media query */
 	?>
 		@media ( max-width: <?php echo $global_settings->medium_breakpoint .'px'; ?> ) {
 			/* Number Text Typography */
@@ -385,7 +416,9 @@ die();*/
 
 			/* Before After Text */
 			.fl-node-<?php echo $id; ?> .uabb-number-before-text,
-			.fl-node-<?php echo $id; ?> .uabb-number-after-text {
+			.fl-node-<?php echo $id; ?> .uabb-number-after-text,
+			.fl-node-<?php echo $id; ?> .uabb-counter-before-text,
+			.fl-node-<?php echo $id; ?> .uabb-counter-after-text {
 				<?php if( $settings->ba_font_size['medium'] != '' ) : ?>
 				font-size: <?php echo $settings->ba_font_size['medium']; ?>px;
 				<?php endif; ?>
@@ -417,7 +450,9 @@ die();*/
 
 			/* Before After Text */
 			.fl-node-<?php echo $id; ?> .uabb-number-before-text,
-			.fl-node-<?php echo $id; ?> .uabb-number-after-text {
+			.fl-node-<?php echo $id; ?> .uabb-number-after-text,
+			.fl-node-<?php echo $id; ?> .uabb-counter-before-text,
+			.fl-node-<?php echo $id; ?> .uabb-counter-after-text {
 				<?php if( $settings->ba_font_size['small'] != '' ) : ?>
 				font-size: <?php echo $settings->ba_font_size['small']; ?>px;
 				<?php endif; ?>

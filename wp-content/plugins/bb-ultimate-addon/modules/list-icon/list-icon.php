@@ -13,11 +13,13 @@ class UABBIconListModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('List Icon', 'uabb'),
 			'description'   	=> __('Display a group of linked Font Awesome icons.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/list-icon/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/list-icon/',
 			'editor_export' 	=> false,
-			'partial_refresh'	=> true
+			'partial_refresh'	=> true,
+			'icon'				=> 'star-filled.svg',
 		));
 	}
 
@@ -26,7 +28,7 @@ class UABBIconListModule extends FLBuilderModule {
 	 */
 	public function render_image() {
 		/* Render Html */
- 
+
 		/* Render HTML "$settings" Array */
 
 		$imageicon_array = array(
@@ -134,6 +136,12 @@ FLBuilder::register_module('UABBIconListModule', array(
 		                'maxlength'     => '5',
 		                'size'          => '6',
 		                'description'   => 'px',
+		                'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-icon-wrap .uabb-icon i:before',
+                            'property'  => 'font-size',
+                            'unit'		=> 'px'
+                        )
 		            ),
 		        )
 			),
@@ -161,6 +169,7 @@ FLBuilder::register_module('UABBIconListModule', array(
 						'type'          => 'photo',
 						'label'         => __('Photo', 'uabb'),
 						'show_remove'	=> true,
+						'connections'	=> array( 'photo' )
 					),
 					'photo_url'     => array(
 						'type'          => 'text',
@@ -174,6 +183,12 @@ FLBuilder::register_module('UABBIconListModule', array(
 						'maxlength'     => '5',
 						'size'          => '6',
 						'description'   => 'px',
+						'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-image .uabb-photo-img',
+                            'property'  => 'width',
+                            'unit'		=> 'px'
+                        )
 					),
 				)
 			),
@@ -325,7 +340,6 @@ FLBuilder::register_module('UABBIconListModule', array(
                         'maxlength'     => '3',
                         'size'          => '6',
                         'description'   => 'px',
-
                     ),
 
                     /* Border Style and Radius for Image */
@@ -389,6 +403,11 @@ FLBuilder::register_module('UABBIconListModule', array(
                         'label'      => __('Icon Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-icon-wrap .uabb-icon i:before',
+                            'property'  => 'color',
+                        )
                     ),
                     'icon_hover_color' => array( 
                         'type'       => 'color',
@@ -556,6 +575,12 @@ FLBuilder::register_module('UABBIconListModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'			=> 'css',
+                            'selector'		=> '.uabb-list-icon-text-heading',
+                            'property'		=> 'font-size',
+                            'unit'			=> 'px'
+                        )
                     ),
                     'typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -565,6 +590,12 @@ FLBuilder::register_module('UABBIconListModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'			=> 'css',
+                            'selector'		=> '.uabb-list-icon-text-heading',
+                            'property'		=> 'line-height',
+                            'unit'			=> 'px'
+                        )
                     ),
                     'typography_color'        => array( 
                         'type'       => 'color',
@@ -609,6 +640,12 @@ FLBuilder::register_module('UABBIconListModule', array(
 						'maxlength'     => '4',
 						'size'          => '4',
 						'description'   => 'px',
+						'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-list-icon-wrap:not(:last-child)',
+                            'property'  => 'margin-bottom',
+                            'unit'		=> 'px'
+                        )
 					),
 					'icon_text_spacing'       => array(
 						'type'          => 'text',
@@ -654,7 +691,8 @@ FLBuilder::register_settings_form('list-icon_list_item_form', array(
 					'fields'        => array( // Section Fields
 						'title'          => array(
 							'type'          => 'text',
-							'label'         => __('Title', 'uabb')
+							'label'         => __('Title', 'uabb'),
+							'connections'	=> array( 'string', 'html' )
 						),
 					)
 				)

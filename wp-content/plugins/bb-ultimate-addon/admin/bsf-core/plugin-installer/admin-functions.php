@@ -1,6 +1,5 @@
 <?php
-//global $bsf_product_validate_url;
-//$bsf_product_validate_url = 'aHR0cHM6Ly93d3cuYnJhaW5zdG9ybWZvcmNlLmNvbS9zdXBwb3J0L3dwLWFkbWluL2FkbWluLWFqYXgucGhw';
+
 if(!function_exists('get_bsf_product_id')) {
 	function get_bsf_product_id($template) {
 		$brainstrom_products = (get_option('brainstrom_products')) ? get_option('brainstrom_products') : array();
@@ -52,7 +51,7 @@ if ( ! function_exists( 'get_bundled_plugins' ) ) {
 
 	function get_bundled_plugins( $template = '' ) {
 
-		global $ultimate_referer, $bsf_product_validate_url;
+		global $ultimate_referer;
 
 		$brainstrom_products = get_option( 'brainstrom_products', array() );
 
@@ -68,18 +67,17 @@ if ( ! function_exists( 'get_bundled_plugins' ) ) {
 			}
 		}
 
-		$path = $bsf_product_validate_url . '?referer=' . $ultimate_referer;
+		$path = get_api_url() . '?referer=' . $ultimate_referer;
 
 		$data    = array(
 			'action' => 'bsf_fetch_brainstorm_products',
 			'id'     => $prd_ids
 		);
 
-		$request = @wp_remote_post(
+		$request = wp_remote_post(
 			$path, array(
 				'body'      => $data,
-				'timeout'   => '30',
-				'sslverify' => false
+				'timeout'   => '30'
 			)
 		);
 
@@ -106,7 +104,7 @@ if ( ! function_exists( 'get_bundled_plugins' ) ) {
 			foreach ( $brainstrom_products as $type => $products ) {
 				
 				foreach ( $products as $key => $product ) {
-					$old_id = $product['id'];
+					$old_id = isset( $product['id'] ) ? $product['id'] : '';
 					$old_template = $product['template'];
 
 					$simple[ $type ][ $old_id ][ 'template' ] = isset( $brainstrom_products[ $type ][ $old_id ][ 'template' ] ) ? $brainstrom_products[ $type ][ $old_id ][ 'template' ] : '';
@@ -160,7 +158,7 @@ if ( ! function_exists( 'get_bundled_plugins' ) ) {
 //}
 if(!function_exists('install_bsf_product')) {
 	function install_bsf_product($install_id) {
-		global $bsf_product_validate_url, $bsf_support_url;
+		
 		if ( ! current_user_can('install_plugins') )
 			wp_die(__('You do not have sufficient permissions to install plugins for this site.','bsf'));
 		$brainstrom_bundled_products = (get_option('brainstrom_bundled_products')) ? get_option('brainstrom_bundled_products') : array();
@@ -201,7 +199,7 @@ if(!function_exists('install_bsf_product')) {
 			$download_path = $install_product_data->download_url;
 		}
 		else {
-			$path = $bsf_product_validate_url;
+			$path = get_api_url()  . '?referer=download-bundled-extension';
 			$timezone = date_default_timezone_get();
 			$call = 'file='.$install_product_data->download_url.'&hashtime='.strtotime(date('d-m-Y h:i:s a')).'&timezone='.$timezone;
 			$hash = $call;
@@ -281,18 +279,19 @@ if(!function_exists('install_bsf_product')) {
 		return $response;
 	}
 }
-add_action( 'wp_ajax_bsf_install', 'bsf_install_callback' );
-add_action( 'wp_ajax_nopriv_bsf_install', 'bsf_install_callback' );
+
 if(!function_exists('bsf_install_callback')) {
 	function bsf_install_callback () {
-		$product_id = $_POST['product_id'];
-		$bundled = $_POST['bundled'];
-
+		$product_id = esc_attr( $_POST['product_id'] );
+		$bundled    = esc_attr( $_POST['bundled'] );
+		
 		$response = install_bsf_product($product_id);
+		
+		$redirect_url 		  = apply_filters( "redirect_after_extension_install", $redirect_url = '', $product_id );
+		$response['redirect'] = $redirect_url;
 
-		echo json_encode($response);
-
-		die();
+		wp_send_json( $response );
 	}
 }
-?>
+
+add_action( 'wp_ajax_bsf_install', 'bsf_install_callback' );

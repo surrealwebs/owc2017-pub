@@ -14,11 +14,13 @@ class UABBHotspot extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('Hotspot', 'uabb'),
             'description'   => __('Hotspot', 'uabb'),
-            'category'      => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$extra_additions ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/uabb-hotspot/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/uabb-hotspot/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'  => true
         ));
     }
 
@@ -156,6 +158,7 @@ FLBuilder::register_settings_form('hotspot_coordinates_form', array(
                             'rows'          => 10,
                             'label'         => __('', 'uabb'),
                             'default'       => __('Marker', 'uabb'),
+                            'connections'   => array( 'string', 'html' )
                         ),
                     )
                 ),
@@ -201,6 +204,7 @@ FLBuilder::register_settings_form('hotspot_coordinates_form', array(
                             'type'          => 'photo',
                             'label'         => __('Photo', 'uabb'),
                             'show_remove'   => true,
+                            'connections'   => array( 'photo' )
                         ),
                         'photo_url'     => array(
                             'type'          => 'text',
@@ -596,6 +600,7 @@ FLBuilder::register_settings_form('hotspot_coordinates_form', array(
                             'rows'          => 10,
                             'label'         => __('', 'uabb'),
                             'default'       => __('This is a tooltip', 'uabb'),
+                            'connections'   => array( 'string', 'html' )
                         ),
                         'tooltip_style'  => array(
                             'type'          => 'select',
@@ -646,6 +651,7 @@ FLBuilder::register_settings_form('hotspot_coordinates_form', array(
                             'type'          => 'link',
                             'label'         => __('Link', 'uabb'),
                             'placeholder'   => 'http://www.example.com',
+                            'connections'   => array( 'url' )
                         ),
                         'target' => array(
                             'type'          => 'select',
@@ -848,12 +854,19 @@ FLBuilder::register_module('UABBHotspot', array(
                         'type'          => 'photo',
                         'label'         => __('Photo', 'uabb'),
                         'show_remove'   => true,
+                        'connections'   => array( 'photo' )
                     ),
                     'photo_size'         => array(
                         'type'          => 'text',
                         'label'         => __('Photo Size', 'uabb'),
                         'description'   => 'px',
-                        'size'          => '8'
+                        'size'          => '8',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-hotspot-container',
+                            'property'      => 'width',
+                            'unit'          => 'px'
+                        )
                     ),
                     'photo_url'     => array(
                         'type'          => 'text',

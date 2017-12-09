@@ -13,10 +13,12 @@ class UABBHeadingModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Heading', 'uabb'),
 			'description'   	=> __('Display a title/page heading.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'          => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'             => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/uabb-heading/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/uabb-heading/',
-            'partial_refresh'	=> true
+            'partial_refresh'	=> true,
+			'icon'				=> 'text.svg',
 		));
 	
 		add_filter( 'fl_builder_render_settings_field', array( $this , 'uabb_heading_render_settings_field' ), 10, 3 );
@@ -102,14 +104,16 @@ FLBuilder::register_module('UABBHeadingModule', array(
 						'preview'         => array(
 							'type'            => 'text',
 							'selector'        => '.uabb-heading-text'
-						)
+						),
+						'connections'		=> array( 'string', 'html' )
 					),
 					'link'          => array(
 						'type'          => 'link',
 						'label'         => __('Link', 'uabb'),
 						'preview'         => array(
 							'type'            => 'none'
-						)
+						),
+						'connections'		=> array( 'url' )
 					),
 					'link_target'   => array(
 						'type'          => 'select',
@@ -132,7 +136,8 @@ FLBuilder::register_module('UABBHeadingModule', array(
 						'type'   	=> 'editor',
 						'label'  	=> '',
 						'rows'   	=> 7,
-						'default'	=> ''
+						'default'	=> '',
+						'connections'	=> array( 'string', 'html' ),
 					)
 				),
 			),
@@ -149,6 +154,11 @@ FLBuilder::register_module('UABBHeadingModule', array(
 							'right'     =>  __('Right', 'uabb')
 						),
 						'help'         => __('This is the overall alignment and would apply to all Heading elements', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-heading-wrapper .uabb-heading, .uabb-heading-wrapper .uabb-subheading *',
+                            'property'      => 'text-align',
+                        )
 					),
 					'r_custom_alignment' => array(
 						'type'          => 'select',
@@ -231,12 +241,23 @@ FLBuilder::register_module('UABBHeadingModule', array(
 		                'maxlength'     => '5',
 		                'size'          => '6',
 		                'description'   => 'px',
+		                'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-icon-wrap .uabb-icon i, .uabb-icon-wrap .uabb-icon i:before',
+                            'property'  => 'font-size',
+                            'unit'		=> 'px'
+                        ),
 		            ),
 					'separator_icon_color' => array( 
 						'type'       => 'color',
 						'label'         => __('Icon Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-icon-wrap .uabb-icon i, .uabb-icon-wrap .uabb-icon i:before',
+                            'property'  => 'color',
+                        ),
 					),
 		        )
 		    ),
@@ -264,6 +285,7 @@ FLBuilder::register_module('UABBHeadingModule', array(
 		                'type'          => 'photo',
 		                'label'         => __('Photo', 'uabb'),
 		                'show_remove'   => true,
+		                'connections'	=> array( 'photo' )
 		            ),
 		            'photo_url'     => array(
 		                'type'          => 'text',
@@ -330,6 +352,11 @@ FLBuilder::register_module('UABBHeadingModule', array(
 							'double'        => __( 'Double', 'uabb' )
 						),
 						'help'          => __('The type of border to use. Double borders must have a height of at least 3px to render properly.', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-separator, .uabb-separator-line > span',
+                            'property'      => 'border-top-style',
+                        )
 					),
 					'separator_line_color' => array( 
 						'type'       => 'color',
@@ -349,7 +376,13 @@ FLBuilder::register_module('UABBHeadingModule', array(
 						'maxlength'     => '2',
 						'size'          => '3',
 						'description'   => 'px',
-						'help'			=> __( 'Thickness of Border', 'uabb' )
+						'help'			=> __( 'Thickness of Border', 'uabb' ),
+						'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-separator, .uabb-separator-line > span',
+							'property'      => 'border-top-width',
+							'unit'			=> 'px',
+						)
 					),
 					'separator_line_width'      => array(
 						'type'          => 'text',
@@ -357,7 +390,7 @@ FLBuilder::register_module('UABBHeadingModule', array(
 						'placeholder'   => '30',
 						'maxlength'     => '3',
 						'size'          => '5',
-						'description'   => '%'
+						'description'   => '%',
 					),
 				)
 			),
@@ -391,7 +424,7 @@ FLBuilder::register_module('UABBHeadingModule', array(
 						'label'         => __('Font', 'uabb'),
 						'preview'         => array(
 							'type'            => 'font',
-							'selector'        => '.uabb-heading  .uabb-heading-text'
+							'selector'        => '.uabb-heading .uabb-heading-text'
 						)
 					),
 					'new_font_size'     => array(
@@ -401,7 +434,13 @@ FLBuilder::register_module('UABBHeadingModule', array(
 							'desktop'       => '',
 							'medium'        => '',
 							'small'         => '',
-						)
+						),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-heading .uabb-heading-text',
+                            'property'      => 'font-size',
+                            'unit'			=> 'px'
+                        )
 					),
 					'line_height'    => array(
 						'type'          => 'uabb-simplify',
@@ -410,7 +449,13 @@ FLBuilder::register_module('UABBHeadingModule', array(
 							'desktop'       => '',
 							'medium'        => '',
 							'small'         => '',
-						)
+						),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-heading .uabb-heading-text',
+                            'property'      => 'line-height',
+                            'unit'			=> 'px'
+                        )
 					),
 					'color'    => array( 
 						'type'       => 'color',
@@ -428,14 +473,26 @@ FLBuilder::register_module('UABBHeadingModule', array(
 						'label'         => __('Margin Top', 'uabb'),
 						'placeholder'	=> '0',
 						'size'			=> '5',
-						'description'	=> 'px'	
+						'description'	=> 'px',
+						'preview'		=> array(
+							'type' => 'css',
+							'property' => 'margin-top',
+							'selector' => '.uabb-heading',
+							'unit'		=> 'px',
+						)
 					),
 					'heading_margin_bottom'       => array(
 						'type'          => 'text',
 						'label'         => __('Margin Bottom', 'uabb'),
 						'placeholder'	=> '15',
 						'size'			=> '5',
-						'description'	=> 'px'	
+						'description'	=> 'px',
+						'preview'		=> array(
+							'type' => 'css',
+							'property'	=> 'margin-bottom',
+							'selector'	=> '.uabb-heading',
+							'unit'		=> 'px',
+						)
 					),
 				)
 			),
@@ -461,7 +518,13 @@ FLBuilder::register_module('UABBHeadingModule', array(
 		                    'desktop'       => '',
 		                    'medium'        => '',
 		                    'small'         => '',
-		                )
+		                ),
+		                'preview'		=> array(
+							'type' => 'css',
+							'property'	=> 'font-size',
+							'selector'  => '.uabb-subheading, .uabb-subheading *',
+							'unit'		=> 'px',
+						)
 		            ),
 		            'desc_line_height'    => array(
 		                'type'          => 'uabb-simplify',
@@ -470,7 +533,13 @@ FLBuilder::register_module('UABBHeadingModule', array(
 		                    'desktop'       => '',
 		                    'medium'        => '',
 		                    'small'         => '',
-		                )
+		                ),
+		                'preview'		=> array(
+							'type' => 'css',
+							'property'	=> 'line-height',
+							'selector'  => '.uabb-subheading, .uabb-subheading *',
+							'unit'		=> 'px',
+						)
 		            ),
 		            'desc_color'        => array( 
 						'type'       => 'color',
@@ -488,14 +557,26 @@ FLBuilder::register_module('UABBHeadingModule', array(
 						'label'         => __('Margin Top', 'uabb'),
 						'placeholder'	=> '15',
 						'size'			=> '5',
-						'description'	=> 'px'	
+						'description'	=> 'px',
+						'preview'		=> array(
+							'type' => 'css',
+							'property' => 'margin-top',
+							'selector' => '.uabb-subheading',
+							'unit'	=> 'px',
+						)
 					),
 					'desc_margin_bottom'       => array(
 						'type'          => 'text',
 						'label'         => __('Margin Bottom', 'uabb'),
 						'placeholder'	=> '0',
 						'size'			=> '5',
-						'description'	=> 'px'	
+						'description'	=> 'px',
+						'preview'		=> array(
+							'type' => 'css',
+							'property' => 'margin-bottom',
+							'selector' => '.uabb-subheading',
+							'unit'		=> 'px',
+						)
 					),
 		        )
 		    ),
@@ -537,7 +618,13 @@ FLBuilder::register_module('UABBHeadingModule', array(
 		                    'desktop'       => '',
 		                    'medium'        => '',
 		                    'small'         => '',
-		                )
+		                ),
+	                  	'preview'		=> array(
+							'type' => 'css',
+							'property'	=> 'font-size',
+							'selector'  => '.uabb-divider-text',
+							'unit'		=> 'px',
+						)
 		            ),
 		            'separator_text_line_height'    => array(
 		                'type'          => 'uabb-simplify',
@@ -546,13 +633,24 @@ FLBuilder::register_module('UABBHeadingModule', array(
 		                    'desktop'       => '',
 		                    'medium'        => '',
 		                    'small'         => '',
-		                )
+		                ),
+		                'preview'		=> array(
+							'type' => 'css',
+							'property'	=> 'line-height',
+							'selector'  => '.uabb-divider-text',
+							'unit'		=> 'px',
+						)
 		            ),
 		            'separator_text_color' => array( 
 						'type'       => 'color',
 						'label'      => __('Text Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'		=> array(
+							'type' => 'css',
+							'property'	=> 'color',
+							'selector'  => '.uabb-divider-text',
+						)
 					),
 		        )
 		    ),

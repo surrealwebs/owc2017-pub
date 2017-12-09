@@ -30,12 +30,18 @@
 				$('body').delegate('.fl-builder-uabb-global-settings-button', 'click', UABBGlobal._globalSettingsClicked);
 				$('body').delegate('.fl-builder-uabb-global-settings .fl-builder-settings-save', 'click', UABBGlobal._saveGlobalSettingsClicked);
 				//$('body').delegate('.fl-builder-uabb-global-settings .fl-builder-settings-cancel', 'click', UABBGlobal._cancelGlobalSettingsClicked);
+
+				FLBuilder.addHook('showUABBGlobalSettings', UABBGlobal.showUABBGlobalSettings);
 			},
+
+			showUABBGlobalSettings: function() {
+	            $('.fl-builder--main-menu-panel-mask').trigger('click');
+	            UABBGlobal._globalSettingsClicked();
+	        },
 
 			_globalSettingsClicked: function(){
 				FLBuilder._actionsLightbox.close();
 				FLBuilder._showLightbox();
-				
 				FLBuilder.ajax({
 					action: 'render_uabb_global_settings'
 				}, UABBGlobal._globalSettingsLoaded);

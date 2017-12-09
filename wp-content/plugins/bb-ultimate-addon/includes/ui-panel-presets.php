@@ -74,11 +74,11 @@
 				<?php do_action( 'uabb_fl_builder_ui_panel_after_presets' ); ?>
 
 				<div class="fl-builder-modules-cta">
-					<a href="#" onclick="window.open('<?php echo admin_url(); ?>options-general.php?page=fl-builder-settings#uabb-template-manager');" target="_blank"><i class="fa fa-external-link-square"></i> <?php echo sprintf( __( 'Note - You can enable, disable and manage %s presets here.', 'uabb' ), UABB_PREFIX );?></a>
+					<a href="#" onclick="window.open('<?php echo admin_url(); ?>options-general.php?page=fl-builder-settings#uabb-template-manager');" target="_blank" rel="noopener"><i class="fa fa-external-link-square"></i> <?php echo sprintf( __( 'Note - You can enable, disable and manage %s presets here.', 'uabb' ), UABB_PREFIX );?></a>
 				</div>
-				<div class="fl-builder-modules-cta">
-					<a href="#" target="_self"><?php echo __( 'Note - Images used in the templates are hotlinked from our server and are subject to copyright. It is strongly recommended that you replace them with your own.', 'uabb' );?></a>
-				</div>
+				<!--div class="fl-builder-modules-cta">
+					<a href="#" target="_self"><?php //echo __( 'Note - Images used in the templates are hotlinked from our server and are subject to copyright. It is strongly recommended that you replace them with your own.', 'uabb' );?></a>
+				</div -->
 			</div>
 		</div>
 	</div>

@@ -16,11 +16,14 @@ class GoogleMapModule extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('Google Map', 'uabb'),
             'description'   => __('Google Map', 'uabb'),
-            'category'      => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/google-map/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/google-map/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'  => true,
+            'icon'              => 'location.svg',
         ));
 
         add_filter( 'fl_builder_render_settings_field', array( $this , 'uabb_google_map_settings_field' ), 10, 3 );
@@ -64,7 +67,7 @@ class GoogleMapModule extends FLBuilderModule {
                     'info_window_text'  => '',
                 );
             }
-            
+
             if (  $settings->uabb_gmap_addresses[0]->map_lattitude == '' && $settings->uabb_gmap_addresses[0]->map_longitude == '' ) {
                 if ( isset( $settings->marker_point ) ) {
                     $settings->uabb_gmap_addresses[0]->marker_point = ( $settings->marker_point != '' ) ? $settings->marker_point : 'default';
@@ -106,7 +109,7 @@ $google_api_key = '';
 $style1 = 'line-height: 1.45em; color: #a94442;';
 $style2 = 'font-weight:bold;color: #a94442;';
 $notice = sprintf( 
-        __( '<span style="%s">To display customized Google Map without an issue, you need to configure Google Map API key in <span style="%s">General Settings</span>. Please configure API key from <a href="%s" class="uabb-google-map-notice" target="_blank">here</a></span>.' , 'uabb' ),
+        __( '<span style="%s">To display customized Google Map without an issue, you need to configure Google Map API key in <span style="%s">General Settings</span>. Please configure API key from <a href="%s" class="uabb-google-map-notice" target="_blank" rel="noopener">here</a></span>.' , 'uabb' ),
         $style1, $style2, admin_url( 'options-general.php?page=uabb-builder-settings#uabb' ) );
 
 
@@ -133,7 +136,7 @@ FLBuilder::register_module('GoogleMapModule', array(
                         'type'         => 'form',
                         'label'        => __('Address', 'uabb'),
                         'form'         => 'uabb_google_map_addresses',
-                        'preview_text' => 'map_lattitude',
+                        'preview_text' => 'map_name',
                         'multiple'     => true
                     ),
                 )
@@ -151,7 +154,7 @@ FLBuilder::register_module('GoogleMapModule', array(
                         'label'         => __('Width', 'uabb'),
                         'placeholder'   => '100',
                         'size'			=> '6',
-                        'description'	=> '%'
+                        'description'	=> '%',
                     ),
                     'map_height'     => array(
                         'type'          => 'text',
@@ -170,6 +173,21 @@ FLBuilder::register_module('GoogleMapModule', array(
                             'HYBRID'      => __('Hybrid', 'uabb'),
                             'TERRAIN'      => __('Terrain', 'uabb'),
                         ),
+                    ),
+                    'map_fit_marker'     => array(
+                        'type'          => 'uabb-toggle-switch',
+                        'label'         => __( 'Auto Zoom', 'uabb' ),
+                        'default'       => 'no',
+                        'options'       => array(
+                            'yes'       => __('Yes','uabb'),
+                            'no'        => __('No','uabb'),
+                        ),
+                        'toggle'        => array(
+                            'no'  => array(
+                                'fields'    => array( 'map_zoom' )
+                            )
+                        )
+
                     ),
                     'map_zoom' => array(
                         'type'          => 'select',
@@ -289,7 +307,8 @@ FLBuilder::register_module('GoogleMapModule', array(
                         'label'     => '',
                         'rows'      => 25,
                         'media_buttons' => false,
-                        'description'   => __('<br/><br/><a target="_blank" href="http://googlemaps.github.io/js-samples/styledmaps/wizard/index.html">Click here</a> to get the style JSON code for styling your map.','uabb'),
+                        'description'   => __('<br/><br/><a target="_blank" rel="noopener" href="http://googlemaps.github.io/js-samples/styledmaps/wizard/index.html">Click here</a> to get the style JSON code for styling your map.','uabb'),
+                        'connections'   => array( 'string', 'html' )
                     ),
                 )
             ),
@@ -306,17 +325,25 @@ FLBuilder::register_settings_form('uabb_google_map_addresses', array(
                 'features'       => array(
                     'title'         => __( 'Address', 'uabb' ),
                     'fields'        => array(
+                        'map_name'     => array(
+                            'type'          => 'text',
+                            'label'         => __('Name', 'uabb'),
+                            'placeholder'   => 'Name the Address',
+                            'help'   => __('Name the Address to identify while editing','uabb'),
+                        ),
                         'map_lattitude'     => array(
                             'type'          => 'text',
-                            'label'         => __('Lattitude', 'uabb'),
+                            'label'         => __('Latitude', 'uabb'),
                             'placeholder'   => '40.76142',
-                            'description'   => __('</br></br><a href="http://universimmedia.pagesperso-orange.fr/geo/loc.htm" target="_blank">Here is a tool</a> where you can find Latitude & Longitude of your location','uabb')
+                            'description'   => __('</br></br><a href="http://universimmedia.pagesperso-orange.fr/geo/loc.htm" target="_blank" rel="noopener">Here is a tool</a> where you can find Latitude & Longitude of your location','uabb'),
+                            'connections'       => array( 'custom_field' ),
                         ),
                         'map_longitude'     => array(
                             'type'          => 'text',
                             'label'         => __('Longitude', 'uabb'),
                             'placeholder'   => '-73.97712',
-                            'description'   => __('</br></br><a href="http://universimmedia.pagesperso-orange.fr/geo/loc.htm" target="_blank">Here is a tool</a> where you can find Latitude & Longitude of your location','uabb')
+                            'description'   => __('</br></br><a href="http://universimmedia.pagesperso-orange.fr/geo/loc.htm" target="_blank" rel="noopener">Here is a tool</a> where you can find Latitude & Longitude of your location','uabb'),
+                            'connections'       => array( 'custom_field' ),
                         ),
                     )
                 ),
@@ -375,7 +402,8 @@ FLBuilder::register_settings_form('uabb_google_map_addresses', array(
                         'info_window_text' => array(
                             'type'      => 'editor',
                             'label'     => '',
-                            'media_buttons' => false
+                            'media_buttons' => false,
+                            'connections'   => array( 'string', 'html' )
                         ),
                         'open_marker'     => array(
                             'type'          => 'uabb-toggle-switch',

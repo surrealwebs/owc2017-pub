@@ -88,6 +88,10 @@
 	border-radius: 50%;
 }
 
+.uabb-info-circle .uabb-icon i {
+	display: inline-block;
+}
+
 .uabb-info-circle-wrap .uabb-image .uabb-photo-img,
 .uabb-info-circle-wrap .uabb-icon-wrap i,
 .uabb-info-circle-wrap .uabb-icon-wrap i:before {

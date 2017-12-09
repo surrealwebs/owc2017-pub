@@ -13,11 +13,14 @@ class UABBButtonModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          => __('Button', 'uabb'),
 			'description'   => __('A simple call to action button.', 'uabb'),
-			'category'      => UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$lead_generation ),
+            'group'         => UABB_CAT,
 			'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/uabb-button/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/uabb-button/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh' => true,
+			'icon'				=> 'button.svg',
 		));
 	}
 
@@ -107,7 +110,8 @@ FLBuilder::register_module('UABBButtonModule', array(
 						'preview'         => array(
 							'type'            => 'text',
 							'selector'        => '.uabb-creative-button-text'
-						)
+						),
+						'connections'	=> array( 'string', 'html' )
 					),
 
 				)
@@ -122,7 +126,8 @@ FLBuilder::register_module('UABBButtonModule', array(
 						'default'		=> '#',
 						'preview'       => array(
 							'type'          => 'none'
-						)
+						),
+						'connections'	=> array( 'url' )
 					),
 					'link_target'   => array(
 						'type'          => 'select',
@@ -135,9 +140,33 @@ FLBuilder::register_module('UABBButtonModule', array(
 						'preview'       => array(
 							'type'          => 'none'
 						)
-					)
+					),
+					'link_nofollow'   => array(
+						'type'          => 'uabb-toggle-switch',
+						'label'         => __('Link nofollow', 'uabb'),
+						'description'   => '',
+						'default'       => '0',
+						'help'			=> __('Enable this to make this link nofollow', 'uabb'),
+						'options'       => array(
+							'1'       => __('Yes','uabb'),
+							'0'       => __('No','uabb'),
+						),
+					),
 				)
-			)
+			),
+			'btn_html_element'          => array(
+				'title'         => __('HTML Element', 'uabb'),
+				'fields'        => array(
+					'custom_class'          => array(
+						'type'          => 'text',
+						'label'         => __('Custom Class', 'uabb'),
+						'default'		=> '',
+						'preview'       => array(
+							'type'          => 'none'
+						),
+					),
+				)
+			),
 		)
 	),
 	'style'         => array(
@@ -181,6 +210,9 @@ FLBuilder::register_module('UABBButtonModule', array(
 							'transparent-fill-diagonal'   	=> __('Fill Background Diagonal', 'uabb'),
 							'transparent-fill-horizontal'  => __('Fill Background Horizontal', 'uabb'),
 						),
+						'preview'         => array(
+                            'type'          => 'none',
+                        )
 					),
 					'threed_button_options'         => array(
 						'type'          => 'select',
@@ -214,11 +246,48 @@ FLBuilder::register_module('UABBButtonModule', array(
 			'icon'    => array(
 				'title'         => __('Icons', 'uabb'),
 				'fields'        => array(
+					'icon_type'    => array(
+						'type'          => 'select',
+						'label'         => __('Image Type', 'uabb'),
+						'default'       => 'icon',
+						'options'       => array(
+						    'none'          => __('None', 'uabb' ),
+						    'icon'          => __('Icon', 'uabb'),
+						    'photo'         => __('Photo', 'uabb'),
+						),
+						'toggle'        => array(
+						    'icon'          => array(
+						        'fields'   => array( 'icon' ),
+						    ),
+						    'photo'         => array(
+						        'fields'   => array( 'photo', 'img_width' ),
+						    )
+						),
+					),
 					'icon'          => array(
 						'type'          => 'icon',
 						'label'         => __('Icon', 'uabb'),
 						'show_remove'   => true
 					),
+					'photo'         => array(
+                        'type'          => 'photo',
+                        'label'         => __('Photo', 'uabb'),
+                        'show_remove'   => true,
+                    ),
+                    'img_width' => array(
+                        'type'          => 'text',
+                        'label'         => __('Photo Width', 'uabb'),
+                        'placeholder'   => '20',
+                        'default'		=> '20',
+                        'description'   => 'px',
+                        'size'          => '8',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-button .uabb-btn-img',
+                            'property'      => 'width',
+                            'unit'			=> 'px'
+                        )
+                    ),
 					'icon_position' => array(
 						'type'          => 'select',
 						'label'         => __('Icon Position', 'uabb'),
@@ -238,6 +307,11 @@ FLBuilder::register_module('UABBButtonModule', array(
                         'label'         => __('Text Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a *',
+                            'property'      => 'color',
+                        )
 					),
 					'text_hover_color'   => array( 
 						'type'       => 'color',
@@ -262,7 +336,7 @@ FLBuilder::register_module('UABBButtonModule', array(
 						'maxlength'   => '3',
 						'size'        => '5',
 					),
-					'bg_hover_color'        => array( 
+					'bg_hover_color'        => array(
 						'type'       => 'color',
                         'label'      => __('Background Hover Color', 'uabb'),
 						'default'    => '',
@@ -289,7 +363,6 @@ FLBuilder::register_module('UABBButtonModule', array(
                         ),
                         'width'	=> '75px'
                     ),
-
 				)
 			),
 			'formatting'    => array(
@@ -322,7 +395,13 @@ FLBuilder::register_module('UABBButtonModule', array(
 						'default'   	=> '200',
 						'maxlength'     => '3',
 						'size'          => '4',
-						'description'   => 'px'
+						'description'   => 'px',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'width',
+                            'unit'			=> 'px'
+                        )
 					),
 					'custom_height'  => array(
 						'type'          => 'text',
@@ -330,7 +409,13 @@ FLBuilder::register_module('UABBButtonModule', array(
 						'default'   	=> '45',
 						'maxlength'     => '3',
 						'size'          => '4',
-						'description'   => 'px'
+						'description'   => 'px',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'min-height',
+                            'unit'			=> 'px'
+                        )
 					),
 					'padding_top_bottom'       => array(
 						'type'          => 'text',
@@ -338,7 +423,22 @@ FLBuilder::register_module('UABBButtonModule', array(
 						'placeholder'   => '0',
 						'maxlength'     => '3',
 						'size'          => '4',
-						'description'   => 'px'
+						'description'   => 'px',
+						'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-top',
+					                'unit'		=> 'px'
+					            ),
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-bottom',
+					                'unit'		=> 'px'
+					            ),    
+					        )
+					    )
 					),
 					'padding_left_right'       => array(
 						'type'          => 'text',
@@ -346,14 +446,35 @@ FLBuilder::register_module('UABBButtonModule', array(
 						'placeholder'   => '0',
 						'maxlength'     => '3',
 						'size'          => '4',
-						'description'   => 'px'
+						'description'   => 'px',
+						'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-left',
+					                'unit'		=> 'px'
+					            ),
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-right',
+					                'unit'		=> 'px'
+					            ),    
+					        )
+					    )
 					),
 					'border_radius' => array(
 						'type'          => 'text',
 						'label'         => __('Round Corners', 'uabb'),
 						'maxlength'     => '3',
 						'size'          => '4',
-						'description'   => 'px'
+						'description'   => 'px',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'border-radius',
+                            'unit'			=> 'px'
+                        )
 					),
 					'align'         => array(
 						'type'          => 'select',
@@ -363,7 +484,12 @@ FLBuilder::register_module('UABBButtonModule', array(
 							'center'        => __('Center', 'uabb'),
 							'left'          => __('Left', 'uabb'),
 							'right'         => __('Right', 'uabb')
-						)
+						),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap',
+                            'property'      => 'text-align',
+                        )
 					),
 					'mob_align'         => array(
 						'type'          => 'select',
@@ -373,7 +499,10 @@ FLBuilder::register_module('UABBButtonModule', array(
 							'center'        => __('Center', 'uabb'),
 							'left'          => __('Left', 'uabb'),
 							'right'         => __('Right', 'uabb')
-						)
+						),
+						'preview'         => array(
+                            'type'          => 'none',
+                        )
 					),
 				)
 			)
@@ -404,7 +533,13 @@ FLBuilder::register_module('UABBButtonModule', array(
 		                    'desktop'       => '',
 		                    'medium'        => '',
 		                    'small'         => '',
-		                )
+		                ),
+		                'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-creative-button',
+                            'property'		=>	'font-size',
+                            'unit'			=> 'px'
+                        )
 		            ),
 		            'line_height'    => array(
 		                'type'          => 'uabb-simplify',
@@ -413,7 +548,13 @@ FLBuilder::register_module('UABBButtonModule', array(
 		                    'desktop'       => '',
 		                    'medium'        => '',
 		                    'small'         => '',
-		                )
+		                ),
+		                'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-creative-button',
+                            'property'		=>	'line-height',
+                            'unit'			=> 'px'
+                        )
 		            ),
 		        )
 		    ),

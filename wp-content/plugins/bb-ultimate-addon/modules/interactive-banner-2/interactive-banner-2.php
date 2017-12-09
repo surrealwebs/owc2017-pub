@@ -7,6 +7,11 @@
 class InteractiveBanner2Module extends FLBuilderModule {
 
     /**
+     * @property $data
+     */
+    public $data = null;
+
+    /**
      *
      * @method __construct
      */
@@ -15,12 +20,66 @@ class InteractiveBanner2Module extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('Interactive Banner 2', 'uabb'),
             'description'   => __('Interactive Banner 2', 'uabb'),
-            'category'		=> UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/interactive-banner-2/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/interactive-banner-2/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'   => true,
         ));
+    }
+
+    /**
+     * @method get_data
+     */
+    public function get_data()
+    {
+        // Make sure we have a banner_image_src property.
+        if(!isset($this->settings->banner_image_src)) {
+            $this->settings->banner_image_src = '';
+        }
+
+        // Cache the attachment data.
+        $this->data = FLBuilderPhoto::get_attachment_data($this->settings->banner_image);
+        if(!$this->data) {
+
+            // Photo source is set to "library".
+            if(is_object($this->settings->banner_image_src)) {
+                $this->data = $this->settings->banner_image_src;
+            }
+            else {
+                $this->data = FLBuilderPhoto::get_attachment_data($this->settings->banner_image_src);
+            }
+
+            // Data object is empty, use the settings cache.
+            if(!$this->data && isset($this->settings->data)) {
+                $this->data = $this->settings->data;
+            }
+        }
+
+        return $this->data;
+    }
+
+    /**
+     * @method get_alt
+     */
+    public function get_alt()
+    {
+        $photo = $this->get_data();
+
+        if(!empty($photo->alt)) {
+            return htmlspecialchars($photo->alt);
+        }
+        else if(!empty($photo->description)) {
+            return htmlspecialchars($photo->description);
+        }
+        else if(!empty($photo->caption)) {
+            return htmlspecialchars($photo->caption);
+        }
+        else if(!empty($photo->title)) {
+            return htmlspecialchars($photo->title);
+        }
     }
 }
 
@@ -82,6 +141,7 @@ FLBuilder::register_module('InteractiveBanner2Module', array(
                         'type'          => 'photo',
                         'label'         => __('Banner Image', 'uabb'),
                         'show_remove'   => true,
+                        'connections'   => array( 'photo' )
                     ),
                     'banner_height'     => array(
                         'type'          => 'text',
@@ -90,6 +150,12 @@ FLBuilder::register_module('InteractiveBanner2Module', array(
                         'size'          => '3',
                         'description'   => 'px',
                         'help'          => __('How big would you like it?','uabb'),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-new-ib',
+                            'property'      => 'height',
+                            'unit'          => 'px'
+                        )
                     ),
                     'img_overlay_color'    => array( 
                         'type'       => 'color',
@@ -98,7 +164,7 @@ FLBuilder::register_module('InteractiveBanner2Module', array(
                         'show_reset' => true,
                         'help'          => __('Use this color setting if you have a bright image and your text is not readable.','uabb'),
                     ),
-                    'img_overlay_color_opc'    => array( 
+                    'img_overlay_color_opc'    => array(
                         'type'        => 'text',
                         'label'       => __('Opacity', 'uabb'),
                         'default'     => '',
@@ -129,6 +195,7 @@ FLBuilder::register_module('InteractiveBanner2Module', array(
                         'type'          => 'text',
                         'label'         => __( 'Link URL', 'uabb' ),
                         'placeholder'   => __( 'URL', 'uabb' ),
+                        'connections'   => array( 'url' )
                     ),
                     'link_target'    => array(
                         'type'          => 'select',
@@ -157,6 +224,7 @@ FLBuilder::register_module('InteractiveBanner2Module', array(
                             'type' => 'text',
                             'selector' => '.uabb-new-ib-title'
                         ),
+                        'connections'   => array( 'string', 'html' )
                     ),
                 )
             ),
@@ -251,7 +319,8 @@ FLBuilder::register_module('InteractiveBanner2Module', array(
                         'preview'         => array(
                             'type'             => 'text',
                             'selector'         => '.uabb-new-ib-content',
-                        )
+                        ),
+                        'connections'   => array( 'string', 'html' )
                     ),
                 )
             ),

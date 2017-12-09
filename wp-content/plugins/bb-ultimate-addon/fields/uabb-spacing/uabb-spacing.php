@@ -39,19 +39,19 @@ if(!class_exists('UABB_Spacing'))
 		
 		function uabb_spacing($name, $value, $field, $settings) {
 
-			//var_dump( $value );
 			$name_def = $name;
 			$name = 'uabb_'.$name;
 
+			// need to check.
+			// $value = str_replace("px","", $field['default'] );
 			$value = str_replace("px","", $value );
+
 			$uabb_default = array_filter( preg_split("/\s*;\s*/", $value) );
 
 			/*if( end( $uabb_default ) == '' ){
 				$uabb_default = array_pop( $uabb_default );
 			}*/
-
 			//$uabb_default = preg_split('/\s+/', trim( $value ) );
-
 			//var_dump( $uabb_default );
 
 			$mode = isset( $field['mode'] ) ? $field['mode'] : 'padding';

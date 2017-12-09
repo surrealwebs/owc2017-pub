@@ -30,6 +30,11 @@ if ( isset( $settings->three_d ) && $settings->three_d ) {
 	$settings->style = 'gradient';
 }
 
+?>
+.fl-node-<?php echo $id;?> .uabb-button .uabb-btn-img {
+	width: <?php echo $settings->img_width; ?>px;
+}
+<?php
 // Background Gradient
 if ( ! empty( $settings->bg_color ) ) {
 	$bg_grad_start = "#" .FLBuilderColor::adjust_brightness( uabb_parse_color_to_hex( $settings->bg_color ), 30, 'lighten' );

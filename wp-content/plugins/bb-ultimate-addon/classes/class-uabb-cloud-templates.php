@@ -33,20 +33,83 @@ if( !class_exists('UABB_Cloud_Templates') ) {
 		 */
 		function __construct() {
 
-			self::$cloud_url = array(
+			self::$cloud_url = apply_filters( 'uabb_template_cloud_api', array(
 				'page-templates' => 'http://templates.ultimatebeaver.com/wp-json/uabb/v1/template/layouts/',
 				'sections'       => 'http://templates.ultimatebeaver.com/wp-json/uabb/v1/template/sections/',
 				'presets'        => 'http://templates.ultimatebeaver.com/wp-json/uabb/v1/template/presets/',
-			);
+			) );
 
-			self::$cloud_url = apply_filters( 'uabb_template_cloud_api', self::$cloud_url );
+			// AJAX actions.
+			add_action( 'wp_ajax_uabb_cloud_dat_file', 			array( $this, 'download_cloud_templates' ) );
+			add_action( 'wp_ajax_uabb_cloud_dat_file_remove', 	array( $this, 'remove_local_dat_file' ) );
+			add_action( 'wp_ajax_uabb_cloud_dat_file_fetch', 	array( $this, 'fetch_cloud_templates' ) );
 
-			add_action( 'wp_ajax_uabb_cloud_dat_file', array( $this, 'download_cloud_templates' ) );
-			add_action( 'wp_ajax_uabb_cloud_dat_file_remove', array( $this, 'remove_local_dat_file' ) );
-			add_action( 'wp_ajax_uabb_cloud_dat_file_fetch', array( $this, 'fetch_cloud_templates' ) );
+			// Buttons.
+			add_action( 'uabb_cloud_template_buttons', 			array( $this, 'button_title' ) );
+
+			// Auto process the cloud templates.
+			add_action( 'admin_init', 							array( $this, 'process_cloud_request' ) );
 		}
 
-		static function reset_cloud_transient() {
+		/**
+		 * Process cloud request
+		 * If transient / option is expired.
+		 */
+		function process_cloud_request( $proceed = false ) {
+
+			if( false === get_transient( 'uabb_cloud_transient') ) {
+
+				$proceed = true;
+
+				if( 5.2 < phpversion() ) {
+					$transient = get_option('uabb_cloud_templates');
+
+					if( false != $transient) {
+
+						$datetime1   = new DateTime();
+						$date_string = gmdate( "Y-m-d\TH:i:s\Z", $transient );
+						$datetime2   = new DateTime( $date_string );
+						$interval    = $datetime1->diff( $datetime2 );
+						$elapsed     = $interval->format( '%h' );
+
+						if( 24 >= $elapsed || '24' >= $elapsed ) {
+							$proceed = false;
+						}
+					}
+				}
+
+				// Is true?
+				if( $proceed ) {
+					
+					// Refresh cloud templates.
+					self::refresh_cloud_templates();
+
+					// Set transient & option.
+					self::set_transients();
+				}
+
+			} else {
+				
+				// Set transient & option.
+				self::set_transients();
+			}
+
+			return $proceed;
+
+		}
+
+		/**
+		 * Set transient / option.
+		 */
+		public static function set_transients() {
+			update_option( 'uabb_cloud_templates', current_time( 'timestamp' ) );
+			set_transient( 'uabb_cloud_transient', true, DAY_IN_SECONDS );
+		}
+
+		/**
+		 * Reset Cloud Transient
+		 */
+		static function refresh_cloud_templates() {
 
 			//	get - downloaded templates
 			$cloud_templates      = array();
@@ -55,11 +118,22 @@ if( !class_exists('UABB_Cloud_Templates') ) {
 			//	get - cloud templates by type
 			foreach( self::$cloud_url as $type => $url ) {
 
-				$response = wp_remote_get( $url, array(
+				$https_url = $url;
+
+				if ( $ssl = wp_http_supports( array( 'ssl' ) ) ) {
+				    $https_url = set_url_scheme( $https_url, 'https' );
+				}
+
+				$response = wp_remote_get( $https_url, array(
 					'timeout'     => 30,
-					'sslverify'   => false,
-					'httpversion' => '1.1'
 				) );
+
+				if ( $ssl && is_wp_error( $response ) ) {
+
+				    $response = wp_remote_get( $url, array(
+						'timeout'     => 30,
+					) );
+				}
 
 				if( is_wp_error( $response ) ) {
 					$type_templates = 'wp_error';
@@ -217,7 +291,10 @@ if( !class_exists('UABB_Cloud_Templates') ) {
 
 				//	Return specific templates
 				} else {
-					return $templates[ $type ];
+
+					if( array_key_exists( $type, $templates) ) {
+						return $templates[ $type ];
+					}
 				}
 
 			} else {
@@ -303,7 +380,7 @@ if( !class_exists('UABB_Cloud_Templates') ) {
 		 * @since 1.2.0.2
 		 */
 		function fetch_cloud_templates() {
-			self::reset_cloud_transient();
+			self::refresh_cloud_templates();
 			$ajaxResult['status'] = 'success';
 
 			//	Result
@@ -429,6 +506,21 @@ if( !class_exists('UABB_Cloud_Templates') ) {
 				<?php }
 			}
 		}
+
+		/**
+		 * Template Button
+		 *
+		 * @since 1.4.0
+		 */
+		function button_title() {
+			?>
+			<span class="button button-secondary uabb-cloud-process" data-operation="fetch">
+		    	<i class="dashicons dashicons-update " style="padding: 3px;"></i>
+		    	<span class="msg"> <?php echo apply_filters( 'cloud_template_refresh_button_title', __('Refresh', 'uabb') ); ?> </span>
+		   	</span>
+			<?php
+		}
+		
 
 		/**
 		 * Template HTML

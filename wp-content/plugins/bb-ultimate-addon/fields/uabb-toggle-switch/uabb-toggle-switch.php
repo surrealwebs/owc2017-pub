@@ -54,8 +54,20 @@ if(!class_exists('UABB_Toggle_Switch'))
       $output .= '.uabb-toggle-switch .'. $name .':checked + .'.$name.'{';
       $output .= 'background: #1e8cbe;';
       $output .= 'border-color: #0074a2;';
-      $output .= 'color: #fff;';    
+      $output .= 'color: #fff !important;';    
       $output .= '}';
+
+      $output .= '.fl-builder-ui-skin--dark .uabb-toggle-switch .'.$name.'{';
+      $output .= 'background: #1d2227;';
+      $output .= 'border-color: #101215;';
+      $output .= '}';
+      
+      $output .= '.fl-builder-ui-skin--dark .uabb-toggle-switch .'. $name .':checked + .'.$name.'{';
+      $output .= 'background: #101215;';
+      $output .= 'border-color: #101215;';
+      $output .= 'color: #7d8690 !important;';    
+      $output .= '}';
+
       if ( $label_width != '' ) {
         $output .= '.uabb_toggle_switch_label.'. $name .'{';
         $output .= 'width: '.$label_width.';';

@@ -13,12 +13,14 @@ class UABBPricingTableModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Price Box', 'uabb'),
 			'description'   	=> __('A simple price box generator.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/pricing-box/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/pricing-box/',
-			'partial_refresh'	=> true
+			'partial_refresh'	=> true,
+			'icon'				=> 'editor-table.svg',
 		));
-
+		$this->add_css('font-awesome');
 		add_filter( 'fl_builder_render_settings_field', array( $this , 'uabb_price_box_settings_field' ), 10, 3 );
 	}
 
@@ -42,6 +44,7 @@ class UABBPricingTableModule extends FLBuilderModule {
 			'text'                       => $this->settings->pricing_columns[$column]->btn_text,
 			'link'                       => $this->settings->pricing_columns[$column]->btn_link,
 			'link_target'                => $this->settings->pricing_columns[$column]->btn_link_target,
+			'link_nofollow'         	 => $this->settings->pricing_columns[$column]->btn_link_nofollow,
 			'icon'                       => $this->settings->pricing_columns[$column]->btn_icon,
 			'icon_position'              => $this->settings->pricing_columns[$column]->btn_icon_position,
 			'style'                      => $this->settings->pricing_columns[$column]->btn_style,
@@ -167,7 +170,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
 							'left'     => __( 'Left', 'uabb' ),
 							'center'    => __( 'Center', 'uabb' ),
 							'right'     => __( 'Right', 'uabb' )
-						)
+						),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-pricing-table li',
+                            'property'      => 'text-align',
+                        )
 					),
 				)
 			),
@@ -235,7 +243,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
 							'double' => array(
 								'fields' => array( 'border_size', 'border_color' )
 							),
-						)
+						),
+						'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-pricing-table',
+                            'property'  => 'border-style',
+                        )
 					),
 					'border_size'   => array(
 						'type'          => 'text',
@@ -243,12 +256,23 @@ FLBuilder::register_module('UABBPricingTableModule', array(
 						'placeholder'       => '1',
 						'size'          => '8',
 						'description'   => 'px',
+						'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-pricing-table',
+                            'property'  => 'border-width',
+                            'unit'		=> 'px'
+                        )
 					),
 					'border_color'        => array( 
 						'type'       => 'color',
                         'label'      => __('Box Border Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-pricing-table',
+                            'property'  => 'border-color',
+                        )
 					),
 					'border_radius' => array(
 						'type'          => 'text',
@@ -290,6 +314,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
 						'placeholder'   => '20',
 						'size'          => '8',
 						'description'   => 'px',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-pricing-table .uabb-creative-button-wrap',
+                            'property'      => 'margin-top',
+                            'unit'			=> 'px',
+                        )
 					),
 					'btn_margin_bottom' => array(
 						'type'          => 'text',
@@ -297,6 +327,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
 						'placeholder'   => '20',
 						'size'          => '8',
 						'description'   => 'px',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-pricing-table .uabb-creative-button-wrap',
+                            'property'      => 'margin-bottom',
+                            'unit'			=> 'px',
+                        )
 					)
 				)
 			),
@@ -333,7 +369,7 @@ FLBuilder::register_module('UABBPricingTableModule', array(
                         ),
                         'preview'         => array(
                             'type'            => 'font',
-                            'selector'        => 'uabb-pricing-table-title'
+                            'selector'        => '.uabb-pricing-table-title'
                         )
                     ),
                     'title_typography_font_size'     => array(
@@ -344,6 +380,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-pricing-table-title',
+                            'property'		=>	'font-size',
+                            'unit'			=> 'px',
+                        )
                     ),
                     'title_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -353,6 +395,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-pricing-table-title',
+                            'property'		=>	'line-height',
+                            'unit'			=> 'px',
+                        )
                     ),
                 )
             ),
@@ -395,6 +443,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-pricing-table-price',
+                            'property'		=> 'font-size',
+                            'unit'			=> 'px',
+                        )
                     ),
                     'price_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -404,6 +458,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                         'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-pricing-table-price',
+                            'property'		=> 'line-height',
+                            'unit'			=> 'px',
+                        )
                     ),
                 )
             ),
@@ -430,6 +490,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-pricing-table-duration',
+                            'property'		=> 'font-size',
+                            'unit'			=> 'px',
+                        )
                     ),
                     'duration_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -439,6 +505,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                       	'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-pricing-table-duration',
+                            'property'		=> 'line-height',
+                            'unit'			=> 'px',
+                        )
                     ),
                 )
             ),
@@ -465,6 +537,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-pricing-table-features li',
+                            'property'		=> 'font-size',
+                            'unit'			=> 'px',
+                        )
                     ),
                     'feature_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -474,6 +552,12 @@ FLBuilder::register_module('UABBPricingTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-pricing-table-features li',
+                            'property'		=> 'line-height',
+                            'unit'			=> 'px',
+                        )
                     ),
                 )
             ),
@@ -513,7 +597,8 @@ FLBuilder::register_settings_form('pricing_table_column_form', array(
 						'featured_text'          => array(
 							'type'          => 'text',
 							'label'         => __('Featured Text', 'uabb'),
-							'default'   => __( 'Best Value', 'uabb' )
+							'default'   => __( 'Best Value', 'uabb' ),
+							'connections' => array( 'string', 'html' )
 						),
 					),
 				),
@@ -523,7 +608,8 @@ FLBuilder::register_settings_form('pricing_table_column_form', array(
 						'title'          => array(
 							'type'          => 'text',
 							'label'         => __('Title Text', 'uabb'),
-							'default'   => __( 'Consultation Pack', 'uabb' )
+							'default'   => __( 'Consultation Pack', 'uabb' ),
+							'connections' => array( 'string', 'html' )
 						),
 						'price'          => array(
 							'type'          => 'text',
@@ -559,14 +645,19 @@ FLBuilder::register_settings_form('pricing_table_column_form', array(
 							'default'    => '',
 							'show_reset' => true,
 						),
-						'highlight_color' => array( 
+						'highlight_color' => array(
 							'type'       => 'color',
 							'label'		 => __('Highlight Color', 'uabb'),
 							'default'    => '',
 							'show_reset' => true,
-							'help'		 => __( 'Use this color only when you want same color for Highlighted area and for unique color use Price Box Items.', 'uabb' )
+							'help'		 => __( 'Use this color only when you want same color for Highlighted area and for unique color use Price Box Items.', 'uabb' ),
+							'preview'  => array(
+	                            'type'      => 'css',
+	                            'selector'  => '.uabb-pricing-table-price',
+	                            'property'  => 'background',
+	                        )
 						),
-						'highlight_color_opc' => array( 
+						'highlight_color_opc' => array(
 							'type'        => 'text',
 							'label'       => __('Opacity', 'uabb'),
 							'default'     => '',
@@ -599,7 +690,7 @@ FLBuilder::register_settings_form('pricing_table_column_form', array(
 							'label'         => '',
 							'default'   	=> __( 'Feature 1', 'uabb' ),
 							'placeholder'   => __( 'One feature per line.', 'uabb' ),
-							'multiple'      => true
+							'multiple'      => true,
 						),
 						'features_color'        => array( 
 							'type'       => 'color',
@@ -686,7 +777,18 @@ FLBuilder::register_settings_form('pricing_table_column_form', array(
 	                        'preview'       => array(
 	                            'type'          => 'none'
 	                        )
-	                    )
+	                    ),
+	                    'btn_link_nofollow'   => array(
+	                    	'type'          => 'uabb-toggle-switch',
+	                    	'label'         => __('Link nofollow', 'uabb'),
+	                    	'description'   => '',
+	                    	'default'       => '0',
+	                    	'help'			=> __('Enable this to make this link nofollow', 'uabb'),
+	                    	'options'       => array(
+	                    		'1'       => __('Yes','uabb'),
+	                    		'0'       => __('No','uabb'),
+	                    	),
+	                    ),
 	                )
 	            ),
 				'btn-style'      => array(
@@ -1058,7 +1160,7 @@ FLBuilder::register_settings_form('legend_column_form', array(
 							'type'          => 'text',
 							'label'         => '',
 							'placeholder'   => __( 'One legend per line.', 'uabb' ),
-							'multiple'      => true
+							'multiple'      => true,
 						),
 					)
 				),

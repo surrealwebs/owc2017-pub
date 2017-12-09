@@ -34,7 +34,6 @@ if( isset( $settings->info_window_text ) ) {
 	}
 }
 
-
 /*if( isset( $settings->uabb_gmap_addresses[0]->map_lattitude ) || isset( $settings->uabb_gmap_addresses[0]->map_longitude ) ) {
 	if( $settings->uabb_gmap_addresses[0]->map_lattitude == '' || $settings->uabb_gmap_addresses[0]->map_longitude == '' ) {
 
@@ -105,7 +104,8 @@ if( isset( $settings->info_window_text ) ) {
 			marker_img_src: marker_img_src,
 			info_window_text: info_window_text,
 			enable_info: enable_info,
-			open_marker: open_marker
+			open_marker: open_marker,
+			map_fit_marker: '<?php echo ( isset( $settings->map_fit_marker ) ) ? $settings->map_fit_marker : 'no'; ?>'
 	    };
 
 	jQuery(document).ready( function() {

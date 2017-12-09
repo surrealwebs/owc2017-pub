@@ -19,20 +19,20 @@
 		hashvalarr = hashval.split( "-" ),
 		dataindex = hashvalarr[hashvalarr.length-1],
 		tab_id = hashval.replace( '-' + dataindex, '' );
-
 	if( tab_id != '' ) {
-		console.log(jQuery( tab_id + ' .uabb-adv-accordion-button' ).eq(dataindex));
-	    if( jQuery(tab_id).find( '.uabb-adv-accordion > .uabb-adv-accordion-item[data-index="' + dataindex + '"]' ) ) {
+		if( jQuery( tab_id ).length > 0 ) {
+		    if( jQuery(tab_id).find( '.uabb-adv-accordion > .uabb-adv-accordion-item[data-index="' + dataindex + '"]' ) ) {
 
-			jQuery('html, body').animate({
-		        scrollTop: jQuery( tab_id ).offset().top - 250
-		    }, 1000);
-		    var enable_first = '<?php echo $settings->enable_first; ?>';
-		    if( !( parseInt( dataindex ) == 0 && enable_first == 'yes' ) ) {
-		    	setTimeout(function(){
-					jQuery( tab_id + ' .uabb-adv-accordion-button' ).eq(dataindex).trigger('click');
-				}, 1000);
-		    }
+				jQuery('html, body').animate({
+			        scrollTop: jQuery( tab_id ).offset().top - 250
+			    }, 1000);
+			    var enable_first = '<?php echo $settings->enable_first; ?>';
+			    if( !( parseInt( dataindex ) == 0 && enable_first == 'yes' ) ) {
+			    	setTimeout(function(){
+						jQuery( tab_id + ' .uabb-adv-accordion-button' ).eq(dataindex).trigger('click');
+					}, 1000);
+			    }
+			}
 		}
 	}
 	

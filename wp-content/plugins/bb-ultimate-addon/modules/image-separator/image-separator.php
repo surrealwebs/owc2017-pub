@@ -24,9 +24,12 @@ class UABBImageSeparatorModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          => __('Image Separator', 'uabb'),
 			'description'   => __('Use Image as a separator ', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/image-separator/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/image-separator/',
+            'partial_refresh'   => true,
+			'icon'				=> 'format-image.svg',
 		));
 
 		$this->add_js('jquery-waypoints');
@@ -374,6 +377,7 @@ FLBuilder::register_module('UABBImageSeparatorModule', array(
 						'type'          => 'photo',
 						'label'         => __('Separator Image', 'uabb'),
 						'show_remove'	=> true,
+						'connections'   => array( 'photo' )
 					),
 					'img_size'     => array(
 						'type'          => 'text',
@@ -382,6 +386,12 @@ FLBuilder::register_module('UABBImageSeparatorModule', array(
 						'size'          => '6',
 						'description'   => 'px',
 						'help'         => __('Image size cannot be more than parent size.', 'uabb'),
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-image .uabb-photo-img',
+                            'property'        => 'width',
+                            'unit'            => 'px'
+                        )
 					),
 					'medium_img_size'     => array(
 						'type'          => 'text',
@@ -483,11 +493,11 @@ FLBuilder::register_module('UABBImageSeparatorModule', array(
 		                        'fields'        => array('img_border_width', 'img_border_radius','img_border_color','img_border_hover_color' )
 		                    )
 		                ),
-		                /*'preview'		=> array(
-                        		'type' 		=> 'css',
-                        		'selector'	=> '.uabb-image .uabb-photo-img',
-                        		'property'	=> 'border-style',
-                        )*/
+		                'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-image .uabb-photo-img',
+                            'property'        => 'border-style',
+                        )
 		            ),
 		            'img_border_width'    => array(
 		                'type'          => 'text',
@@ -548,6 +558,9 @@ FLBuilder::register_module('UABBImageSeparatorModule', array(
 	                    'label'      => __('Background Hover Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'		=> array(
+                        		'type' 		=> 'none',
+                        )
 					),
 		            'img_bg_hover_color_opc' => array( 
 						'type'        => 'text',
@@ -610,7 +623,7 @@ FLBuilder::register_module('UABBImageSeparatorModule', array(
 
                     'image_position_lr'         => array(
                     	'type'          => 'select',
-                    	'label'         => __('Image Left / Right Position', 'uabb'),
+                    	'label'         => __('Image Alignment', 'uabb'),
                     	'default'       => 'center',
                     	'help'			=> __('Select the position to display Image Separator','uabb'),
                     	'options'       => array(
@@ -631,9 +644,9 @@ FLBuilder::register_module('UABBImageSeparatorModule', array(
                     /* Image Gutter */
                     'gutter_lr'          => array(
                         'type'          => 'text',
-                        'label'         => __('Value from Left / Right', 'uabb'),
-                        'placeholder'   => '50',
-                        'help'          => __('From left / From right','uabb'),
+                        'label'         => __('Image Position from Left / Right', 'uabb'),
+                        'placeholder'   => '0',
+                        'help'          => __('Provides more control to align image at specific position.','uabb'),
                         'maxlength'     => '3',
                         'size'          => '6',
                         'description'   => '%',

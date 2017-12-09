@@ -42,8 +42,6 @@
 				testimonial_icon_style_noslider   = form.find('select[name=testimonial_icon_style_noslider]').val(),
 				image_type_noslider = form.find('select[name=image_type_noslider]').val();
 
-			// console.log(testimonial_icon_style_noslider);
-
 			if( image_type_noslider != 'icon' ) {
 				if( testimonial_icon_style_noslider != 'custom' ) {
 					form.find('#fl-field-testimonial_icon_bg_color_noslider').hide();
@@ -133,8 +131,6 @@
         {
             var form = $('.fl-builder-settings ');
 
-            //console.log(enable_rating_global);
-
             if( enable_rating_global == 'yes' ) {
             	form.find('#fl-field-slider_rating').show();
             } else {
@@ -148,16 +144,16 @@
 
 jQuery(document).on( 'change' , '.testimonial_over_all_position', function(){
 	if ( jQuery(this).val() == "top" && jQuery(".uabb-testimonial-layout-selection").val() == "box" ) {
-		jQuery(".testimonial_half_outside_opt").parent().parent().css({"display" : "table-row"});
+		jQuery(".testimonial_half_outside_opt").closest('.fl-field').css({"display" : "table-row"});
 	}else{
-		jQuery(".testimonial_half_outside_opt").parent().parent().css({"display" : "none"});
+		jQuery(".testimonial_half_outside_opt").closest('.fl-field').css({"display" : "none"});
 	}
 });
 
 jQuery(document).on( 'change' , '.uabb-testimonial-layout-selection', function(){
 	if ( jQuery(this).val() == "box" && jQuery(".testimonial_over_all_position").val() == "top" ) {
-		jQuery(".testimonial_half_outside_opt").parent().parent().css({"display" : "table-row"});
+		jQuery(".testimonial_half_outside_opt").closest('.fl-field').css({"display" : "table-row"});
 	}else{
-		jQuery(".testimonial_half_outside_opt").parent().parent().css({"display" : "none"});
+		jQuery(".testimonial_half_outside_opt").closest('.fl-field').css({"display" : "none"});
 	}
 });

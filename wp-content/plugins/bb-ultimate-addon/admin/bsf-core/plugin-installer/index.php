@@ -386,6 +386,18 @@
                 // We can also pass the url value separately from ajaxurl for front end AJAX implementations
                 jQuery.post(ajaxurl, data, function(response) {
                     console.log(response);
+
+                    var redirect = /({.+})/img;
+                    var matches = redirect.exec(response);
+
+                     if ( typeof matches[1] != "undefined" ) {
+                        var responseObj = jQuery.parseJSON( matches[1] );
+
+                        if ( responseObj.redirect != "" ) {
+                            window.location = responseObj.redirect;
+                        }
+                    }
+
                     var blank_response = true;
                     var plugin_status = response.split('|');
                     var is_ftp = false;

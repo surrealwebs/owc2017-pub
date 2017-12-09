@@ -14,9 +14,11 @@ class ModalPopupModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          => __('Modal Popup', 'uabb'),
 			'description'   => __('Video Popup', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$lead_generation ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/modal-popup/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/modal-popup/',
+            'icon'              => 'button.svg',
 		));
 
 		$this->add_css( 'font-awesome' );
@@ -44,7 +46,6 @@ class ModalPopupModule extends FLBuilderModule {
             /* Link Section */
             'link'              => 'javascript:void(0)',//$this->settings->btn_link,
             'link_target'       => '_self',//$this->settings->btn_link_target,
-            
             /* Style Section */
             'style'             => $this->settings->btn_style,
             'border_size'       => $this->settings->btn_border_size,
@@ -91,7 +92,8 @@ class ModalPopupModule extends FLBuilderModule {
         $content_type = $settings->content_type;
         switch($content_type) {
             case 'content':
-                return $settings->ct_content;
+                global $wp_embed;
+                return wpautop( $wp_embed->autoembed( $settings->ct_content ) );
             break;
             case 'photo':
             	if ( isset( $settings->ct_photo_src ) ) {
@@ -104,23 +106,14 @@ class ModalPopupModule extends FLBuilderModule {
                 return $wp_embed->autoembed($settings->ct_video);
             break;
             case 'iframe':
-                return '<iframe src="' . $settings->iframe_url . '" class="uabb-content-iframe" frameborder="0" width="100%" height="100%"></iframe>';
+                return '<iframe src="' . $settings->iframe_url . '" class="uabb-content-iframe" frameborder="0" width="100%" height="100%" allowfullscreen></iframe>';
             break;
-            /*case 'html':
-                return $settings->ct_html;
-            break;*/
             case 'saved_rows':
-            	ob_start();
-                echo do_shortcode('[fl_builder_insert_layout id="'.$settings->ct_saved_rows.'" type="fl-builder-template"]');
-                return ob_get_clean();
+                return '[fl_builder_insert_layout id="'.$settings->ct_saved_rows.'" type="fl-builder-template"]';
             case 'saved_modules':
-            	ob_start();
-                echo do_shortcode('[fl_builder_insert_layout id="'.$settings->ct_saved_modules.'" type="fl-builder-template"]');
-                return ob_get_clean();
+            	return '[fl_builder_insert_layout id="'.$settings->ct_saved_modules.'" type="fl-builder-template"]';
             case 'saved_page_templates':
-                ob_start();
-                echo do_shortcode('[fl_builder_insert_layout id="'.$settings->ct_page_templates.'" type="fl-builder-template"]');
-                return ob_get_clean();
+                return '[fl_builder_insert_layout id="'.$settings->ct_page_templates.'" type="fl-builder-template"]';
             break;
             case 'youtube':
             	return $this->get_video_embed();
@@ -143,60 +136,36 @@ class ModalPopupModule extends FLBuilderModule {
 		
 		$url 	= $this->settings->video_url;
 		$vid_id = '';
-		//$width = '640';
-		//$height = '385'; width="854" height="480" 
 		$html = '';
+        $related_videos = '';
 
-		if ( $this->settings->content_type == 'youtube' ) {
-			if( preg_match('/[\\?\\&]v=([^\\?\\&]+)/', $url, $matches) ){
-				$vid_id = $matches[1];
-			}
+        if ( $this->settings->content_type == 'youtube' ) {
+            if( preg_match('/[\\?\\&]v=([^\\?\\&]+)/', $url, $matches) ){
+                $vid_id = $matches[1];
+            }
 
-			//var_dump( $this->get_width_height() );
-			//$size = ( $this->get_width_height() ) ? $this->get_width_height() : '';
+            if( $this->settings->youtube_related_videos == 'yes' ) {
+                $related_videos = '&rel=0';
+            } else {
+                $related_videos = '';
+            }
 
-			// echo "<pre>";
-			// print_r( $this );
-			// echo "</pre>";
-			// die();
-			// $html = print_r( $this->node );
-			$html = '<iframe id="uabb-'.$this->node.'" class="uabb-modal-iframe" src="https://www.youtube.com/embed/'.$vid_id.'?version=3&enablejsapi=1" frameborder="0" allowfullscreen></iframe>';
+			$html = '<iframe id="uabb-'.$this->node.'" class="uabb-modal-iframe" src="https://www.youtube.com/embed/'.$vid_id.'?version=3&enablejsapi=1'.$related_videos.'" frameborder="0" allowfullscreen></iframe>';
 			return $html;
 		}elseif( $this->settings->content_type == 'vimeo' ){
 			$vid_id = preg_replace("/[^\/]+[^0-9]|(\/)/", "", rtrim($url, "/"));
 			$html = '<iframe id="uabb-'.$this->node.'" class="uabb-modal-iframe" src="https://player.vimeo.com/video/'.$vid_id.'?title=0&byline=0&portrait=0&badge=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
 			return $html;
 		}
-		
-
-
-		
-		/*<iframe id="ytplayer" type="text/html" width="<?php echo $width ?>" height="<?php echo $height ?>"
-		    src="https://www.youtube.com/embed/<?php echo $id ?>?rel=0&showinfo=0&color=white&iv_load_policy=3"
-		    frameborder="0" allowfullscreen></iframe> 
-
-		preg_match("/^(?:http(?:s)?:\/\/)?
-		    (?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|
-		    (?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $url, $matches);*/
 	}
 
 	public function get_width_height()
 	{
 		$size['width'] 	= '';
 		$size['height'] = '';
-		if ( /*$this->settings->modal_size == 'custom' &&*/ is_numeric($this->settings->modal_width) && $this->settings->modal_width > 0 ) {
+		if ( is_numeric($this->settings->modal_width) && $this->settings->modal_width > 0 ) {
 			
 			$temp_width = $this->settings->modal_width;
-
-			/*if( isset( $this->settings->uabb_modal_spacing['simplify'] ) ) {
-				if ( $this->settings->uabb_modal_spacing['simplify'] == 'collapse' ) {
-					$temp_width = intval($temp_width) - ( intval( $this->settings->uabb_modal_spacing['all'] ) * 2 );
-				}else{
-					$temp_width = intval($temp_width) - intval( $this->settings->uabb_modal_spacing['left'] ) - intval( $this->settings->uabb_modal_spacing['right'] );
-				}
-			}else{
-				$temp_width = $this->settings->modal_width - 50;
-			}*/
 
 			$size['width'] = $temp_width;
 
@@ -256,7 +225,11 @@ FLBuilder::register_module('ModalPopupModule', array(
 						'type'          => 'text',
 						'label'         => __('Enter Title', 'uabb'),
 						'placeholder'	=> __('This is modal title', 'uabb'),
-						
+                        'connections' => array( 'string', 'html' ),
+                        'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-modal-title',
+                        )
 					),
 					'title_alignment'   => array(
                         'type'          => 'select',
@@ -267,6 +240,11 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'right'         => __('Right', 'uabb'),
                             'center'        => __('Center', 'uabb')
                         ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-modal-title-wrap',
+                            'property'      => 'text-align',
+                        )
                     ),
 					'title_spacing'     => array(
 						'type'          => 'uabb-spacing',
@@ -330,7 +308,8 @@ FLBuilder::register_module('ModalPopupModule', array(
                                 'fields'        => array('ct_page_templates')
                             ),
 							'youtube'	 => array(
-								'sections'  => array( 'video_setting' )
+								'sections'  => array( 'video_setting' ),
+                                'fields'    => array( 'youtube_related_videos' )
 							),
 							'vimeo'	 => array(
 								'sections'  => array( 'video_setting' )
@@ -343,12 +322,18 @@ FLBuilder::register_module('ModalPopupModule', array(
                     'ct_content'   => array(
                         'type'                  => 'editor',
                         'label'                 => '',
-                        'default'       => __('Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.','uabb'),
+                        'default'       => __('Enter your content.','uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-modal-content-data',
+                        )
                     ),
                     'ct_photo'     => array(
                         'type'                  => 'photo',
                         'label'                 => __('Select Photo', 'uabb'),
                         'show_remove'           => true,
+                        'connections'           => array( 'photo' )
                     ),
                     'ct_video'     => array(
                         'type'                  => 'textarea',
@@ -378,6 +363,7 @@ FLBuilder::register_module('ModalPopupModule', array(
 					'video_url'     => array(
 						'type'          => 'text',
 						'label'         => __( 'Video URL', 'uabb' ),
+                        'connections' => array( 'url' ),
 					),
 					'video_ratio'         => array(
 						'type'          => 'select',
@@ -396,6 +382,15 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'yes'    => __( 'Yes', 'uabb' ),
                             'no'        => __( 'No', 'uabb' ),
                         ),
+                    ),                    
+                    'youtube_related_videos' => array(
+                        'type'          => 'uabb-toggle-switch',
+                        'label'         => __( 'Disable Related Videos', 'uabb' ),
+                        'default'       => 'no',
+                        'options'       => array(
+                            'yes'    => __( 'Yes', 'uabb' ),
+                            'no'     => __( 'No', 'uabb' ),
+                        ),
                     ),
 				)
 			),
@@ -405,6 +400,7 @@ FLBuilder::register_module('ModalPopupModule', array(
 					'iframe_url'     => array(
 						'type'          => 'text',
 						'label'         => __( 'URL', 'uabb' ),
+                        'connections' => array( 'url' )
 					),
 					'iframe_height' => array(
 						'type'          => 'text',
@@ -421,23 +417,6 @@ FLBuilder::register_module('ModalPopupModule', array(
 			'type_general'		=> array( // Section
 				'title'         => __('Modal Popup Setting', 'uabb'), // Section Title
 				'fields'        => array( // Section Fields
-					/*'modal_size'       => array(
-						'type'          => 'select',
-						'label'         => __('Modal Content Size', 'uabb'),
-						'default'       => 'Custom',
-						'options'       => array(
-							'full'		=> __('Full Screen', 'uabb'),
-							'custom'	=> __('Custom', 'uabb')
-						),
-						'toggle'        => array(
-							'full'	=> array(
-								'fields'	 => array('modal_spacing')
-							), 
-							'custom'     	=> array(
-								'fields'      => array('modal_width', 'video_ratio')
-							)
-						)
-					),*/
 					'modal_width'     => array(
 						'type'          => 'text',
 						'label'         => __('Maximum Width of Content', 'uabb'),
@@ -488,6 +467,11 @@ FLBuilder::register_module('ModalPopupModule', array(
                         'label'      => __('Background Color', 'uabb'),
                         'default'	 => 'ffffff',
 						'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-content',
+                            'property'      => 'background',
+                        )
 					),
 					'overlay_color'        => array( 
 						'type'       => 'color',
@@ -602,6 +586,7 @@ FLBuilder::register_module('ModalPopupModule', array(
 						'type'          => 'photo',
 						'label'         => __('Image', 'uabb'),
 						'show_remove'	=> true,
+                        'connections'   => array( 'photo' )
 					),
 					'img_size'     => array(
 						'type'          => 'text',
@@ -620,12 +605,22 @@ FLBuilder::register_module('ModalPopupModule', array(
 						'type'          => 'text',
 						'label'         => __('Text', 'uabb'),
 						'default'       => __('Click Here','uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'   => array(
+                            'type'      => 'text',
+                            'selector'  => '.uabb-modal-action',
+                        ),
 					),
 					'text_color' => array( 
 						'type'       => 'color',
 	                    'label'     => __('Text Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-modal-action',
+                            'property'  => 'color',
+                        ),
 					),
 		            'text_hover_color' => array( 
 						'type'       => 'color',
@@ -644,6 +639,11 @@ FLBuilder::register_module('ModalPopupModule', array(
                         'type'          => 'text',
                         'label'         => __('Text', 'uabb'),
                         'default'       => __('Click Here', 'uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-creative-button-text',
+                        )
                     ),
                 )
             ),
@@ -743,6 +743,11 @@ FLBuilder::register_module('ModalPopupModule', array(
                         'label'      => __('Text Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a *',
+                            'property'      => 'color',
+                        )
                     ),
                     'btn_text_hover_color'        => array( 
                         'type'       => 'color',
@@ -758,6 +763,19 @@ FLBuilder::register_module('ModalPopupModule', array(
                         'label'      => __('Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'rules'           => array(
+                                array(
+                                    'selector'     => '.uabb-creative-button-wrap a',
+                                    'property'     => 'background'
+                                ),
+                                array(
+                                    'selector'     => '.uabb-creative-button-wrap a',
+                                    'property'     => 'border-color'
+                                ),    
+                            )
+                        )
                     ),
                     'btn_bg_color_opc'    => array( 
                         'type'        => 'text',
@@ -827,7 +845,13 @@ FLBuilder::register_module('ModalPopupModule', array(
                         'default'       => '200',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'width',
+                            'unit'          => 'px'
+                        )
                     ),
                     'btn_custom_height'  => array(
                         'type'          => 'text',
@@ -835,7 +859,13 @@ FLBuilder::register_module('ModalPopupModule', array(
                         'default'       => '45',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'min-height',
+                            'unit'          => 'px'
+                        )
                     ),
                     'btn_padding_top_bottom'       => array(
                         'type'          => 'text',
@@ -843,7 +873,22 @@ FLBuilder::register_module('ModalPopupModule', array(
                         'placeholder'   => '0',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'rules'           => array(
+                                array(
+                                    'selector'     => '.uabb-creative-button-wrap a',
+                                    'property'     => 'padding-top',
+                                    'unit'         => 'px'
+                                ),
+                                array(
+                                    'selector'     => '.uabb-creative-button-wrap a',
+                                    'property'     => 'padding-bottom',
+                                    'unit'         => 'px'
+                                ),    
+                            )
+                        )
                     ),
                     'btn_padding_left_right'       => array(
                         'type'          => 'text',
@@ -851,14 +896,35 @@ FLBuilder::register_module('ModalPopupModule', array(
                         'placeholder'   => '0',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'rules'           => array(
+                                array(
+                                    'selector'     => '.uabb-creative-button-wrap a',
+                                    'property'     => 'padding-left',
+                                    'unit'         => 'px'
+                                ),
+                                array(
+                                    'selector'     => '.uabb-creative-button-wrap a',
+                                    'property'     => 'padding-right',
+                                    'unit'         => 'px'
+                                ),    
+                            )
+                        )
                     ),
                     'btn_border_radius' => array(
                         'type'          => 'text',
                         'label'         => __('Round Corners', 'uabb'),
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'border-radius',
+                            'unit'          => 'px'
+                        )
                     ),
                     'btn_align'         => array(
                         'type'          => 'select',
@@ -868,6 +934,11 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'center'        => __('Center', 'uabb'),
                             'left'          => __('Left', 'uabb'),
                             'right'         => __('Right', 'uabb')
+                        ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-modal-action-wrap, .uabb-button-wrap',
+                            'property'      => 'text-align',
                         )
                     ),
                     'btn_mob_align'         => array(
@@ -1002,6 +1073,7 @@ FLBuilder::register_module('ModalPopupModule', array(
 						'type'          => 'photo',
 						'label'         => __('Image', 'uabb'),
 						'show_remove'	=> true,
+                        'connections'   => array( 'photo' )
 					),
 					'close_icon_size'     => array(
 						'type'          => 'text',
@@ -1017,6 +1089,11 @@ FLBuilder::register_module('ModalPopupModule', array(
 						'label'      => __('Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-close-icon',
+                            'property'  => 'color',
+                        ),
 					),
 					'icon_position'         => array(
                     	'type'          => 'select',
@@ -1100,6 +1177,12 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-modal-title',
+                            'property'        => 'font-size',
+                            'unit'              => 'px'
+                        )
                     ),
                     'title_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -1109,18 +1192,34 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-modal-title',
+                            'property'        => 'line-height',
+                            'unit'              => 'px'
+                        )
                     ),
                     'title_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-modal-title',
+                            'property'        => 'color',
+                        )
                     ),
                     'title_bg_color' => array( 
 						'type'       => 'color',
 	                    'label'         => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-modal-title-wrap',
+                            'property'        => 'background',
+                        )
 					),
 		            'title_bg_color_opc' => array( 
 						'type'        => 'text',
@@ -1155,6 +1254,12 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-modal-text',
+                            'property'        => 'font-size',
+                            'unit'              => 'px'
+                        )
                     ),
                     'ct_content_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -1164,12 +1269,23 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-modal-text',
+                            'property'        => 'line-height',
+                            'unit'              => 'px'
+                        )
                     ),
                     'ct_content_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-modal-text',
+                            'property'        => 'color',
+                        )
                     ),
                 )
             ),
@@ -1196,6 +1312,12 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-modal-action',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
+                        )
                     ),
                     'line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -1205,6 +1327,12 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-modal-action',
+                            'property'        => 'line-height',
+                            'unit'            => 'px'
+                        )
                     ),
                 )
             ),
@@ -1231,6 +1359,12 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-creative-button',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
+                        )
                     ),
                     'btn_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -1240,6 +1374,12 @@ FLBuilder::register_module('ModalPopupModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-creative-button',
+                            'property'        => 'line-height',
+                            'unit'            => 'px'
+                        )
                     ),
                 )
             ),

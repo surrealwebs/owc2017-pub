@@ -33,6 +33,9 @@ class UABB_UI_Panels {
 		/* Affiliate link override */
 		add_filter( 'fl_builder_upgrade_url', array( $this, 'uabb_affiliate_url' ) );
 
+		add_filter( 'fl_builder_keyboard_shortcuts', array( $this, 'tools_key_shortcuts' ), 10, 1 );
+		add_filter( 'fl_builder_main_menu', array( $this, 'tools_menu_button' ), 10, 1 );
+
 		$this->config();
 		$this->init();
 	}
@@ -78,6 +81,63 @@ class UABB_UI_Panels {
 		return $url;
 	}
 
+	function tools_key_shortcuts( $key_shortcuts ) {
+	
+		$key_shortcuts['showUABBGlobalSettings'] = 'b';
+
+		return $key_shortcuts;
+	}
+	function tools_menu_button($views) {
+
+		if ( apply_filters( 'uabb_global_support', true ) && !class_exists( 'FLCustomizer' ) && !function_exists( 'generate_customize_register' ) ) {
+			$views['main']['items'][66] = array(
+				'label' => sprintf(
+							esc_attr__( '%s - Global Settings', 'uabb' ),
+							UABB_PREFIX
+						),
+				'type' => 'event',
+				'eventName' => 'showUABBGlobalSettings',
+				'accessory' => 'b'
+			);
+		}
+		$uabb = BB_Ultimate_Addon_Helper::get_builder_uabb_branding();
+		if ( is_array( $uabb ) ) {
+			$uabb_knowledge_base_url	= ( array_key_exists( 'uabb-knowledge-base-url' , $uabb ) && $uabb['uabb-knowledge-base-url' ] != ''  ) ? $uabb['uabb-knowledge-base-url' ] : 'https://www.ultimatebeaver.com/docs/?utm_source=uabb-pro-dashboard&utm_medium=editor&utm_campaign=knowledge-base-help-link';
+			$uabb_contact_support_url	= ( array_key_exists( 'uabb-contact-support-url' , $uabb ) && $uabb['uabb-contact-support-url' ] != '' ) ? $uabb['uabb-contact-support-url' ] : 'https://www.ultimatebeaver.com/contact/?utm_source=uabb-pro-dashboard&utm_medium=editor&utm_campaign=contact-help-link';
+		}else{
+			$uabb_knowledge_base_url  	= 'https://www.ultimatebeaver.com/docs/?utm_source=uabb-pro-dashboard&utm_medium=editor&utm_campaign=knowledge-base-help-link';
+			$uabb_contact_support_url 	= 'https://www.ultimatebeaver.com/contact/?utm_source=uabb-pro-dashboard&utm_medium=editor&utm_campaign=contact-help-link';
+		}
+
+		$enable_KB = isset( $uabb['uabb-enable-knowledge-base'] ) ? $uabb['uabb-enable-knowledge-base'] : true;
+		$enble_support = isset( $uabb['uabb-enable-contact-support'] ) ? $uabb['uabb-enable-contact-support'] : true;
+
+		if( $enable_KB != false ) {
+			$views['help']['items'][41] = array(
+				'label' => sprintf(
+							esc_attr__( '%s - Knowledge Base', 'uabb' ),
+							UABB_PREFIX
+						),
+				'type' 	=> 'link',
+				'url' 	=> $uabb_knowledge_base_url,
+			);			
+		}
+
+		if( $enble_support != false ) {
+			$views['help']['items'][42] = array(
+				'label' => sprintf(
+							esc_attr__( '%s - Contact Support', 'uabb' ),
+							UABB_PREFIX
+						),
+				'type' 	=> 'link',
+				'url' 	=> $uabb_contact_support_url,
+			);
+		}
+
+		return $views;
+	}
+
+
 	function uabb_bsf_registration_page_url( $url ) {
 
 		if ( is_multisite() && FL_BUILDER_LITE === false ) {
@@ -94,7 +154,7 @@ class UABB_UI_Panels {
 
 		if ( $license_status_class == 'bsf-license-not-active-uabb' ) {
 			if( empty( $branding_name ) && empty( $branding_short_name ) ) {
-				$license_string = '<a href="https://store.brainstormforce.com/purchase-history/" target="_blank">license key</a>';
+				$license_string = '<a href="https://store.brainstormforce.com/licenses/?utm_source=uabb-pro-dashboard&utm_medium=license-screen&utm_campaign=get-license" target="_blank" rel="noopener">license key</a>';
 			} else {
 				$license_string = 'license key';
 			}
@@ -176,6 +236,12 @@ class UABB_UI_Panels {
 		if( is_array( $templates ) && count( $templates ) > 0 ) {
 			foreach( $templates as $type => $type_templates ) {
 				
+				if ( $type == 'sections' ) {
+					$group = UABB_PREFIX;
+				}else{
+					$group = 'Template Cloud';
+				}
+
 				//	Individual type array - [page-templates], [layout] or [row]
 				if( $type_templates ) {
 					foreach( $type_templates as $template_id => $template_data ) {
@@ -187,7 +253,12 @@ class UABB_UI_Panels {
 							isset( $template_data['status'] ) && $template_data['status'] == true &&
 							isset( $template_data['dat_url_local'] ) && !empty( $template_data['dat_url_local'] )
 						) {
-							FLBuilder::register_templates( $template_data['dat_url_local']  );
+							FLBuilder::register_templates(
+								$template_data['dat_url_local'],
+								array(
+    								'group' => $group
+								)
+							);
 						}
 					}
 				}
@@ -257,7 +328,12 @@ class UABB_UI_Panels {
 	 */
 	function builder_ui_bar_buttons( $buttons ) {
 
-		$simple_ui    = ! FLBuilderModel::current_user_has_editing_capability();
+		if( is_callable('FLBuilderUserAccess::current_user_can') ) {
+			$simple_ui    = ! FLBuilderUserAccess::current_user_can( 'unrestricted_editing' );
+		} else {
+			$simple_ui    = ! FLBuilderModel::current_user_has_editing_capability();
+		}
+
 		$has_presets  = BB_Ultimate_Addon_Helper::is_templates_exist( 'presets' );
 		$has_sections = BB_Ultimate_Addon_Helper::is_templates_exist( 'sections' );
 
@@ -291,9 +367,17 @@ class UABB_UI_Panels {
 
 		if ( FLBuilderModel::is_builder_active() ) {
 
+			
+			if( is_callable('FLBuilderUserAccess::current_user_can') ) {
+				$has_editing_cap 	= FLBuilderUserAccess::current_user_can( 'unrestricted_editing' ); 
+				$simple_ui    		= ! $has_editing_cap;
+			} else {
+				$has_editing_cap 	= FLBuilderModel::current_user_has_editing_capability();
+				$simple_ui    		= ! $has_editing_cap;
+			}
+
 			//	Panel
 			$post_id            = $wp_the_query->post->ID;
-			$simple_ui          = ! FLBuilderModel::current_user_has_editing_capability();
 			$categories         = FLBuilderModel::get_categorized_modules();
 
 			/** 
@@ -301,7 +385,6 @@ class UABB_UI_Panels {
 			 **/
 			$is_row_template    = FLBuilderModel::is_post_user_template( 'row' );
 			$is_module_template = FLBuilderModel::is_post_user_template( 'module' );
-			$has_editing_cap    = FLBuilderModel::current_user_has_editing_capability();
 			$row_templates      = FLBuilderModel::get_template_selector_data( 'row' );
 			$module_templates   = FLBuilderModel::get_template_selector_data( 'module' );
 

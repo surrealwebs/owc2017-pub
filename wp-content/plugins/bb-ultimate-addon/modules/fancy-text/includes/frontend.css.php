@@ -176,6 +176,7 @@ if( $settings->effect_type == 'type' && $settings->show_cursor == 'yes' && $sett
 				<?php if( $settings->fancy_line_height['small'] != '' ) : ?>
 				line-height: <?php echo $settings->fancy_line_height['small']; ?>px;
 				<?php endif; ?>
+				width: auto !important;
 			}
 	    }
 	<?php

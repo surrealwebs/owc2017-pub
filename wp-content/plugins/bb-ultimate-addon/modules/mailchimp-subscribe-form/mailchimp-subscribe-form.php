@@ -15,12 +15,14 @@ class UABBSubscribeFormModule extends FLBuilderModule {
 	public function __construct()
 	{
 		parent::__construct( array(
-			'name'          	=> __( 'MailChimp Subscription Form', 'uabb' ),
+			'name'          	=> __( 'Subscription Form', 'uabb' ),
 			'description'   	=> __( 'Adds a simple subscribe form to your layout.', 'uabb' ),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$lead_generation ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/mailchimp-subscribe-form/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/mailchimp-subscribe-form/',
-			'partial_refresh'	=> true
+			'partial_refresh'	=> true,
+			'icon'				=> 'editor-table.svg',
 		));
 		
 		add_action( 'wp_ajax_uabb_subscribe_form_submit', array( $this, 'submit' ) );
@@ -98,9 +100,8 @@ $p = '#(\.0+)+($|-)#';
 $ver1 = preg_replace($p, '', FL_BUILDER_VERSION);
 $ver2 = preg_replace($p, '', '1.8.4');
 if( version_compare( $ver1, $ver2 ) < 0 ) {
-	$notice = __( 'MailChimp Subscription Form requires Beaver Builder versions above 1.8.4. Make sure you use latest Beaver Builder to view best results.' , 'uabb' );
+	$notice = __( 'Subscription Form requires Beaver Builder versions above 1.8.4. Make sure you use latest Beaver Builder to view best results.' , 'uabb' );
 }
-
 
 
 /**
@@ -137,7 +138,8 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
 						'preview'       => array(
 							'type'          => 'text',
 							'selector'      => '.uabb-sf-heading'
-						)
+						),
+						'connections' => array( 'string', 'html' )
 					),
 					'subheading'     => array(
 						'type'          => 'text',
@@ -146,7 +148,8 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
 						'preview'       => array(
 							'type'          => 'text',
 							'selector'      => '.uabb-sf-subheading'
-						)
+						),
+						'connections' => array( 'string', 'html' )
 					),
 				)
 			),
@@ -207,6 +210,11 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
 						'media_buttons' => false,
 						'rows'			=> 6,
 						'default'		=> __('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 'uabb'),
+						'connections'	=> array( 'string', 'html' ),
+						'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-sf-bottom-text',
+                        )
 					),
 				)
 			),
@@ -240,14 +248,16 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
 						'default'       => __( 'Thanks for subscribing! Please check your email for further instructions.', 'uabb' ),
 						'preview'       => array(
 							'type'             => 'none'  
-						)
+						),
+						'connections'	=> array( 'string', 'html' )
 					),
 					'success_url'  => array(
 						'type'          => 'link',
 						'label'         => __( 'Success URL', 'uabb' ),
 						'preview'       => array(
 							'type'             => 'none'  
-						)
+						),
+						'connections' => array( 'url' )
 					)
 				)
 			)
@@ -293,6 +303,11 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                         'label'         => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-subscribe-form',
+                            'property'      => 'background',
+                        )
 					),
 					'background_color_opc'    => array( 
 						'type'        => 'text',
@@ -356,6 +371,12 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
 						'placeholder'		=> '10',
 						'description'       => 'px',
 						'help'          => __( 'Space between form fields.', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-form-field',
+                            'property'      => 'margin-bottom',
+                            'unit'			=> 'px'
+                        )
 					),
 					'form_style'        => array(
 						'type'          => 'select',
@@ -376,12 +397,22 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                         'label'         => __('Text Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-form-field input',
+                            'property'      => 'color',
+                        )
 					),
                     'input_background_color' => array( 
 						'type'       => 'color',
                         'label'         => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-form-field input',
+                            'property'      => 'background',
+                        )
 					),
                     'input_background_color_opc'    => array( 
 						'type'        => 'text',
@@ -398,12 +429,23 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
 						'placeholder'		=> '1',
 						'size'              => '8',
 						'description'       => 'px',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-form-field input',
+                            'property'      => 'border-width',
+                            'unit'			=> 'px'
+                        )
 					),
 					'border_color' => array( 
 						'type'       => 'color',
                         'label'         => __('Border Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-form-field input',
+                            'property'      => 'border-color',
+                        )
 					),
                     'border_active_color' => array( 
 						'type'       => 'color',
@@ -418,6 +460,21 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
 						'placeholder'		=> '12',
 						'size'              => '8',
 						'description'       => 'px',
+						'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+					                'selector'     => '.uabb-form-field input',
+					                'property'     => 'padding-top',
+					                'unit'		=> 'px'
+					            ),
+					            array(
+					                'selector'     => '.uabb-form-field input',
+					                'property'     => 'padding-bottom',
+					                'unit'		=> 'px'
+					            ),    
+					        )
+					    )
 					),
 					'horizontal_padding' => array(
 						'type'              => 'text',
@@ -426,6 +483,21 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
 						'placeholder'		=> '15',
 						'size'              => '8',
 						'description'       => 'px',
+						'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+					                'selector'     => '.uabb-form-field input',
+					                'property'     => 'padding-left',
+					                'unit'		=> 'px'
+					            ),
+					            array(
+					                'selector'     => '.uabb-form-field input',
+					                'property'     => 'padding-right',
+					                'unit'		=> 'px'
+					            ),    
+					        )
+					    )
 					),
 				)
 			),
@@ -441,6 +513,10 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
 		                'type'          => 'text',
 		                'label'         => __('Text', 'uabb'),
 		                'default'       => __('Subscribe', 'uabb'),
+		                'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-form-button .uabb-button-text',
+                        )
 		            ),
 		        )
 			),
@@ -539,6 +615,11 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                         'label'      => __('Text Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-form-button .uabb-button-text',
+                            'property'		=> 'color'
+                        )
                     ),
                     'btn_text_hover_color'        => array( 
                         'type'       => 'color',
@@ -554,6 +635,19 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                         'label'      => __('Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+					                'selector'     => '.uabb-form-button .uabb-button-wrap a',
+					                'property'     => 'border-color'
+					            ),
+					            array(
+					                'selector'     => '.uabb-form-button .uabb-button-wrap a',
+					                'property'     => 'background'
+					            ),    
+					        )
+					    )
                     ),
                     'btn_bg_color_opc'    => array( 
                         'type'        => 'text',
@@ -610,7 +704,7 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                                 'fields'        => array('btn_align', 'btn_mob_align')
                             ),
                             'full'          => array(
-                                'fields'        => array( )
+                                'fields'        => array()
                             ),
                             'custom'        => array(
                                 'fields'        => array('btn_align', 'btn_mob_align', 'btn_custom_width', 'btn_custom_height', 'btn_padding_top_bottom', 'btn_padding_left_right' )
@@ -623,7 +717,13 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                         'default'       => '200',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'width',
+                            'unit'			=> 'px'
+                        )
                     ),
                     'btn_custom_height'  => array(
                         'type'          => 'text',
@@ -631,7 +731,13 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                         'default'       => '45',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'min-height',
+                            'unit'			=> 'px'
+                        )
                     ),
                     'btn_padding_top_bottom'       => array(
                         'type'          => 'text',
@@ -639,7 +745,22 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                         'placeholder'   => '0',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-top',
+					                'unit'			=> 'px'
+					            ),
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-bottom',
+					                'unit'			=> 'px'
+					            ),    
+					        )
+					    )
                     ),
                     'btn_padding_left_right'       => array(
                         'type'          => 'text',
@@ -647,14 +768,35 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                         'placeholder'   => '0',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-left',
+					                'unit'			=> 'px'
+					            ),
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-right',
+					                'unit'			=> 'px'
+					            ),    
+					        )
+					    )
                     ),
                     'btn_border_radius' => array(
                         'type'          => 'text',
                         'label'         => __('Round Corners', 'uabb'),
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-creative-button-wrap a',
+                            'property'      => 'border-radius',
+                            'unit'			=> 'px'
+                        )
                     ),
                 )
             ),
@@ -702,6 +844,12 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-sf-heading',
+                            'property'		=> 'font-size',
+                            'unit'			=> 'px'
+                        )
                     ),
                     'heading_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -711,12 +859,23 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                       	'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-sf-heading',
+                            'property'		=> 'line-height',
+                            'unit'			=> 'px'
+                        )
                     ),
-                    'heading_color'        => array( 
+                    'heading_color'        => array(
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-sf-heading',
+                            'property'		=> 'color',
+                        )
                     ),
 					'heading_margin_bottom' => array(
 						'type'              => 'text',
@@ -772,6 +931,12 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+						    'type'            => 'css',
+						    'selector'        => '.uabb-sf-subheading',
+						    'property'		=> 'font-size',
+						    'unit'			=> 'px'
+						)
                     ),
                     'subheading_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -781,12 +946,23 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+						    'type'            => 'css',
+						    'selector'        => '.uabb-sf-subheading',
+						    'property'		=> 'line-height',
+						    'unit'			=> 'px'
+						)
                     ),
                     'subheading_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+						    'type'            => 'css',
+						    'selector'        => '.uabb-sf-subheading',
+						    'property'		=> 'color',
+						)
                     ),
                     'subheading_margin_bottom' => array(
 						'type'              => 'text',
@@ -826,6 +1002,12 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-sf-bottom-text',
+                            'property'		=> 'font-size',
+                            'unit'			=> 'px'
+                        )
                     ),
                     'text_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -835,12 +1017,23 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                    	   'type'            => 'css',
+                            'selector'        => '.uabb-sf-bottom-text',
+                            'property'		=> 'line-height',
+                            'unit'			=> 'px'
+                        )
                     ),
                     'text_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                    	    'type'            => 'css',
+                            'selector'        => '.uabb-sf-bottom-text',
+                            'property'		=> 'color',
+                        )
                     ),
                     'text_margin_top' => array(
 						'type'              => 'text',
@@ -880,6 +1073,12 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> 'input[type="text"], input[type="text"] ~ label',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'input_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -889,6 +1088,12 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                       'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> 'input[type="text"], input[type="text"] ~ label',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px'
+                    	),
                     ),
                 )
             ),
@@ -915,6 +1120,12 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> 'a.uabb-button',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'btn_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -924,12 +1135,24 @@ FLBuilder::register_module( 'UABBSubscribeFormModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> 'a.uabb-button',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'btn_margin_top' => array(
 						'type'              => 'text',
 						'label'             => __('Margin Top', 'uabb'),
 						'size'              => '5',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> 'a.uabb-button',
+                            'property'	=> 'margin-top',
+                            'unit'		=> 'px'
+                    	),
 					),
                 )
             ),

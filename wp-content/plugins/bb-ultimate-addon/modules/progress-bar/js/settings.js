@@ -185,8 +185,7 @@
             progress_bg_img_size.css('display', 'none');
             gradient_color.css('display', 'none');
             gradient_color_opc.css('display', 'none');
-
-            if( layout == 'circular' ) {
+            if( layout == 'circular' || layout == 'semi-circular' ) {
                 horizontal_before_number.css('display', 'none');
                 
                 gradient_color.css('display', 'table-row');

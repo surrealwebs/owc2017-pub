@@ -29,7 +29,7 @@ if( $settings->style == 'underline' ) {
 
 				$class = ( $settings->show_icon == 'yes' || $settings->style == 'iconfall' ) ? '<span class="uabb-tabs-icon"><i class= " ' . $settings->items[$i]->tab_icon . '"></i></span>' : ''; ?>
 			
-			<div id="section-<?php echo $settings->style; ?>-<?php echo $i; ?>" class="section <?php echo ($i == 0) ? 'uabb-content-current' : ''; ?>">
+			<div id="section-<?php echo $settings->style; ?>-<?php echo $i; ?>" class="<?php echo $settings->id.'-'.$i; ?> section <?php echo ($i == 0) ? 'uabb-content-current' : ''; ?>">
 				<?php if( $settings->responsive == 'accordion' ) : ?>
 				<div class="uabb-tab-acc-title uabb-acc-<?php echo $i; ?>">
 					<<?php echo $settings->title_tag_selection; ?> class="uabb-title-tag">

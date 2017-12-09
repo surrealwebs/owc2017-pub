@@ -32,6 +32,8 @@
 			this._initOverrides();
 			this._initLicenseSettings();
 			this._templatesOverrideChange();
+			this._HelpLinkSupportSettings();
+			this._HelpLinkKBsettings();
 		},
 		
 		/**
@@ -51,6 +53,8 @@
 			$('input[name=fl-upload-icon]').on('click', UABBBuilderAdminSettings._showIconUploader);
 			$('.fl-delete-icon-set').on('click', UABBBuilderAdminSettings._deleteCustomIconSet);
 			$('#uninstall-form').on('submit', UABBBuilderAdminSettings._uninstallFormSubmit);
+			$('input[name=uabb-enable-contact-support]').on('keyup click', UABBBuilderAdminSettings._HelpLinkSupportSettings);
+			$('input[name=uabb-enable-knowledge-base]').on('keyup click', UABBBuilderAdminSettings._HelpLinkKBsettings);
 		},
 		
 		/**
@@ -320,7 +324,26 @@
 			}
 			
 			return false;
+		},
+
+		_HelpLinkKBsettings: function()
+		{
+			if ( 0 === $( '#fl-uabb-branding-form' ).length ) {
+				return;
+			}
+			var kb  = $( 'input[name=uabb-enable-knowledge-base]' )[ 0 ].checked;		
+			$( '.knowledge-base-url' ).toggle( kb );
+		},
+
+		_HelpLinkSupportSettings: function()
+		{
+			if ( 0 === $( '#fl-uabb-branding-form' ).length ) {
+				return;
+			}
+			var support     = $('input[name=uabb-enable-contact-support]')[ 0 ].checked;
+			$( '.contact-support-url' ).toggle( support );
 		}
+
 	};
 
 	/* Initializes the builder's admin settings. */

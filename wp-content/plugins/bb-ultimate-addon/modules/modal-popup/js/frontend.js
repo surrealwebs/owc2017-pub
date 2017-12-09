@@ -23,14 +23,14 @@ jQuery(document).ready(function( $ ) {
 		this.responsive_display = settings.responsive_display;
 		this.medium_device = settings.medium_device;
 		this.small_device = settings.small_device;
-
-		
+	
 		this._initModalPopup();
 
 		var modal_resize = this;
 
 		$( window ).resize(function() {
-		  modal_resize._resizeModalPopup();
+			modal_resize._centerModal();
+			modal_resize._resizeModalPopup();
 		});
 
 	};
@@ -107,7 +107,6 @@ jQuery(document).ready(function( $ ) {
 					
 				this.overlay        = $popup_id.find( '.uabb-overlay' );
 
-
 				$node_module.find( '.uabb-trigger' ).each(function( index ) {
 				 	$this.modal_trigger = $(this);
 					$this.modal_popup   = $( '#modal-' + $this.node );
@@ -132,10 +131,11 @@ jQuery(document).ready(function( $ ) {
 					*/
 
 				});
+
+				this._centerModal();				
 			},
 			_showAutomaticModalPopup: function() {
 
-				console.log ( this._isShowModal() );
 				if( ! this._isShowModal() ) {
 					return;
 				}
@@ -198,6 +198,8 @@ jQuery(document).ready(function( $ ) {
 								}else{
 									Cookies.set( refresh_cookies_name, 'true' );
 								}
+
+								UABBTrigger.triggerHook( 'uabb-modal-after-close', popup_wrap );
 							}
 						});
 
@@ -213,7 +215,10 @@ jQuery(document).ready(function( $ ) {
 							}else{
 								Cookies.set( refresh_cookies_name, 'true' );
 							}
+							
+							UABBTrigger.triggerHook( 'uabb-modal-after-close', popup_wrap );
 						} );
+
 					}
 					/*$this.overlay.addEventListener( 'click', function( ev ) {
 						classie.remove( $this.modal_popup, 'uabb-show' );
@@ -236,6 +241,7 @@ jQuery(document).ready(function( $ ) {
 							Cookies.set( refresh_cookies_name, 'true' );
 						}
 
+						UABBTrigger.triggerHook( 'uabb-modal-after-close', popup_wrap );
 					} );
 
 					inner_content_close = popup_wrap.find( '.uabb-close-modal' );
@@ -248,6 +254,8 @@ jQuery(document).ready(function( $ ) {
 							}else{
 								Cookies.set( refresh_cookies_name, 'true' );
 							}
+
+							UABBTrigger.triggerHook( 'uabb-modal-after-close', popup_wrap );
 						});
 					}
 
@@ -345,6 +353,8 @@ jQuery(document).ready(function( $ ) {
 
 				$(document).unbind('keyup.uabb-modal');
 
+				UABBTrigger.triggerHook( 'uabb-modal-after-close', active_popup );
+
 			},
 			_removeModalHandler: function( ev ) {
 				//console.log( $(this) );
@@ -380,7 +390,7 @@ jQuery(document).ready(function( $ ) {
 				var active_modal = $('.fl-node-' + this.node ),
 				    active_popup = $('.uamodal-' + this.node );
 
-				if ( this.modal_content == 'youtube' || this.modal_content == 'vimeo' || this.modal_content == 'video' ) {
+				if ( this.modal_content != 'photo' ) {
 
 					var modal_iframe 		= active_popup.find( 'iframe' ),
 						modal_video_tag 	= active_popup.find( 'video' );
@@ -399,9 +409,9 @@ jQuery(document).ready(function( $ ) {
 
 				if ( this.responsive_display != '' ) {
 
-					var current_window_size = $("#uabb-js-breakpoint").css("content"),
-						medium_device = '"' + this.medium_device + '"',
-						small_device = '"' + this.small_device + '"';
+					var current_window_size = $(window).width(),
+                        medium_device = parseInt( this.medium_device ),
+                        small_device = parseInt( this.small_device );
 
 					if ( this.responsive_display == 'desktop' && current_window_size > medium_device ) {
 						
@@ -425,6 +435,25 @@ jQuery(document).ready(function( $ ) {
 				}
 
 				return true;
+			},
+			_centerModal: function () {
+
+				$this 		 = this;
+				popup_wrap = $('.uamodal-' + this.node );
+				modal_popup  = '#modal-' + $this.node;
+				node 		 = '.uamodal-' + $this.node;
+
+				if ( $( '#modal-' + this.node ).hasClass('uabb-center-modal') ) {
+		        	$( '#modal-' + this.node ).removeClass('uabb-center-modal');
+				}
+				var top_pos  = (($(window).height() - $( '#modal-' + this.node ).outerHeight()) / 2);
+
+				if ( popup_wrap.find( '.uabb-content' ).outerHeight() > $(window).height() ) {
+   		            $(node).find( modal_popup ).css( 'top', '0' );
+				} else {
+					$(node).find( modal_popup ).css( 'top', + top_pos +'px' );
+				}
+
 			}
 	}
 

@@ -281,6 +281,7 @@ if( $settings->responsive_size == 'yes' ) {
 				<?php if( $settings->show_spacing != 'yes' ) { 
 					
 					if( isset( $settings->pricing_columns[ $i + 1 ] ) ) {
+
 						if( $i < count($settings->pricing_columns) && $settings->pricing_columns[ $i + 1 ]->set_featured == 'yes' ) { 
 							$total_border -= intval($border_size);
 							?>

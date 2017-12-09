@@ -55,7 +55,7 @@ if(!class_exists('UABB_Sortable_Field'))
                                     $output .= '<li class="' . $key . '">' . $option . '</span></li>';  
                               }
 
-                              $output .= '</ul><input type="text" value="' . $assign_val . '" name="' . $name . '"/></div>';
+                              $output .= '</ul><input type="hidden" value="' . $assign_val . '" name="' . $name . '"/></div>';
                               
                               echo $output;
                         }

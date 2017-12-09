@@ -30,7 +30,6 @@ class UABB_Extend_RowColumn {
 			add_filter( 'fl_builder_row_custom_class', 			array( $this, 'row_class'), 10, 2);
 			add_action( 'fl_builder_before_render_row_bg', 		array( $this, 'row_top_html'), 10, 1 );
 			add_action( 'fl_builder_after_render_row_bg', 		array( $this, 'row_bottom_html'), 10, 1 );
-
 		}
 
 		/* Extended Settings CSS */
@@ -38,6 +37,7 @@ class UABB_Extend_RowColumn {
 
 		/* Add Responsive div after all content */
 		add_action( 'fl_builder_after_render_content',   array( $this, 'uabb_responsive_div_html' ), 10, 1 );
+
 	}
 
 	/**
@@ -72,106 +72,169 @@ class UABB_Extend_RowColumn {
 								'default'       => 'none',
 								'options'       => array(
 									'none'						=>	__( 'None', 'uabb' ),
-									'triangle_svg'				=>	__( 'Triangle', 'uabb' ),
+									'arrow_outward'				=>	__( 'Arrow Inward', 'uabb' ),
+									'arrow_inward'				=>	__( 'Arrow Outward', 'uabb' ),
 									'xlarge_triangle'			=>	__( 'Big Triangle', 'uabb' ),
+									'big_triangle'				=>	__( 'Big Triangle Reverse', 'uabb' ),
 									'xlarge_triangle_left'		=>	__( 'Big Triangle Left', 'uabb' ),
 									'xlarge_triangle_right'		=>	__( 'Big Triangle Right', 'uabb' ),
-									'circle_svg'				=>	__( 'Half Circle', 'uabb' ),
+									'clouds'					=>	__( 'Clouds', 'uabb' ),
 									'xlarge_circle'				=>	__( 'Curve Center', 'uabb' ),
 									'curve_up'					=>	__( 'Curve Left', 'uabb' ),
 									'curve_down'				=>	__( 'Curve Right', 'uabb' ),
+									'grass'						=>	__( 'Grass', 'uabb' ),
+									'grass_bend'				=>	__( 'Grass Bend', 'uabb' ),
+									'circle_svg'				=>	__( 'Half Circle', 'uabb' ),
+									'multi_triangle'			=>	__( 'Multi Triangle', 'uabb' ),
+									'mul_triangles'				=>	__( 'Multiple Triangles', 'uabb' ),
+									'pine_tree'					=>	__( 'Pine Tree', 'uabb' ),
+									'pine_tree_bend'			=>	__( 'Pine Tree Bend', 'uabb' ),
+									'round_split'				=>	__( 'Round Split', 'uabb' ),
+									'slime'						=>	__( 'Slime', 'uabb' ),
+									'stamp'						=>	__( 'Stamp', 'uabb' ),
 									'tilt_left'					=>	__( 'Tilt Left', 'uabb' ),
 									'tilt_right'				=>	__( 'Tilt Right', 'uabb' ),
-									'round_split'				=>	__( 'Round Split', 'uabb' ),
+									'triangle_svg'				=>	__( 'Triangle', 'uabb' ),
 									'waves'						=>	__( 'Waves', 'uabb' ),
-									'clouds'					=>	__( 'Clouds', 'uabb' ),
-									'multi_triangle'			=>	__( 'Multi Triangle', 'uabb' ),
+									'wave_slide'				=>	__( 'Wave Slide', 'uabb' ),
 								),
 								'toggle'	=> array(
 									'triangle_svg'				=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'xlarge_triangle'			=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'xlarge_triangle_left'		=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'xlarge_triangle_right'		=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'circle_svg'				=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'xlarge_circle'				=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'curve_up'					=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'curve_down'				=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'tilt_left'					=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'tilt_right'				=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'round_split'				=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'waves'						=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'clouds'					=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color', 'uabb_row_separator_color_opc' )
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 									'multi_triangle'			=> array(
-										'fields'		=> array( 'separator_shape_height', 'separator_shape_height_medium', 'separator_shape_height_small', 'uabb_row_separator_color' )
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color' )
+									),
+									'stamp'						=> array(
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
+									),
+									'big_triangle'				=> array(
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
+									),
+									'arrow_inward'				=> array(
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
+									),
+									'arrow_outward'				=> array(
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
+									),
+									'grass'						=> array(
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
+									),
+									'grass_bend'				=> array(
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
+									),
+									'pine_tree'					=> array(
+										'fields'		=> array( 'separator_shape_height', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
+									),
+									'pine_tree_bend'			=> array(
+										'fields'		=> array( 'separator_shape_height', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
+									),
+									'slime'						=> array(
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
+									),
+									'mul_triangles'				=> array(
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
+									),
+									'wave_slide'				=> array(
+										'fields'		=> array( 'separator_shape_height', 'separator_shape_width', 'uabb_row_separator_color', 'uabb_row_separator_color_opc', 'uabb_row_separator_z_index' )
 									),
 								)
 							),
+							'separator_shape_width'   => array(
+								'type' => 'unit',
+								'label' => __('Width', 'uabb'),
+								'description' => '%',
+								'responsive' => array(
+									'placeholder' => array(
+										'default' => '100',
+										'medium'  => '100',
+										'small'   => '100',
+									),
+									'default' => array(
+										'default' => '100',
+										'medium'  => '100',
+										'small'   => '100',
+									),
+								),
+							),
 							'separator_shape_height'   => array(
-								'type'          => 'text',
-								'label'         => __('Size', 'uabb'),
-								'default'       => '60',
-								'description'   => 'px',
-								'maxlength'     => '3',
-								'size'          => '6',
-								'placeholder'   => '60'
-							),
-							'separator_shape_height_medium'   => array(
-								'type'          => 'text',
-								'label'         => __('Medium Device Size', 'uabb'),
-								'default'       => '',
-								'description'   => 'px',
-								'maxlength'     => '3',
-								'size'          => '6',
-							),
-							'separator_shape_height_small'   => array(
-								'type'          => 'text',
-								'label'         => __('Small Device Size', 'uabb'),
-								'default'       => '',
-								'description'   => 'px',
-								'maxlength'     => '3',
-								'size'          => '6',
+								'type' => 'unit',
+								'label' => __('Height', 'uabb'),
+								'description' => 'px',
+								'responsive' => array(
+									'placeholder' => array(
+										'default' => '60',
+										'medium'  => '',
+										'small'   => '',
+									),
+									'default' => array(
+										'default' => '60',
+										'medium'  => '',
+										'small'   => '',
+									),
+								),
 							),
 							'uabb_row_separator_color' => array( 
 								'type'       => 'color',
 								'label'      => __('Background', 'uabb'),
-								'default'    => 'ffffff',
+								'default'    => '',
 								'show_reset' => true,
-								'help'       => __('Mostly, this should be background color of your adjacent row section. (Default - White)', 'uabb'),
+								'help'       => __('Mostly, this should be background color of your adjacent row section.', 'uabb'),
 							),
 		                	'uabb_row_separator_color_opc' => array( 
 								'type'        => 'text',
 								'label'       => __('Opacity', 'uabb'),
-								'default'     => '',
+								'default'     => '100',
 								'description' => '%',
 								'maxlength'   => '3',
 								'size'        => '5',
+								'placeholder' => '100'
 							),
+							'uabb_row_separator_z_index'  => array(
+				                'type'        => 'uabb-toggle-switch',
+				                'label'       => __('Bring to Front', 'uabb'),
+				                'default'     => 'yes',
+				                'options'     => array(
+				                    'yes'  	  		=> __( 'Yes', 'uabb' ),
+				                    'no'   	  		=> __( 'No', 'uabb' ),
+				                ),
+				            ),
 						)
 					),
 					'general_bottom'       => array(
@@ -183,106 +246,176 @@ class UABB_Extend_RowColumn {
 								'default'       => 'none',
 								'options'       => array(
 									'none'						=>	__( 'None', 'uabb' ),
-									'triangle_svg'				=>	__( 'Triangle', 'uabb' ),
+									'arrow_outward'				=>	__( 'Arrow Inward', 'uabb' ),
+									'arrow_inward'				=>	__( 'Arrow Outward', 'uabb' ),
 									'xlarge_triangle'			=>	__( 'Big Triangle', 'uabb' ),
+									'big_triangle'				=>	__( 'Big Triangle Reverse', 'uabb' ),
 									'xlarge_triangle_left'		=>	__( 'Big Triangle Left', 'uabb' ),
 									'xlarge_triangle_right'		=>	__( 'Big Triangle Right', 'uabb' ),
-									'circle_svg'				=>	__( 'Half Circle', 'uabb' ),
+									'clouds'					=>	__( 'Clouds', 'uabb' ),
 									'xlarge_circle'				=>	__( 'Curve Center', 'uabb' ),
 									'curve_up'					=>	__( 'Curve Left', 'uabb' ),
 									'curve_down'				=>	__( 'Curve Right', 'uabb' ),
+									'grass'						=>	__( 'Grass', 'uabb' ),
+									'grass_bend'				=>	__( 'Grass Bend', 'uabb' ),
+									'circle_svg'				=>	__( 'Half Circle', 'uabb' ),
+									'multi_triangle'			=>	__( 'Multi Triangle', 'uabb' ),
+									'mul_triangles'				=>	__( 'Multiple Triangles', 'uabb' ),
+									'pine_tree'					=>	__( 'Pine Tree', 'uabb' ),
+									'pine_tree_bend'			=>	__( 'Pine Tree Bend', 'uabb' ),
+									'round_split'				=>	__( 'Round Split', 'uabb' ),
+									'slime'						=>	__( 'Slime', 'uabb' ),
+									'stamp'						=>	__( 'Stamp', 'uabb' ),
 									'tilt_left'					=>	__( 'Tilt Left', 'uabb' ),
 									'tilt_right'				=>	__( 'Tilt Right', 'uabb' ),
-									'round_split'				=>	__( 'Round Split', 'uabb' ),
+									'triangle_svg'				=>	__( 'Triangle', 'uabb' ),
 									'waves'						=>	__( 'Waves', 'uabb' ),
-									'clouds'					=>	__( 'Clouds', 'uabb' ),
-									'multi_triangle'			=>	__( 'Multi Triangle', 'uabb' ),
+									'wave_slide'				=>	__( 'Wave Slide', 'uabb' ),
 								),
 								'toggle'	=> array(
 									'triangle_svg'				=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'xlarge_triangle'			=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'xlarge_triangle_left'		=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'xlarge_triangle_right'		=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'circle_svg'				=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'xlarge_circle'				=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'curve_up'					=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'curve_down'				=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'tilt_left'					=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'tilt_right'				=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'round_split'				=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'waves'						=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'clouds'					=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color', 'bot_separator_color_opc' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
 									),
 									'multi_triangle'			=> array(
-										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_height_medium', 'bot_separator_shape_height_small', 'bot_separator_color' )
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color' )
+									),
+									'stamp'						=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+									),
+									'big_triangle'				=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+									),
+									'arrow_inward'				=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+									),
+									'arrow_outward'				=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+									),
+									'grass'						=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+
+									),
+									'grass_bend'				=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+
+									),
+									'pine_tree'					=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+
+									),
+									'pine_tree_bend'			=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+
+									),
+									'slime'						=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+
+									),
+									'mul_triangles'				=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+
+									),
+									'wave_slide'				=> array(
+										'fields'		=> array( 'bot_separator_shape_height', 'bot_separator_shape_width', 'bot_separator_color', 'bot_separator_color_opc', 'bot_separator_z_index' )
+
 									),
 								)
 							),
+							'bot_separator_shape_width'   => array(
+								'type' => 'unit',
+								'label' => __('Width', 'uabb'),
+								'description' => '%',
+								'responsive' => array(
+									'placeholder' => array(
+										'default' => '100',
+										'medium'  => '100',
+										'small'   => '100',
+									),
+									'default' => array(
+										'default' => '100',
+										'medium'  => '100',
+										'small'   => '100',
+									),
+								),
+							),
 							'bot_separator_shape_height'   => array(
-								'type'          => 'text',
-								'label'         => __('Size', 'uabb'),
-								'default'       => '60',
-								'description'   => 'px',
-								'maxlength'     => '3',
-								'size'          => '6',
-								'placeholder'   => '60'
-							),
-							'bot_separator_shape_height_medium'   => array(
-								'type'          => 'text',
-								'label'         => __('Medium Device Size', 'uabb'),
-								'default'       => '',
-								'description'   => 'px',
-								'maxlength'     => '3',
-								'size'          => '6',
-							),
-							'bot_separator_shape_height_small'   => array(
-								'type'          => 'text',
-								'label'         => __('Small Device Size', 'uabb'),
-								'default'       => '',
-								'description'   => 'px',
-								'maxlength'     => '3',
-								'size'          => '6',
+								'type' => 'unit',
+								'label' => __('Height', 'uabb'),
+								'description' => 'px',
+								'responsive' => array(
+									'placeholder' => array(
+										'default' => '60',
+										'medium'  => '',
+										'small'   => '',
+									),
+									'default' => array(
+										'default' => '60',
+										'medium'  => '',
+										'small'   => '',
+									),
+								),
 							),
 							'bot_separator_color' => array( 
 								'type'       => 'color',
 								'label'         => __('Background', 'uabb'),
-								'default'		=> 'ffffff',
+								'default'		=> '',
 								'show_reset' => true,
-								'help'			=> __('Mostly, this should be background color of your adjacent row section. (Default - White)', 'uabb'),
+								'help'			=> __('Mostly, this should be background color of your adjacent row section.', 'uabb'),
 							),
 		                	'bot_separator_color_opc' => array( 
 								'type'        => 'text',
 								'label'       => __('Opacity', 'uabb'),
-								'default'     => '',
+								'default'     => '100',
 								'description' => '%',
 								'maxlength'   => '3',
 								'size'        => '5',
+								'placeholder' => '100'
 							),
+							'bot_separator_z_index'  => array(
+				                'type'        => 'uabb-toggle-switch',
+				                'label'       => __('Bring to Front', 'uabb'),
+				                'default'     => 'yes',
+				                'options'     => array(
+				                    'yes'  	  		=> __( 'Yes', 'uabb' ),
+				                    'no'   	  		=> __( 'No', 'uabb' ),
+				                ),
+				            ),
 						)
 					),
 				)
@@ -381,7 +514,10 @@ class UABB_Extend_RowColumn {
 	function row_class( $class, $row_object ) {
 		$row = $row_object->settings;
 		if ( $row->separator_shape != 'none' ) {
-			$class = $class.' uabb-'.$row->separator_shape;
+			$class = $class.' uabb-top-row uabb-'.$row->separator_shape;
+		}
+		if ( $row->bot_separator_shape != 'none' ) {
+			$class = $class.' uabb-bottom-row uabb-'.$row->bot_separator_shape;
 		}
 		return $class;
 	}

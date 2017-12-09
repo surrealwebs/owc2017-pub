@@ -124,6 +124,15 @@
 		</div>
 	</div>
 	<?php endif; ?>
+
+	<?php
+	if ( 'show' == $settings->uabb_recaptcha_toggle && (isset( $settings->uabb_recaptcha_site_key ) && ! empty( $settings->uabb_recaptcha_site_key )) ) : ?>
+	<div class="uabb-input-group uabb-recaptcha">
+		<span class="uabb-contact-error"><?php _e( 'Please check the captcha to verify you are not a robot.', 'uabb' );?></span>
+		<div id="<?php echo $id; ?>-uabb-grecaptcha" class="uabb-grecaptcha" data-sitekey="<?php echo $settings->uabb_recaptcha_site_key; ?>" data-theme="<?php echo $settings->uabb_recaptcha_theme; ?>"></div>
+	   </div>
+	<?php endif; ?>
+
 	</div>
 
 	<div class="uabb-submit-btn">

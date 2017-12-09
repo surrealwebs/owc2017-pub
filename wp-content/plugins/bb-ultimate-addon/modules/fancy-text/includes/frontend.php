@@ -20,7 +20,7 @@
             $order   = array("\r\n", "\n", "\r", "<br/>", "<br>");
 			$replace = '|';
 
-            $str = str_replace($order, $replace, $settings->fancy_text);
+            $str = str_replace($order, $replace, trim( $settings->fancy_text ) );
             $lines = explode("|", $str);
             $count_lines = count($lines);
 			$output = '';

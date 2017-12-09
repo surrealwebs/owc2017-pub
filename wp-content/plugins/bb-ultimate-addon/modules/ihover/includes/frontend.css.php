@@ -20,7 +20,7 @@ if( count( $settings->ihover_item ) > 0 ) {
             $settings->ihover_item[$i]->separator_color = UABB_Helper::uabb_colorpicker( $settings->ihover_item[$i], 'separator_color' );
             $settings->ihover_item[$i]->separator_color = ( $settings->ihover_item[$i]->separator_color != '' ) ? $settings->ihover_item[$i]->separator_color : '#fafafa';
 
-            $settings->ihover_item[$i]->border_color = UABB_Helper::uabb_colorpicker( $settings->ihover_item[$i], 'border_color' );
+            $settings->ihover_item[$i]->border_color = UABB_Helper::uabb_colorpicker( $settings->ihover_item[$i], 'border_color', true );
             $settings->ihover_item[$i]->border_color = ( $settings->ihover_item[$i]->border_color != '' ) ? $settings->ihover_item[$i]->border_color : '#EFEFEF';
 
             $settings->ihover_item[$i]->background_color = UABB_Helper::uabb_colorpicker( $settings->ihover_item[$i], 'background_color', true );

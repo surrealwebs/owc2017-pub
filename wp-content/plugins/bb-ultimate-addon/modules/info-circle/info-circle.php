@@ -14,10 +14,11 @@ class UABBInfoCircleModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __( 'Info Circle', 'uabb' ),
 			'description'   	=> __( 'Display a info circle.', 'uabb' ),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/info-circle/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/info-circle/',
-            'partial_refresh'	=> false
+            'partial_refresh'	=> true
 		));
 
 		$this->add_css( 'uabb-animate', BB_ULTIMATE_ADDON_URL . 'assets/css/uabb-animate.css' );
@@ -110,7 +111,7 @@ class UABBInfoCircleModule extends FLBuilderModule {
 
 			FLBuilder::render_module_html( 'uabb-button', $btn_settings );
 		} else {
-			echo '<a href="'. $item->cta_link .'" target="'. $item->cta_link_target .'" class="uabb-infoc-link" >'. $item->cta_text .'</a>';
+			echo '<a href="'. $item->cta_link .'" target="'. $item->cta_link_target .'" '. BB_Ultimate_Addon_Helper::get_link_rel( $item->cta_link_target, 0, 0 ) .' class="uabb-infoc-link" >'. $item->cta_text .'</a>';
 		}
 	}
 }
@@ -480,6 +481,11 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 						'default'    => '',
 						'show_reset' => true,
 						'help'		 => __( 'Use this color only when you want same color for Information Area and for unique color use Info Circle Items', 'uabb' ),
+						'preview'         => array(
+						    'type'            => 'css',
+						    'selector'        => '.uabb-info-circle-in',
+						    'property'        => 'background',
+						)
 					),
 					'info_bg_color_opc' => array( 
 						'type'        => 'text',
@@ -596,6 +602,11 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 									'fields'	=> array( 'info_separator_width', 'info_separator_height', 'info_separator_color', 'info_separator_margin_top', 'info_separator_margin_bottom' )
 								)
 							),
+							'preview'         => array(
+	                            'type'            => 'css',
+	                            'selector'        => '.uabb-ic-separator',
+	                            'property'        => 'border-bottom-style',
+	                        )
 					),
 					'info_separator_height' 	=> array(
 						'type'			=> 'text',
@@ -603,6 +614,12 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 						'placeholder'	=> '3',
 						'size'			=> '5',
 						'description'	=> 'px',
+					 	'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ic-separator',
+                            'property'        => 'border-bottom-width',
+                            'unit'            => 'px',
+                        )
 					),
 					'info_separator_width' 	=> array(
 						'type'			=> 'text',
@@ -611,12 +628,17 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 						'size'			=> '5',
 						'description'	=> '%',
 					),
-					'info_separator_color' => array( 
+					'info_separator_color' => array(
 						'type'       => 'color',
 						'label'		 => __( 'Separator Color', 'uabb' ),
 						'default'    => '',
 						'show_reset' => true,
 						'help'	     => __( 'For same color use this option and to give unique color use Info Circle Items.', 'uabb' ),
+					 	'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ic-separator',
+                            'property'        => 'border-bottom-color',
+                        )
 					),
 				)
 			),
@@ -648,6 +670,11 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 									'fields'	=> array( 'connector_border_width', 'connector_border_color' )
 								)
 							),
+						    'preview'	=> array(
+	                            'type'		=> 'css',
+	                            'selector'	=> '.uabb-info-circle-wrap:before',
+	                            'property'	=> 'border-style',
+	                    	),
 					),
 					'connector_border_width' 	=> array(
 						'type'			=> 'text',
@@ -655,12 +682,23 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 						'placeholder'	=> '1',
 						'size'			=> '5',
 						'description'	=> 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-wrap:before',
+                            'property'	=> 'border-width',
+                            'unit'		=> 'px'
+                    	),
 					),
 					'connector_border_color' => array( 
 						'type'       => 'color',
 						'label'		 => __( 'Line Color', 'uabb' ),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-wrap:before',
+                            'property'	=> 'border-color',
+                    	),
 					),
 				)
 			),
@@ -690,6 +728,7 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 						'type'          => 'photo',
 						'label'         => __( 'Photo', 'uabb' ),
 						'show_remove'	=> true,
+						'connections' => array( 'photo' )
 					),
 					'outer_bg_img_pos' => array(
 							'type'          => 'select',
@@ -734,6 +773,11 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 						'label'		 => __( 'Background Color', 'uabb' ),
 						'default'    => '',
 						'show_reset' => true,
+					    'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-info-circle-out',
+                            'property'        => 'background',
+                        )
 					),
 					'outer_bg_color_opc' => array( 
 						'type'        => 'text',
@@ -789,6 +833,12 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-title',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -798,12 +848,23 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                    	'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-title',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-title',
+                            'property'	=> 'color',
+                    	),
                     ),
                     'title_margin_top' => array(
 						'type'              => 'text',
@@ -812,6 +873,12 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-title',
+                            'property'	=> 'margin-top',
+                            'unit'		=> 'px'
+                    	),
 					),
 					'title_margin_bottom' => array(
 						'type'              => 'text',
@@ -820,6 +887,12 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-title',
+                            'property'	=> 'margin-bottom',
+                            'unit'		=> 'px'
+                    	),
 					),
                 )
             ),
@@ -846,6 +919,12 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-desc',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'desc_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -855,12 +934,23 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-desc',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'desc_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                    	'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-desc',
+                            'property'	=> 'color',
+                    	),
                     ),
                     'desc_margin_top' => array(
 						'type'              => 'text',
@@ -869,6 +959,12 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-desc',
+                            'property'	=> 'margin-top',
+                            'unit'		=> 'px'
+                    	),
 					),
 					'desc_margin_bottom' => array(
 						'type'              => 'text',
@@ -877,6 +973,12 @@ FLBuilder::register_module('UABBInfoCircleModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-info-circle-desc',
+                            'property'	=> 'margin-bottom',
+                            'unit'		=> 'px'
+                    	),
 					),
                 )
             ),
@@ -900,7 +1002,8 @@ FLBuilder::register_settings_form('info_circle_items_form', array(
 							'description' => '',
 							'default'	  => __( 'Info Circle', 'uabb' ),
 							'placeholder' => __( 'Title', 'uabb' ),
-							'class'		  => 'uabb-circle-item-title'
+							'class'		  => 'uabb-circle-item-title',
+							'connections' => array( 'string', 'html' )
 						),
 					)
 				),
@@ -912,6 +1015,7 @@ FLBuilder::register_settings_form('info_circle_items_form', array(
 							'default'	=> __( 'Nuper turba hunc viseret foret vultus. Conversa turba orbem coeptis fossae liquidas. Innabilis membra est quisque evolvit praebebat vos his adsiduis. Matutinis caelo speciem capacius tempora posset: sic. Instabilis magni alta erat: unus divino obliquis igni turba.', 'uabb' ),
 							'label'  	=> '',
 							'rows'   	=> 13,
+							'connections'	=> array( 'string', 'html' )
 						)
 					),
 				),
@@ -965,6 +1069,7 @@ FLBuilder::register_settings_form('info_circle_items_form', array(
 							'type'          => 'text',
 							'label'         => __('Text', 'uabb'),
 							'default'       => __('Read More', 'uabb'),
+							'connections'	=> array( 'string', 'html' )
 						),
 						'cta_link'          => array(
 							'type'          => 'link',
@@ -972,7 +1077,8 @@ FLBuilder::register_settings_form('info_circle_items_form', array(
 							'help'          => __('The link applies to the entire module. If choosing a call to action type below, this link will also be used for the text or button.', 'uabb'),
 							'preview'       => array(
 								'type'          => 'none'
-							)
+							),
+							'connections'	=> array( 'url' )
 						),
 						'cta_link_target'   => array(
 							'type'          => 'select',
@@ -1014,6 +1120,7 @@ FLBuilder::register_settings_form('info_circle_items_form', array(
 							'type'          => 'photo',
 							'label'         => __( 'Photo', 'uabb' ),
 							'show_remove'	=> true,
+							'connections'	=> array( 'photo' )
 						),
 						'inner_circle_bg_img_pos' => array(
 								'type'          => 'select',
@@ -1058,6 +1165,11 @@ FLBuilder::register_settings_form('info_circle_items_form', array(
 							'label'		 => __( 'Background Color', 'uabb' ),
 							'default'    => '',
 							'show_reset' => true,
+							'preview'         => array(
+	                            'type'            => 'css',
+	                            'selector'        => '.uabb-info-circle-in',
+	                            'property'        => 'background',
+	                        )
 						),
 						'inner_circle_bg_color_opc' => array( 
 							'type'        => 'text',
@@ -1130,6 +1242,7 @@ FLBuilder::register_settings_form('info_circle_items_form', array(
 							'label'		 => __( 'Icon Background Color', 'uabb' ),
 							'default'    => '',
 							'show_reset' => true,
+							'show_alpha' => true,
 						),
 						'icon_gradient'     => array(
 							'type'          => 'uabb-toggle-switch',
@@ -1184,11 +1297,13 @@ FLBuilder::register_settings_form('info_circle_items_form', array(
 							'type'          => 'photo',
 							'label'         => __( 'Photo', 'uabb' ),
 							'show_remove'	=> true,
+							'connections'	=> array( 'photo' )
 						),
 						'photo_url'     => array(
 							'type'          => 'text',
 							'label'         => __( 'Photo URL', 'uabb' ),
-							'placeholder'   => 'http://www.example.com/my-photo.jpg'
+							'placeholder'   => 'http://www.example.com/my-photo.jpg',
+							'connections'	=> array( 'url' )
 						),
 				    )
 				),
@@ -1231,11 +1346,13 @@ FLBuilder::register_settings_form('info_circle_items_form', array(
 							'type'          => 'photo',
 							'label'         => __( 'Photo', 'uabb' ),
 							'show_remove'	=> true,
+							'connections'	=> array( 'photo' )
 						),
 						'active_photo_url'     => array(
 							'type'          => 'text',
 							'label'         => __( 'Photo URL', 'uabb' ),
-							'placeholder'   => 'http://www.example.com/my-photo.jpg'
+							'placeholder'   => 'http://www.example.com/my-photo.jpg',
+							'connections'	=> array( 'string', 'html' )
 						),
 				    )
 				),

@@ -16,6 +16,7 @@
                 tax_filter_div = form.find('#fl-builder-settings-section-masonary_filter .fl-loop-builder-masonary_filter').find('select'),
                 btn_flat_button_options = form.find('select[name=btn_flat_button_options]'),
                 btn_style = form.find('select[name=btn_style]'),
+                pagination = form.find('select[name=pagination]'),
                 show_meta = form.find('select[name=show_meta]'),
                 show_excerpt = form.find('select[name=show_excerpt]'),
                 show_title = form.find('select[name=show_title]'),
@@ -26,7 +27,8 @@
                 show_categories = form.find('select[name=show_categories]'),
                 show_tags = form.find('select[name=show_tags]'),
                 show_comments = form.find('select[name=show_comments]'),
-                blog_image_position = form.find('select[name=blog_image_position]');
+                blog_image_position = form.find('select[name=blog_image_position]'),
+                mobile_structure = form.find( 'select[name=mobile_structure]' );
 
             show_title.on('change', $.proxy( this._hideTypography, this ) );
             show_excerpt.on('change', $.proxy( this._hideTypography, this ) );
@@ -34,6 +36,7 @@
             show_date_box.on('change', $.proxy( this._hideTypography, this ) );
             cta_type.on('change', $.proxy( this._hideTypography, this ) );
             show_featured_image.on('change', $.proxy( this._hideTypography, this ) );
+            pagination.on('change', $.proxy( this._togglePagination, this ) );
 
             carousal_type.on('change', $.proxy( this._toggle, this ) );
             is_carousel.on('change', $.proxy( this._toggleSection, this ) );
@@ -41,6 +44,7 @@
             tax_filter_div.on('change', $.proxy( this._toggleTaxFilter, this ) );
             is_carousel.on('change', $.proxy( this._toggleTaxFilter, this ) );
             show_featured_image.on('change', $.proxy( this._toggleFeaturedImageSection, this ) );
+            mobile_structure.on( 'change', $.proxy( this._toggleFeaturedImageSection, this ) );
             blog_image_position.on('change', $.proxy( this._toggleFeaturedImageSection, this ) );
             enable_arrow.on('change', $.proxy( this._toggleArrowSettings, this ) );
             img_size.on('change', $.proxy( this._toggleFeaturedImageSection, this ) );
@@ -73,14 +77,14 @@
             $( this._flatBtnOption, this );
             $( this._toggleMeta, this );
             $( this._toggleContent, this );
+            $( this._togglePagination, this );
             $( this._hideTypography, this );
-
             $("#fl-field-layout_sort_order").find( ".uabb-sortable" ).sortable({
                 out: function( event, ui ) {
                     setTimeout( function() {
                         var input = $("#fl-field-layout_sort_order").find("input[name=layout_sort_order]").val(),
                         blog_image_position = form.find('select[name=blog_image_position]').val();
-                        //console.log(input);
+
                         if( blog_image_position == 'top' ) {
                             if( input.substring(0, 3) == 'img' || input.slice(-3) == 'img' ) {
                                 form.find('#fl-field-overall_padding').show();
@@ -106,7 +110,8 @@
                 show_title = form.find('select[name=show_title]').val(),
                 show_date_box = form.find('select[name=show_date_box]').val(),
                 cta_type = form.find('select[name=cta_type]').val(),
-                show_featured_image    = form.find('select[name=show_featured_image]').val();
+                show_featured_image    = form.find('select[name=show_featured_image]').val(),
+                post_layout = form.find('select[name=post_layout]').val();
 
             if( show_meta == 'no' && show_excerpt == 'no' && show_title == 'no' && show_date_box == 'no' && cta_type == 'none' ) {
                 form.find('.fl-builder-settings-tabs a[href="#fl-builder-settings-tab-typography"]').hide();
@@ -120,11 +125,11 @@
                 form.find('#fl-field-layout_sort_order .uabb-sortable .cta').show();
             }
 
-            if( show_featured_image == 'no' && show_meta == 'no' && show_excerpt == 'no' && show_title == 'no' && cta_type == 'none' ) {
+            if( show_featured_image == 'no' && show_meta == 'no' && show_excerpt == 'no' && show_title == 'no' && cta_type == 'none' && cta_type == 'none' ) {
                 form.find('#fl-field-layout_sort_order').hide();
                 form.find('.fl-builder-settings-tabs a[href="#fl-builder-settings-tab-layout"]').hide();
             } else {
-                if( ( show_featured_image == 'yes' && show_meta == 'no' && show_excerpt == 'no' && show_title == 'no' && cta_type == 'none' ) || ( show_featured_image == 'no' && show_meta == 'yes' && show_excerpt == 'no' && show_title == 'no' && cta_type == 'none' ) || ( show_featured_image == 'no' && show_meta == 'no' && show_excerpt == 'yes' && show_title == 'no' && cta_type == 'none' ) || ( show_featured_image == 'no' && show_meta == 'no' && show_excerpt == 'no' && show_title == 'yes' && cta_type == 'none' ) || ( show_featured_image == 'no' && show_meta == 'no' && show_excerpt == 'no' && show_title == 'no' && cta_type != 'none' ) ) {
+                if( ( show_featured_image == 'yes' && show_meta == 'no' && show_excerpt == 'no' && show_title == 'no' && cta_type == 'none' && cta_type == 'none' ) || ( show_featured_image == 'no' && show_meta == 'yes' && show_excerpt == 'no' && show_title == 'no' && cta_type == 'none' ) || ( show_featured_image == 'no' && show_meta == 'no' && show_excerpt == 'yes' && show_title == 'no' && cta_type == 'none' ) || ( show_featured_image == 'no' && show_meta == 'no' && show_excerpt == 'no' && show_title == 'yes' && cta_type == 'none' ) || ( show_featured_image == 'no' && show_meta == 'no' && show_excerpt == 'no' && show_title == 'no' && cta_type != 'none' ) ) {
 
                     form.find('#fl-field-layout_sort_order').hide();
                     form.find('.fl-builder-settings-tabs a[href="#fl-builder-settings-tab-layout"]').hide();
@@ -133,6 +138,10 @@
                     form.find('#fl-field-layout_sort_order').show();
                     form.find('.fl-builder-settings-tabs a[href="#fl-builder-settings-tab-layout"]').show();
                 }
+            }
+
+            if( post_layout == 'custom' ) {
+                form.find('.fl-builder-settings-tabs a[href="#fl-builder-settings-tab-layout"]').hide();
             }
         },
 
@@ -151,9 +160,17 @@
                 } else {
                     form.find('#fl-field-excerpt_count').hide();
                 }
+
+                if( content_type == 'excerpt' || content_type == 'content' ) {
+                    form.find('#fl-field-strip_content_html').show();
+                } else {
+                    form.find('#fl-field-strip_content_html').hide();
+                }
+
             } else {
                 form.find('#fl-field-content_type').hide();
                 form.find('#fl-field-excerpt_count').hide();
+                form.find('#fl-field-strip_content_html').hide();
                 form.find('#fl-builder-settings-section-desc_typography').hide();
                 form.find('#fl-field-layout_sort_order .uabb-sortable .content').hide();
             }
@@ -228,6 +245,24 @@
             }
         },
 
+        _togglePagination: function() {
+
+            var form        = $('.fl-builder-settings'),
+            show_pagination = form.find('select[name=show_pagination]').val(),
+            is_carousel    = form.find('select[name=is_carousel]').val(),
+            pagination = form.find('select[name=pagination]').val();
+            if( show_pagination == 'yes' && pagination == 'scroll' && is_carousel != 'masonary' ) {
+                form.find('#fl-field-show_paginate_loader').show();
+                form.find('#fl-field-total_posts_switch').hide();
+                form.find('#fl-field-total_posts').hide();
+            }
+            else {
+                form.find('#fl-field-show_paginate_loader').hide();
+                form.find('#fl-field-total_posts_switch').show();
+                form.find('#fl-field-total_posts').show();
+            }
+        },
+
         _flatBtnOption: function() {
 
             var form        = $('.fl-builder-settings'),
@@ -257,8 +292,11 @@
                 post_type = form.find('select[name=post_type]').val(),
                 show_pagination = form.find('select[name=show_pagination]').val(),
                 pagination = form.find('select[name=pagination]').val(),
+                filter_type    = form.find('select[name=uabb_masonary_filter_type_'+post_type+']').val(),
                 is_no_filter = form.find('select[name=masonary_filter_'+post_type+']').val();
 
+                form.find('.fl-loop-builder-filter').hide();
+                form.find('.fl-loop-builder-' + post_type + '-filter').show();
             if( is_carousel == 'masonary' ) {
                 tax_filter_div.hide();
 
@@ -276,14 +314,28 @@
                             form.find('#fl-builder-settings-section-pagination_style').hide();
                         }
                         form.find('#fl-builder-settings-section-masonary_style').hide();
+                        form.find('#fl-builder-settings-section-masonary_select_style').hide();
+                        form.find('#fl-builder-settings-section-taxonomy_filter_select_field_typography').hide();
                     } else {
                         form.find('#fl-builder-settings-section-pagination_setting').hide();
                         form.find('#fl-builder-settings-section-pagination_style').hide();
-                        form.find('#fl-builder-settings-section-masonary_style').show();
+                        form.find('#fl-builder-settings-section-taxonomy_filter_select_field_typography').show();
+                        if( filter_type == 'drop-down' ) {
+                            form.find('#fl-builder-settings-section-masonary_select_style').show();
+                            form.find('#fl-builder-settings-section-masonary_style').hide();
+                            form.find('#fl-field-taxonomy_filter_select_color').show();
+                        }
+                        else {
+                            form.find('#fl-builder-settings-section-masonary_style').show();
+                            form.find('#fl-builder-settings-section-masonary_select_style').hide();
+                            form.find('#fl-field-taxonomy_filter_select_color').hide();
+                        }
                     }
                 } else {
                     form.find('#fl-builder-settings-section-masonary_filter').hide();
                     form.find('#fl-builder-settings-section-masonary_style').hide();
+                    form.find('#fl-builder-settings-section-masonary_select_style').hide();
+                    form.find('#fl-builder-settings-section-taxonomy_filter_select_field_typography').hide();
                     form.find('#fl-builder-settings-section-pagination_setting').show();
                     if( show_pagination == 'yes' && pagination == 'numbers' ) {
                         form.find('#fl-builder-settings-section-pagination_style').show();
@@ -312,11 +364,17 @@
 
         _toggle: function() {
             var form        = $('.fl-builder-settings'),
-                carousal_type    = form.find('select[name=total_posts_switch]').val();
+                carousal_type    = form.find('select[name=total_posts_switch]').val(),
+                data_source = form.find('select[name=data_source]').val();
+
             if( carousal_type == 'all' ) {
                 form.find('#fl-field-total_posts').hide();
             } else {
                 form.find('#fl-field-total_posts').show();
+            }
+
+            if ( data_source == 'main_query' ) {
+                form.find('#fl-field-posts_per_page').hide();
             }
         },
 
@@ -333,6 +391,8 @@
                     form.find('#fl-field-arrow_color').show();
                     form.find( '#fl-field-arrow_style' ).show();
                     form.find( '#fl-field-arrow_position' ).show();
+                    form.find('#fl-field-icon_left').show();
+                    form.find('#fl-field-icon_right').show();
                     if( arrow_style == 'square-border' || arrow_style == 'circle-border' ) {
                         form.find( '#fl-field-arrow_background_color' ).hide();
                         form.find( '#fl-field-arrow_background_color_opc' ).hide();
@@ -347,6 +407,8 @@
                         form.find( '#fl-field-arrow_border_size' ).hide();
                     }
                 } else {
+                    form.find('#fl-field-icon_left').hide();
+                    form.find('#fl-field-icon_right').hide();
                     form.find('#fl-field-arrow_color').hide();
                     form.find( '#fl-field-arrow_style' ).hide();
                     form.find( '#fl-field-arrow_background_color' ).hide();
@@ -364,6 +426,7 @@
                 show_date_box    = form.find('select[name=show_date_box]').val(),
                 show_featured_image    = form.find('select[name=show_featured_image]').val(),
                 blog_image_position = form.find('select[name=blog_image_position]').val(),
+                mobile_structure = form.find( 'select[name=mobile_structure]' ).val(),
                 input = $("#fl-field-layout_sort_order").find("input[name=layout_sort_order]").val();
             
             if( blog_image_position == 'top' ) {
@@ -376,6 +439,20 @@
                 form.find('#fl-field-overall_padding').hide();
             } else {
                 form.find('#fl-field-overall_padding').show();
+            }
+
+            if( blog_image_position == 'left' || blog_image_position == 'right' ) {
+                // show mobile_structure
+                form.find('#fl-field-mobile_structure').show();
+                /*if( mobile_structure == 'stack' && blog_image_position == 'right' ) {
+                    form.find('#fl-field-stacking_order').show();
+                } else {
+                    form.find('#fl-field-stacking_order').hide();
+                }*/
+
+            } else {
+                form.find('#fl-field-mobile_structure').hide();
+                //form.find('#fl-field-stacking_order').hide();
             }
 
             if( show_featured_image == 'yes' ) {
@@ -441,7 +518,27 @@
                 carousal_type    = form.find('select[name=total_posts_switch]').val(),
                 show_pagination = form.find('select[name=show_pagination]').val(),
                 pagination = form.find('select[name=pagination]').val(),
+                data_source = form.find('select[name=data_source]').val(),
+                filter_type    = form.find('select[name=uabb_masonary_filter_type_'+post_type+']').val(),
                 is_no_filter = form.find('select[name=masonary_filter_'+post_type+']').val();
+
+            if ( data_source == 'main_query' || show_pagination == 'no' ) {
+                form.find('#fl-field-posts_per_page').hide();
+            }
+            if ( data_source == 'custom_query' && show_pagination == 'yes' ) {
+                form.find('#fl-field-posts_per_page').show();
+            }
+
+            if( show_pagination == 'yes' && pagination == 'scroll' && is_carousel != 'masonary' ) {
+                form.find('#fl-field-show_paginate_loader').show();
+                form.find('#fl-field-total_posts_switch').hide();
+                form.find('#fl-field-total_posts').hide();
+            }
+            else {
+                form.find('#fl-field-show_paginate_loader').hide();
+                form.find('#fl-field-total_posts_switch').show();
+                form.find('#fl-field-total_posts').show();
+            }
 
             if( is_carousel == 'grid' ) {
                 form.find('#fl-builder-settings-section-carousel_filter').hide();
@@ -451,6 +548,8 @@
                 form.find('#fl-field-below_element_space').show();
                 form.find('#fl-field-post_per_grid').hide();
                 form.find('#fl-builder-settings-section-masonary_style').hide();
+                form.find('#fl-builder-settings-section-masonary_select_style').hide();
+                form.find('#fl-builder-settings-section-taxonomy_filter_select_field_typography').hide();
                 form.find('#fl-builder-settings-section-pagination_setting').show();
                 if( show_pagination == 'yes' && pagination == 'numbers' ) {
                     form.find('#fl-builder-settings-section-pagination_style').show();
@@ -465,11 +564,14 @@
                 } else {
                     form.find('#fl-field-total_posts').show();
                 }
+
             } else if( is_carousel == 'feed' ) {
                 form.find('#fl-builder-settings-section-carousel_filter').hide();
                 form.find('#fl-builder-settings-section-grid_filter').hide();
                 form.find('#fl-builder-settings-section-masonary_filter').hide();
                 form.find('#fl-builder-settings-section-masonary_style').hide();
+                form.find('#fl-builder-settings-section-masonary_select_style').hide();
+                form.find('#fl-builder-settings-section-taxonomy_filter_select_field_typography').hide();
                 form.find('#fl-field-equal_height_box').hide();
                 form.find('#fl-field-below_element_space').hide();
 
@@ -496,22 +598,36 @@
 
 
                 if ( form.find('.fl-loop-builder-'+post_type+'-masonary_filter').children().length > 0 ) {
-                    //console.log('.fl-loop-builder-'+post_type+'-masonary_filter');
+
                     form.find('#fl-builder-settings-section-masonary_filter').show();
                     form.find('.fl-loop-builder-masonary_filter').hide();
                     form.find('.fl-loop-builder-'+post_type+'-masonary_filter').show();
-                    form.find('#fl-builder-settings-section-masonary_style').show();
+                    if( filter_type == 'drop-down' ) {
+                        form.find('#fl-builder-settings-section-masonary_select_style').show();
+                        form.find('#fl-builder-settings-section-masonary_style').hide();
+                        form.find('#fl-field-taxonomy_filter_select_color').show();
+                    }
+                    else {
+                        form.find('#fl-builder-settings-section-masonary_select_style').hide();
+                        form.find('#fl-builder-settings-section-masonary_style').show();
+                        form.find('#fl-field-taxonomy_filter_select_color').hide();
+                    }
+                    form.find('#fl-builder-settings-section-taxonomy_filter_select_field_typography').show();
                     //form.find('#fl-builder-settings-section-pagination_setting').hide();
                     //form.find('#fl-builder-settings-section-pagination_style').hide();
                 } else {
                     form.find('#fl-builder-settings-section-masonary_filter').hide();
                     form.find('#fl-builder-settings-section-masonary_style').hide();
+                    form.find('#fl-builder-settings-section-masonary_select_style').hide();
+                    form.find('#fl-builder-settings-section-taxonomy_filter_select_field_typography').hide();
                 }
             } else {
                 form.find('#fl-builder-settings-section-carousel_filter').show();
                 form.find('#fl-builder-settings-section-grid_filter').show();
                 form.find('#fl-builder-settings-section-masonary_filter').hide();
                 form.find('#fl-builder-settings-section-masonary_style').hide();
+                form.find('#fl-builder-settings-section-masonary_select_style').hide();
+                form.find('#fl-builder-settings-section-taxonomy_filter_select_field_typography').hide();
                 form.find('#fl-field-equal_height_box').show();
                 form.find('#fl-field-below_element_space').hide();
                 form.find('#fl-field-post_per_grid_desktop').show();
@@ -547,6 +663,13 @@
                 form.find('#fl-builder-settings-section-pagination_setting').hide();
                 form.find('#fl-builder-settings-section-pagination_style').hide();
             }
+            if( show_pagination == 'yes' && pagination == 'scroll' && is_carousel != 'masonary' ) {
+                form.find('#fl-field-total_posts').hide();
+            }
+            else {
+                form.find('#fl-field-total_posts').show();
+            }
+
         },
 
     });

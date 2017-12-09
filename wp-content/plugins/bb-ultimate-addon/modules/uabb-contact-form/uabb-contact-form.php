@@ -13,21 +13,58 @@ class UABBContactFormModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'				=> __('Contact Form', 'uabb'),
 			'description'		=> __('A very simple contact form.', 'uabb'),
-			'category'			=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$lead_generation ),
+            'group'         => UABB_CAT,
 			'dir'				=> BB_ULTIMATE_ADDON_DIR . 'modules/uabb-contact-form/',
 			'url'				=> BB_ULTIMATE_ADDON_URL . 'modules/uabb-contact-form/',
 			'editor_export'		=> false,
-			'partial_refresh'	=> true
+			'partial_refresh'	=> true,
+			'icon'				=> 'editor-table.svg',
 		));
 
 		add_action('wp_ajax_uabb_builder_email', array($this, 'send_mail'));
 		add_action('wp_ajax_nopriv_uabb_builder_email', array($this, 'send_mail'));
+		add_filter( 'script_loader_tag', array( $this, 'uabb_add_async_attribute' ), 10, 2 );
 	}
 
 	static public function mailto_email()
 	{
 		return $this->settings->mailto_email;
 	}
+
+	/**
+	 * @method enqueue_scripts
+	 */
+	public function enqueue_scripts() {
+		$settings = $this->settings;
+		if ( isset( $settings->uabb_recaptcha_toggle ) && $settings->uabb_recaptcha_toggle == 'show' && isset( $settings->uabb_recaptcha_site_key ) && ! empty( $settings->uabb_recaptcha_site_key ) ) {
+
+			$site_lang = substr( get_locale(), 0, 2 );
+			$post_id    = FLBuilderModel::get_post_id();
+
+			$this->add_js(
+				'uabb-g-recaptcha',
+				'https://www.google.com/recaptcha/api.js?onload=onLoadUABBReCaptcha&render=explicit&hl=' . $site_lang,
+				array( 'fl-builder-layout-' . $post_id ),
+				'2.0',
+				true
+			);
+		}
+	}
+
+	/**
+	 * @method  uabb_add_async_attribute for the enqueued `uabb-g-recaptcha` script
+	 * @param string $tag    Script tag
+	 * @param string $handle Registered script handle
+	 */
+	public function uabb_add_async_attribute( $tag, $handle ) {
+		if ( ( $handle !== 'uabb-g-recaptcha'  ) || (  $handle === 'uabb-g-recaptcha' && strpos( $tag, 'uabb-g-recaptcha-api' ) !== false ) ) {
+			return $tag;
+		}
+
+		return str_replace( ' src', ' id="uabb-g-recaptcha-api" async="async" defer="defer" src', $tag );
+	}
+
 	/**
 	 * @method send_mail
 	 */
@@ -78,53 +115,14 @@ class UABBContactFormModule extends FLBuilderModule {
 		$uabb_filter_from_email = apply_filters( 'uabb_from_email', $uabb_contact_from_email );
 		$uabb_filter_from_name = apply_filters( 'uabb_from_name', $uabb_contact_from_name );
 
-		//var_dump( $uabb_filter_from_email );
-		//var_dump( $uabb_filter_from_name );
-
-		/*if( $uabb_contact_from_email != $uabb_filter_from_email ){
-			
-			add_filter('wp_mail_from', function( $email ) {
-				global $uabb_filter_from_email;
-				var_dump( $uabb_filter_from_email );
-				return $uabb_filter_from_email;
-			});
-		}
-
-		if( $uabb_contact_from_name != $uabb_filter_from_name ){
-			
-			add_filter('wp_mail_from_name', function( $name ) {
-				global $uabb_filter_from_name;
-				
-				return $uabb_filter_from_name;
-			});
-		}*/
-
 		add_filter('wp_mail_from', 'UABBContactFormModule::mail_from');
 		add_filter('wp_mail_from_name', 'UABBContactFormModule::from_name');
 		
 		$headers =	array(
-						'Reply-To: ' . $uabb_contact_from_name . ' <' . $uabb_contact_from_email . '>',
-						'Content-Type: text/html; charset=UTF-8',
-					);
-
-		//var_dump( $headers );
-		/*$headers = "Reply-To: ".$uabb_contact_from_email."\r\n";
-		$headers .= "Content-Type: text/html\n";*/
-		
-		// Build the email
-		/*$template = "";
-
-		if ( $settings->form_name != '' ) {
-			$template .= "You have received a new submission for the form - " . $settings->form_name . " \r\n";
-		}else {
-			$template .= "You have received a new submission for the form - Default Form \r\n";
-		}
-		
-		if (isset($_POST['name']))  $template .= "Name: $_POST[name] \r\n";
-		if (isset($_POST['email'])) $template .= "Email: $_POST[email] \r\n";
-		if (isset($_POST['phone'])) $template .= "Phone: $_POST[phone] \r\n";
-
-		$template .= __('Message', 'uabb') . ": \r\n" . $_POST['message'];*/
+			'From:' . $uabb_contact_from_name . ' <' . $uabb_contact_from_email . '>',
+			'Reply-To:' . $uabb_contact_from_name . ' <' . $uabb_contact_from_email . '>',
+			'Content-Type: text/html; charset=UTF-8',
+		);
 
 		$template = $settings->email_template;
 		if ( isset( $_POST['name'] ) )  $template = str_replace( '[NAME]', $_POST['name'], $template );
@@ -212,11 +210,18 @@ FLBuilder::register_module('UABBContactFormModule', array(
 					'name_label'          => array(
 						'type'          => 'text',
 						'label'         => __('Label', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-name label',
+                        )
 					),
 					'name_placeholder'          => array(
 						'type'          => 'text',
 						'label'         => __('Placeholder', 'uabb'),
 						'default'       => __('Your Name', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'none',
+                        )
 					),
 					'name_required'     => array(
 						'type'          => 'uabb-toggle-switch',
@@ -259,11 +264,18 @@ FLBuilder::register_module('UABBContactFormModule', array(
 					'email_label'          => array(
 						'type'          => 'text',
 						'label'         => __('Label', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-email label',
+                        )
 					),
 					'email_placeholder'          => array(
 						'type'          => 'text',
 						'label'         => __('Placeholder', 'uabb'),
 						'default'       => __('Your Email', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'none',
+                        )
 					),
 					'email_required'     => array(
 						'type'          => 'uabb-toggle-switch',
@@ -307,11 +319,18 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'type'          => 'text',
 						'label'         => __('Label', 'uabb'),
 						'default'       => __('Subject', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-subject label',
+                        )
 					),
 					'subject_placeholder'          => array(
 						'type'          => 'text',
 						'label'         => __('Placeholder', 'uabb'),
 						'default'       => __('Subject', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'none',
+                        )
 					),
 					'subject_required'     => array(
 						'type'          => 'uabb-toggle-switch',
@@ -355,11 +374,18 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'type'          => 'text',
 						'label'         => __('Label', 'uabb'),
 						'default'       => __('Phone', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-phone label',
+                        )
 					),
 					'phone_placeholder'          => array(
 						'type'          => 'text',
 						'label'         => __('Placeholder', 'uabb'),
 						'default'       => __('Phone', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'none',
+                        )
 					),
 					'phone_required'     => array(
 						'type'          => 'uabb-toggle-switch',
@@ -402,11 +428,18 @@ FLBuilder::register_module('UABBContactFormModule', array(
 					'msg_label'          => array(
 						'type'          => 'text',
 						'label'         => __('Label', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-message label',
+                        )
 					),
 					'msg_placeholder'          => array(
 						'type'          => 'text',
 						'label'         => __('Placeholder', 'uabb'),
 						'default'       => __('Your Message', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'none',
+                        )
 					),
 					'msg_required'     => array(
 						'type'          => 'uabb-toggle-switch',
@@ -451,14 +484,16 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'default'       => __( 'Thanks for your message! We’ll be in touch soon.', 'uabb' ),
 						'preview'       => array(
 							'type'             => 'none'
-						)
+						),
+						'connections'   => array( 'string', 'html' )
 					),
 					'success_url'  => array(
 						'type'          => 'link',
 						'label'         => __( 'Success URL', 'uabb' ),
 						'preview'       => array(
 							'type'             => 'none'
-						)
+						),
+						'connections'   => array( 'url' )
 					)
 				)
 			)
@@ -513,12 +548,22 @@ FLBuilder::register_module('UABBContactFormModule', array(
                     	'label'         => __('Text Color', 'uabb'),
                     	'default'         => '333333',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form .uabb-input-group-wrap input',
+                            'property'      => 'color',
+                        )
 					),
 					'input_background_color'    => array( 
 						'type'       => 'color',
                     	'label'         => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form .uabb-input-group-wrap input',
+                            'property'      => 'background',
+                        )
 					),
 					'input_background_color_opc'    => array( 
 						'type'        => 'text',
@@ -540,6 +585,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '2',
 		                'size'          => '6',
+		                'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form .uabb-input-group-wrap input',
+                            'property'      => 'border-width',
+                            'unit'			=> 'px'
+                        )
 		            ),
                     
                     'input_border_color'    => array( 
@@ -547,6 +598,11 @@ FLBuilder::register_module('UABBContactFormModule', array(
                     	'label'         => __('Border Color', 'uabb'),
                     	'default'		=> 'cccccc',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form .uabb-input-group-wrap input',
+                            'property'      => 'border-color',
+                        )
 					),
                     /*'input_border_color_opc'    => array( 
 						'type'        => 'text',
@@ -589,7 +645,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 							'left'      => __('Left', 'uabb'),
 							'center'    => __('Center', 'uabb'),
 							'right'    => __('Right', 'uabb'),
-						)
+						),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form .uabb-input-group-wrap input',
+                            'property'      => 'text-align',
+                        )
 					),
 					'msg_height' => array(
 						'type' => 'text',
@@ -597,6 +658,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'placeholder' => '130',
 						'size' => '8',
 						'description' => __('px', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form textarea',
+                            'property'      => 'min-height',
+                            'unit'			=> 'px',
+                        )
 					),
 					'input_vertical_padding'	=> array(
 						'type'          => 'text',
@@ -606,6 +673,21 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'size'          => '6',
 						'description'   => 'px',
 						'placeholder'	=> '16',
+						'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+								 	'selector'      => '.uabb-contact-form .uabb-input-group-wrap input',         
+					                'property'     => 'padding-top',
+					                'unit'			=> 'px'
+					            ),
+					            array(
+								 	'selector'      => '.uabb-contact-form .uabb-input-group-wrap input',            
+					                'property'     => 'padding-bottom',
+					                'unit'			=> 'px'
+					            ),    
+					        )
+					    )
 					),
 					'input_horizontal_padding'	=> array(
 						'type'          => 'text',
@@ -615,6 +697,21 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'size'          => '6',
 						'description'   => 'px',
 						'placeholder'	=> '15',
+						'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+									'selector'      => '.uabb-contact-form .uabb-input-group-wrap input',            
+					                'property'     => 'padding-left',
+					                'unit'			=> 'px'
+					            ),
+					            array(
+									'selector'      => '.uabb-contact-form .uabb-input-group-wrap input',              
+					                'property'     => 'padding-right',
+					                'unit'			=> 'px'
+					            ),    
+					        )
+					    )
 					),                    
 				)
 			),
@@ -628,7 +725,7 @@ FLBuilder::register_module('UABBContactFormModule', array(
 							'options'       => array(
 								'none'			=> __( 'None', 'uabb' ),
 								'color'			=> __( 'Color', 'uabb' ),
-								'gradient'		=> __( 'Gradinet', 'uabb' ),
+								'gradient'		=> __( 'Gradient', 'uabb' ),
 								'image'			=> __( 'Image', 'uabb' ),
 							),
 							'toggle'	=> array(
@@ -701,6 +798,11 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'label'		=> __( 'Background Color', 'uabb' ),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form',
+                            'property'      => 'background-color',
+                        )
 					),
 					'form_bg_color_opc' => array( 
 						'type'        => 'text',
@@ -723,6 +825,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'size'          => '6',
 						'description'   => 'px',
 						'placeholder'	=> '0',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form',
+                            'property'      => 'border-radius',
+                            'unit'			=> 'px'
+                        )
 					),
 				)
 			),
@@ -773,6 +881,10 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'type'          => 'text',
 						'label'         => __('Text', 'uabb'),
 						'default'       => 'SEND YOUR MESSAGE',
+						'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-contact-form-submit span',
+                        )
 					),
 					'btn_icon'          => array(
 						'type'          => 'icon',
@@ -827,6 +939,11 @@ FLBuilder::register_module('UABBContactFormModule', array(
                         'label'      => __('Text Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form .uabb-contact-form-submit',
+                            'property'      => 'color',
+                        )
                     ),
                     'btn_text_hover_color'        => array( 
                         'type'       => 'color',
@@ -842,6 +959,11 @@ FLBuilder::register_module('UABBContactFormModule', array(
                         'label'      => __('Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form .uabb-contact-form-submit',
+                            'property'      => 'background',
+                        )
                     ),
                     'btn_background_color_opc'    => array( 
                         'type'        => 'text',
@@ -850,6 +972,9 @@ FLBuilder::register_module('UABBContactFormModule', array(
                         'description' => '%',
                         'maxlength'   => '3',
                         'size'        => '5',
+                        'preview'       => array(
+                            'type'          => 'none'
+                        )
                     ),
                     'btn_background_hover_color'    => array( 
                         'type'       => 'color',
@@ -905,6 +1030,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'size'          => '6',
 						'placeholder'	=> '4',
 						'description'   => 'px',
+					    'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-contact-form .uabb-contact-form-submit',
+                            'property'      => 'border-radius',
+                            'unit'			=> 'px'
+                        )
 					),
 					'btn_vertical_padding'	=> array(
 						'type'          => 'text',
@@ -914,6 +1045,21 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'size'          => '6',
 						'description'   => 'px',
 						'placeholder'	=> uabb_theme_button_vertical_padding(''),
+						'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+									'selector'      => '.uabb-contact-form .uabb-contact-form-submit',                
+					                'property'     => 'padding-top',
+					                'unit'			=> 'px'
+					            ),
+					            array(
+									'selector'      => '.uabb-contact-form .uabb-contact-form-submit',               
+					                'property'     => 'padding-bottom',
+					                'unit'			=> 'px'
+					            ),    
+					        )
+					    )
 					),
 					'btn_horizontal_padding'	=> array(
 						'type'          => 'text',
@@ -923,6 +1069,21 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'size'          => '6',
 						'description'   => 'px',
 						'placeholder'	=> uabb_theme_button_horizontal_padding(''),
+						'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+									'selector'      => '.uabb-contact-form .uabb-contact-form-submit',              
+					                'property'     => 'padding-left',
+					                'unit'			=> 'px'
+					            ),
+					            array(
+									'selector'      => '.uabb-contact-form .uabb-contact-form-submit',               
+					                'property'     => 'padding-right',
+					                'unit'			=> 'px'
+					            ),    
+					        )
+					    )
 					),
         		)
            	),
@@ -948,7 +1109,8 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'help'          => __('The contact form will send to this e-mail. Defaults to the admin email.', 'uabb'),
 						'preview'       => array(
 							'type'          => 'none'
-						)
+						),
+						'connections'   => array( 'html' )
 					),
 					'email_subject'    => array(
 						'type'          => 'text',
@@ -1038,6 +1200,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'description'   => 'px',
 						'maxlength'     => '3',
 						'size'          => '6',
+						'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => 'input',
+                            'property'  => 'margin-top',
+                            'unit'      => 'px'
+                        ),
 					),
 					'input_bottom_margin'   => array(
 						'type'          => 'text',
@@ -1047,6 +1215,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'description'   => 'px',
 						'maxlength'     => '3',
 						'size'          => '6',
+						'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => 'input',
+                            'property'  => 'margin-bottom',
+                            'unit'      => 'px'
+                        ),
 					),
 					'textarea_top_margin'   => array(
 						'type'          => 'text',
@@ -1056,6 +1230,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'description'   => 'px',
 						'maxlength'     => '3',
 						'size'          => '6',
+						'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => 'textarea',
+                            'property'  => 'margin-top',
+                            'unit'      => 'px'
+                        ),
 					),
 					'textarea_bottom_margin'   => array(
 						'type'          => 'text',
@@ -1065,6 +1245,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'description'   => 'px',
 						'maxlength'     => '3',
 						'size'          => '6',
+						'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => 'textarea',
+                            'property'  => 'margin-bottom',
+                            'unit'      => 'px'
+                        ),
 					),
                 )
             ),
@@ -1120,6 +1306,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'description'   => 'px',
 						'maxlength'     => '3',
 						'size'          => '6',
+						'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-contact-form-submit',
+                            'property'  => 'margin-top',
+                            'unit'      => 'px'
+                        ),
 					),
                 )
             ),
@@ -1173,6 +1365,11 @@ FLBuilder::register_module('UABBContactFormModule', array(
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-contact-form label',
+                            'property'  => 'color',
+                        ),
                     ),
                     'label_top_margin'   => array(
 						'type'          => 'text',
@@ -1182,6 +1379,12 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'description'   => 'px',
 						'maxlength'     => '3',
 						'size'          => '6',
+				   		'preview'   => array(
+	                        'type'      => 'css',
+	                        'selector'  => '.uabb-contact-form label',
+	                        'property'  => 'margin-top',
+	                        'unit'		=> 'px'
+	                    ),
 					),
 					'label_bottom_margin'   => array(
 						'type'          => 'text',
@@ -1191,9 +1394,69 @@ FLBuilder::register_module('UABBContactFormModule', array(
 						'description'   => 'px',
 						'maxlength'     => '3',
 						'size'          => '6',
+						'preview'   => array(
+	                        'type'      => 'css',
+	                        'selector'  => '.uabb-contact-form label',
+	                        'property'  => 'margin-bottom',
+	                        'unit'		=> 'px'
+	                    ),
 					),
                 )
             ),
 		)
-	)
+	),
+	'reCAPTCHA'	=> array(
+		'title'		  => __( 'reCAPTCHA', 'uabb' ),
+		'sections'	  => array(
+			'recaptcha_general' => array(
+				'title'			=> '',
+				'fields'		=> array(
+					'uabb_recaptcha_toggle' => array(
+						'type' 			=> 'select',
+						'label' 		=> 'reCAPTCHA Field',
+						'default'		  => 'hide',
+						'options'		  => array(
+							'show'	   => __( 'Show', 'uabb' ),
+							'hide'	   => __( 'Hide', 'uabb' ),
+						),
+						'help' 			=> __( 'If you want to show this field, please provide valid Site and Secret Keys.', 'uabb' ),
+						'preview'		  => array(
+							'type'		   => 'none',
+						),
+						'toggle'		=> array(
+							'show'		=> array(
+								'fields'	=> array( 'uabb_recaptcha_theme', 'uabb_recaptcha_site_key', 'uabb_recaptcha_secret_key' ),
+							)
+						),
+					),
+					'uabb_recaptcha_site_key'		=> array(
+						'type'			=> 'text',
+						'label' 		=> __( 'Site Key', 'uabb' ),
+						'default'		  => '',
+						'preview'		  => array(
+							'type'		   => 'none',
+						),
+					),
+					'uabb_recaptcha_secret_key'	=> array(
+						'type'			=> 'text',
+						'label' 		=> __( 'Secret Key', 'uabb' ),
+						'default'		  => '',
+						'preview'		  => array(
+							'type'		   => 'none',
+						),
+					),
+					'uabb_recaptcha_theme'   => array(
+						'type'          => 'select',
+						'label'         => __('Theme', 'uabb'),
+						'default'       => 'light',
+						'options'       => array(
+							'light'      => __('Light', 'uabb'),
+							'dark'       => __('Dark', 'uabb'),
+						),
+					),
+				),
+			),
+		),
+		'description'	  => sprintf( __( 'Please register keys for your website at <a%s>Google Admin Console</a>.', 'uabb' ), ' href="https://www.google.com/recaptcha/admin" target="_blank"' ),
+	),
 ));

@@ -41,26 +41,32 @@
 /* Info Box end here */
 
 /* Info List */
-.uabb-info-list-wrapper.top li:first-child .uabb-info-list-connector {
+.uabb-info-list .uabb-info-list-top li:first-child .uabb-info-list-connector {
     display: none;
 }
-.uabb-info-list-wrapper.top li:last-child .uabb-info-list-connector {
+.uabb-info-list .uabb-info-list-top li:last-child .uabb-info-list-connector {
     display: block;
 }
-.uabb-info-list-content-wrapper.right {
+.uabb-info-list .uabb-info-list-wrapper.uabb-info-list-left li .uabb-info-list-connector {
+    right: 41px;
+    left: auto;
+}
+.uabb-info-list-content-wrapper.uabb-info-list-right {
     text-align: left;
     direction: ltr;
 }
-.uabb-info-list-content-wrapper.right * {
+.uabb-info-list-content-wrapper.uabb-info-list-right {
     direction: rtl;
 }
-.uabb-info-list-content-wrapper.right .uabb-info-list-icon {
+.uabb-info-list-content-wrapper.uabb-info-list-right .uabb-info-list-icon {
     margin-left: 0px;
     margin-right: 20px;
+    float: left;
 }
-.uabb-info-list-content-wrapper.left .uabb-info-list-icon {
+.uabb-info-list-content-wrapper.uabb-info-list-left .uabb-info-list-icon {
     margin-right: 0px;
     margin-left: 20px;
+    float: right;
 }
 /* Info List end here */
 
@@ -180,10 +186,10 @@
     padding-right: 5px;
 }
 
-.uabb-contact-form .uabb-input-group-wrap input[type="text"], 
-.uabb-contact-form .uabb-input-group-wrap input[type=tel], 
-.uabb-contact-form .uabb-input-group-wrap input[type=email],
-.uabb-contact-form .uabb-input-group-wrap textarea {
+.uabb-module-content.uabb-contact-form .uabb-input-group-wrap input[type="text"], 
+.uabb-module-content.uabb-contact-form .uabb-input-group-wrap input[type=tel], 
+.uabb-module-content.uabb-contact-form .uabb-input-group-wrap input[type=email],
+.uabb-module-content.uabb-contact-form .uabb-input-group-wrap textarea {
     text-align: right;
 }
 
@@ -232,7 +238,12 @@
 /*-- Dual Buttons End --*/
 
 /*-- Testimonials Start --*/
-.uabb-testimonials.left .uabb-testimonial-photo.left .uabb-imgicon-wrap {
+.uabb-testimonials.uabb-testimonial-left .uabb-testimonial-photo.uabb-testimonial-left .uabb-imgicon-wrap {
     margin-left: 20px;
 }
 /*-- Testimonials End --*/
+/*-- Image-carousel Start --*/
+.uabb-image-carousel.slick-slider {
+    direction: ltr;
+}
+/*-- Image-carousel End --*/

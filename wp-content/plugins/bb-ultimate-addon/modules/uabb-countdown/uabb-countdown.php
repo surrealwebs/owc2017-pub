@@ -12,13 +12,16 @@ class UABBCountdownModule extends FLBuilderModule {
 		parent::__construct( array(
 			'name'          => __('Countdown', 'uabb'),
 			'description'   => __('An animated countdown area.', 'uabb'),
-			'category'      => UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$extra_additions ),
+            'group'         => UABB_CAT,
 			'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/uabb-countdown/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/uabb-countdown/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'  => true,
+            'icon'             => 'clock.svg',
 		) );
-        
+
 	}
 
     public function enqueue_scripts() {
@@ -82,6 +85,27 @@ class UABBCountdownModule extends FLBuilderModule {
         ob_end_clean();
         return $html;
     }
+
+    /**
+     * Get time zone GMT offset 
+     */
+     public function get_gmt_difference( $settings ) {
+
+        if( ! empty( $settings->time_zone ) ) {
+
+            $time_zone_kolkata = new DateTimeZone("Asia/Kolkata");
+            $time_zone = new DateTimeZone($settings->time_zone);
+
+            $time_kolkata = new DateTime("now", $time_zone_kolkata);
+
+            $timeOffset = $time_zone->getOffset($time_kolkata);
+
+            return $timeOffset / 3600;
+        }
+        else {
+            return "NULL";
+        }
+    }
 }
 
 /**
@@ -112,6 +136,12 @@ FLBuilder::register_module('UABBCountdownModule', array(
 							)
 						),
 					),
+                    'time_zone'          => array(
+                        'type'          => 'timezone',
+                        'label'         => __( 'Time Zone', 'uabb' ),
+                        'default'       => '',
+                        'class'         => '',
+                    ),
                     'fixed_date' => array(
                         'type'          => 'uabb-normal-date',
                         'label'         => __( 'Select Date & Time', 'uabb' ),
@@ -175,6 +205,7 @@ FLBuilder::register_module('UABBCountdownModule', array(
                         'media_buttons' => false,
                         'rows'          => 6,
                         'default'       => __('Enter message text here.','uabb'),
+                        'connections' => array( 'string', 'html' )
                     ),
                     /*'fixed_expire_message'          => array(
                         'type'          => 'editor',
@@ -199,22 +230,6 @@ FLBuilder::register_module('UABBCountdownModule', array(
                             'type'          => 'none'
                         )
                     ),
-                    /*'fixed_redirect_link'   => array(
-                        'type'          => 'link',
-                        'label'         => __('Enter URL', 'uabb'),
-                    ),
-                    'fixed_redirect_link_target'   => array(
-                        'type'          => 'select',
-                        'label'         => __('Link Target', 'uabb'),
-                        'default'       => '_self',
-                        'options'       => array(
-                            '_self'         => __('Same Window', 'uabb'),
-                            '_blank'        => __('New Window', 'uabb')
-                        ),
-                        'preview'       => array(
-                            'type'          => 'none'
-                        )
-                    ),*/
 				)
 			),
             'message'    =>  array(
@@ -263,52 +278,6 @@ FLBuilder::register_module('UABBCountdownModule', array(
                     ),
                 )
             ),
-            /*'fixed_message'    =>  array(
-                'title'     => __('Expiry Message Settings', 'uabb' ) ,
-                'fields'    => array(
-                    'fixed_message_font_family'       => array(
-                        'type'          => 'font',
-                        'label'         => __('Font Family', 'uabb'),
-                        'default'       => array(
-                            'family'        => 'Default',
-                            'weight'        => 'Default'
-                        ),
-                        'preview'         => array(
-                            'type'            => 'font',
-                            'selector'        => '.uabb-info-list-title'
-                        )
-                    ),
-                    'fixed_message_font_size'     => array(
-                        'type'          => 'uabb-simplify',
-                        'label'         => __( 'Font Size', 'uabb' ),
-                        'default'       => array(
-                            'desktop'       => '',
-                            'medium'        => '',
-                            'small'         => '',
-                        ),
-                    ),
-                    'fixed_message_line_height'    => array(
-                        'type'          => 'uabb-simplify',
-                        'label'         => __( 'Line Height', 'uabb' ),
-                        'default'       => array(
-                            'desktop'       => '',
-                            'medium'        => '',
-                            'small'         => '',
-                        ),
-                    ),
-                    'fixed_message_color'        => array( 
-                        'type'       => 'color',
-                        'label' => __('Choose Color', 'uabb'),
-                        'preview'         => array(
-                            'type'            => 'css',
-                            'selector'        => '.uabb-info-list-title',
-                            'property'        => 'color'
-                        ),
-                        'default'    => '',
-                        'show_reset' => true,
-                    ),
-                )
-            ),*/
 		)
 	),
     'style'      => array( // Tab
@@ -327,6 +296,11 @@ FLBuilder::register_module('UABBCountdownModule', array(
                             'right'             => __('Right', 'uabb'),
                             'center'             => __('Center', 'uabb'),
                         ),
+                        'preview'       => array(
+                            'type' => 'css',
+                            'property' => 'text-align',
+                            'selector' => '.uabb-countdown-fixed-timer, .uabb-countdown-evergreen-timer',
+                        )
                     ),
                     'space_between_unit'   => array(
                         'type'          => 'text',
@@ -361,7 +335,6 @@ FLBuilder::register_module('UABBCountdownModule', array(
                             'custom'             => __('Custom', 'uabb')
                         ),
                         'toggle'       => array(
-                            
                             'normal' => array(
                                 'fields' => array( 'normal_options' ),
                             ),
@@ -378,9 +351,14 @@ FLBuilder::register_module('UABBCountdownModule', array(
                     ),
                     'timer_background_color' => array( 
                         'type'       => 'color',
-                        'label'         => __('Digit Background Color', 'fl-builder'),
+                        'label'         => __('Digit Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type' => 'css',
+                            'property' => 'background',
+                            'selector' => '.uabb-countdown-digit-wrapper',
+                        )
                     ),
                     'timer_background_color_opc'     => array(
                         'type'        => 'text',
@@ -408,13 +386,13 @@ FLBuilder::register_module('UABBCountdownModule', array(
                     ),
                     'digit_border_style'   => array(
                         'type'          => 'select',
-                        'label'         => __('Digit Border Style', 'fl-builder'),
+                        'label'         => __('Digit Border Style', 'uabb'),
                         'description'   => '',
                         'default'       => 'solid',
                         'options'       => array(
-                            'solid'         => __('Solid', 'fl-builder'),
-                            'dashed'        => __('Dashed', 'fl-builder'),
-                            'dotted'        => __('Dotted', 'fl-builder')
+                            'solid'         => __('Solid', 'uabb'),
+                            'dashed'        => __('Dashed', 'uabb'),
+                            'dotted'        => __('Dotted', 'uabb')
                         ),
                     ),
                     'digit_border_width'       => array(
@@ -427,34 +405,10 @@ FLBuilder::register_module('UABBCountdownModule', array(
                     ),
                     'digit_border_color' => array( 
                         'type'       => 'color',
-                        'label'         => __('Digit Border Color', 'fl-builder'),
+                        'label'         => __('Digit Border Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
                     ),
-                    /*'digit_area_width_desk'       => array(
-                        'type'          => 'text',
-                        'size'          => '8',
-                        'description'   => 'px',
-                        'placeholder'   => '100',
-                        'label'         => __('Digit Area Width ( Desktop )', 'uabb'),
-                        'class'         => '',
-                    ),
-                    'digit_area_width_med'       => array(
-                        'type'          => 'text',
-                        'size'          => '8',
-                        'description'   => 'px',
-                        'placeholder'   => '100',
-                        'label'         => __('Digit Area Width ( Medium Device )', 'uabb'),
-                        'class'         => '',
-                    ),
-                    'digit_area_width_small'       => array(
-                        'type'          => 'text',
-                        'size'          => '8',
-                        'description'   => 'px',
-                        'placeholder'   => '100',
-                        'label'         => __('Digit Area Width ( Small Device )', 'uabb'),
-                        'class'         => '',
-                    ),*/
                     'count_animation' => array(
                         'type'          => 'select',
                         'label'         => __( 'On Count Animation', 'uabb' ),
@@ -790,6 +744,12 @@ FLBuilder::register_module('UABBCountdownModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-count-down-digit',
+                            'property'        => 'font-size',
+                            'unit'             => 'px'
+                        )
                     ),
                     'digit_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -799,6 +759,12 @@ FLBuilder::register_module('UABBCountdownModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-count-down-digit',
+                            'property'        => 'line-height',
+                            'unit'             => 'px'
+                        )
                     ),
                     'digit_color'        => array( 
                         'type'       => 'color',
@@ -842,7 +808,6 @@ FLBuilder::register_module('UABBCountdownModule', array(
                         'preview'         => array(
                             'type'            => 'font',
                             'selector'        => '.uabb-count-down-unit',
-
                         )
                     ),
                     'unit_font_size'     => array(
@@ -853,6 +818,12 @@ FLBuilder::register_module('UABBCountdownModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-count-down-unit',
+                            'property'         => 'font-size',
+                            'unit'              => 'px'
+                        )
                     ),
                     'unit_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -862,6 +833,12 @@ FLBuilder::register_module('UABBCountdownModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-count-down-unit',
+                            'property'         => 'line-height',
+                            'unit'              => 'px'
+                        )
                     ),
                     'unit_color'        => array( 
                         'type'       => 'color',

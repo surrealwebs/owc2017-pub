@@ -140,11 +140,13 @@
 .fl-node-<?php echo $id; ?> .uabb-input-group-wrap .uabb-input-group input:-moz-placeholder,
 .fl-node-<?php echo $id; ?> .uabb-input-group-wrap .uabb-input-group textarea:-moz-placeholder { 		/* Firefox 18- */
 	color: <?php echo uabb_theme_text_color( $settings->input_text_color ); ?>;
+	opacity: 1;
 }
 
 .fl-node-<?php echo $id; ?> .uabb-input-group-wrap .uabb-input-group input::-moz-placeholder,
 .fl-node-<?php echo $id; ?> .uabb-input-group-wrap .uabb-input-group textarea::-moz-placeholder {  	/* Firefox 19+ */
 	color: <?php echo uabb_theme_text_color( $settings->input_text_color ); ?>;
+	opacity: 1;
 }
 
 .fl-node-<?php echo $id; ?> .uabb-input-group-wrap .uabb-input-group input:-ms-input-placeholder,
@@ -171,6 +173,11 @@
 .fl-node-<?php echo $id; ?> .uabb-contact-form label {
 	<?php echo ( $settings->label_top_margin != '' ) ? 'margin-top: '.$settings->label_top_margin.'px;' : '' ; ?>
 	<?php echo ( $settings->label_bottom_margin != '' ) ? 'margin-bottom: '.$settings->label_bottom_margin.'px;' : ''; ?>
+}
+
+.fl-node-<?php echo $id; ?> .uabb-input-group.uabb-recaptcha > .uabb-grecaptcha {
+	<?php echo ( $settings->input_top_margin != '' ) ? 'margin-top: '.$settings->input_top_margin.'px;' : '' ; ?>
+	<?php echo ( $settings->input_bottom_margin != '' ) ? 'margin-bottom: '.$settings->input_bottom_margin.'px;' : 'margin-bottom: 10px;'; ?>
 }
 
 /* Button CSS */
@@ -353,7 +360,7 @@ if ( $settings->btn_align != 'full' ) { ?>
 }
 
 .fl-node-<?php echo $id; ?> .uabb-contact-form-submit {
-	<?php $uabb_theme_btn_family = apply_filters( 'uabb/theme/button_font_family', '' ); ?>
+	<?php $uabb_theme_btn_family = apply_filters( 'uabb_theme_button_font_family', '' ); ?>
 	
 	<?php if ( uabb_theme_button_letter_spacing('') != '' ) { ?>
 	letter-spacing: <?php echo uabb_theme_button_letter_spacing(''); ?>;

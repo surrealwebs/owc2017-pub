@@ -15,11 +15,13 @@ class RibbonModule extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('Ribbon', 'uabb'),
             'description'   => __('Ribbon', 'uabb'),
-            'category'		=> UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$lead_generation ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/ribbon/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/ribbon/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'   => true
         ));
     }
 
@@ -45,6 +47,7 @@ FLBuilder::register_module('RibbonModule', array(
                             'type'          => 'text',
                             'selector'      => '.uabb-ribbon-text-title',
                         ),
+                        'connections' => array( 'string', 'html' )
                     ),
                     'left_icon'          => array(
                         'type'          => 'icon',
@@ -107,17 +110,12 @@ FLBuilder::register_module('RibbonModule', array(
                             'left'          => __('Left', 'uabb'),
                             'right'         => __('Right', 'uabb'),
                         ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-ribbon-wrap',
+                            'property'      => 'text-align',
+                        )
                     ),
-                    /*'responsive_compatibility' => array(
-                        'type' => 'uabb-toggle-switch',
-                        'label' => __('Responsive Compatibility', 'uabb'),
-                        'help' => __('There might be responsive issues for long texts. If you are facing such issues then select this option as Yes.', 'uabb'),
-                        'default' => 'no',
-                        'options' => array(
-                            'yes' => __('Yes','uabb'),
-                            'no' => __('No','uabb'),
-                        ),
-                    ),*/
                     'stitching'     => array(
                         'type'          => 'uabb-toggle-switch',
                         'label'         => __( 'Stitching', 'uabb' ),
@@ -165,6 +163,11 @@ FLBuilder::register_module('RibbonModule', array(
                         'label'         => __('Ribbon Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-ribbon-text',
+                            'property'      => 'background',
+                        )
                     ),
                     'gradient_color' => array(
                         'type'          => 'uabb-gradient',
@@ -240,6 +243,12 @@ FLBuilder::register_module('RibbonModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ribbon-text',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
+                        )
                     ),
                     'text_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -249,12 +258,23 @@ FLBuilder::register_module('RibbonModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ribbon-text',
+                            'property'        => 'line-height',
+                            'unit'            => 'px'
+                        )
                     ),
                     'text_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ribbon-text',
+                            'property'        => 'color',
+                        )
                     ),
                     'text_shadow_color' => array( 
                         'type'       => 'color',

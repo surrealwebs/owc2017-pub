@@ -20,11 +20,12 @@ FLBuilder::render_module_css('uabb-button', $id, array(
 	
 	/* General Section */
         'text'              => $settings->btn_text,
-        
+
         /* Link Section */
         'link'              => $settings->btn_link,
         'link_target'       => $settings->btn_link_target,
-        
+        'link_nofollow'		=> $settings->btn_link_nofollow,
+
         /* Style Section */
         'style'             => $settings->btn_style,
         'border_size'       => $settings->btn_border_size,

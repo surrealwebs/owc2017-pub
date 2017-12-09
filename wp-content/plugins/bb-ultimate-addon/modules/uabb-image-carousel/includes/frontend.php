@@ -10,11 +10,11 @@
 						$click_action_target = '_self';
 					}elseif ( $settings->click_action == 'cta-link' && !empty( $photo->cta_link ) ) {
 						$click_action_link = $photo->cta_link;
-						$click_action_target = '_blank';
+						$click_action_target = ( isset( $settings->click_action_target ) ) ? $settings->click_action_target : '_blank';
+
 					} 
-					$settings  
 				?>
-			<a href="<?php echo $click_action_link; ?>" target="<?php echo $click_action_target; ?>">
+			<a href="<?php echo $click_action_link; ?>" target="<?php echo $click_action_target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $click_action_target, 0, 1 ); ?> data-caption="<?php echo $photo->caption; ?>">
 			<?php endif; ?>
 
 			<?php if ( $settings->lazyload == 'yes' ) {

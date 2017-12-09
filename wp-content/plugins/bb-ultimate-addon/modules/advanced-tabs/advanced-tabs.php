@@ -15,11 +15,14 @@ class AdvancedTabsModule extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('Advanced Tabs', 'uabb'),
             'description'   => __('Advanced Tabs', 'uabb'),
-            'category'      => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/advanced-tabs/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/advanced-tabs/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'   => true,
+            'icon'              => 'layout.svg',
         ));
 
         add_filter( 'fl_builder_render_settings_field', array( $this , 'uabb_tab_render_settings_field' ), 10, 3 );
@@ -59,7 +62,8 @@ class AdvancedTabsModule extends FLBuilderModule {
         $content_type = $settings->content_type;
         switch($content_type) {
             case 'content':
-                return $settings->ct_content;
+                global $wp_embed;
+                return wpautop( $wp_embed->autoembed( $settings->ct_content ) );
             break;
             case 'photo':
                 if ( isset( $settings->ct_photo_src ) ) {
@@ -73,15 +77,15 @@ class AdvancedTabsModule extends FLBuilderModule {
             break;
             case 'saved_rows':
                 ob_start();
-                echo do_shortcode('[fl_builder_insert_layout id="'.$settings->ct_saved_rows.'" type="fl-builder-template"]');
+                echo '[fl_builder_insert_layout id="'.$settings->ct_saved_rows.'" type="fl-builder-template"]';
                 return ob_get_clean();
             case 'saved_modules':
                 ob_start();
-                echo do_shortcode('[fl_builder_insert_layout id="'.$settings->ct_saved_modules.'" type="fl-builder-template"]');
+                echo '[fl_builder_insert_layout id="'.$settings->ct_saved_modules.'" type="fl-builder-template"]';
                 return ob_get_clean();
             case 'saved_page_templates':
                 ob_start();
-                echo do_shortcode('[fl_builder_insert_layout id="'.$settings->ct_page_templates.'" type="fl-builder-template"]');
+                echo '[fl_builder_insert_layout id="'.$settings->ct_page_templates.'" type="fl-builder-template"]';
                 return ob_get_clean();
             break;
             default:
@@ -318,12 +322,16 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                             'equal'     => __('Equal', 'uabb'),
                         ),
                     ),
-
-                    'title_color' => array( 
+                    'title_color' => array(
                         'type'       => 'color',
                         'label'      => __('Text Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-tab-title',
+                            'property'      => 'color',
+                        )
                     ),
                     'title_hover_color' => array( 
                         'type'       => 'color',
@@ -336,12 +344,22 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                         'label'      => __('Text Active Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-tab-current a .uabb-tab-title',
+                            'property'      => 'color',
+                        )
                     ),
-                    'title_background_color' => array( 
+                    'title_background_color' => array(
                         'type'       => 'color',
                         'label'         => __('Background Color', 'uabb'),
                         'default'       => 'f6f6f6',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-tabs .uabb-tabs-nav ul li',
+                            'property'      => 'background',
+                        )
                     ),
                     'title_background_color_opc' => array( 
                         'type'        => 'text',
@@ -351,7 +369,6 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                         'maxlength'   => '3',
                         'size'        => '5',
                     ),
-                                        
                     'title_background_hover_color' => array( 
                         'type'       => 'color',
                         'label'      => __('Background Hover Color', 'uabb'),
@@ -372,6 +389,11 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                         'label'      => __('Active Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-tabs-style-bar > nav > ul li.uabb-tab-current a',
+                            'property'      => 'background-color',
+                        )
                     ),
                     'title_active_background_color_opc' => array( 
                         'type'        => 'text',
@@ -463,18 +485,34 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                             'center'    => __('Center', 'uabb'),
                             'right'     => __('Right', 'uabb'),
                         ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-content-wrap .section.uabb-content-current > .uabb-content',
+                            'property'      => 'text-align',
+                        )
                     ),
-                    'content_color' => array( 
+                    'content_color' => array(
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-content-wrap .section.uabb-content-current > .uabb-content',
+                            'property'      => 'color',
+                        )
                     ),
-                    'content_background_color' => array( 
+                    'content_background_color' => array(
                         'type'       => 'color',
                         'label'      => __('Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-content-wrap',
+                            'property'      => 'background',
+                        )
+                        
                     ),
                     'content_background_color_opc' => array( 
                         'type'        => 'text',
@@ -518,6 +556,11 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                                 'fields' => array( 'content_border_size', 'content_border_color' )
                             ),
                         ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-content-wrap .section.uabb-content-current > .uabb-content',
+                            'property'      => 'border-style',
+                        )
                     ),
                     'content_border_size'    => array(
                         'type'          => 'text',
@@ -525,12 +568,23 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                         'placeholder'   => '1',
                         'size'          => '8',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-content-wrap .section.uabb-content-current > .uabb-content',
+                            'property'      => 'border-width',
+                            'unit'          => 'px'
+                        )
                     ),
                     'content_border_color' => array( 
                         'type'       => 'color',
                         'label'         => __('Border Color', 'uabb'),
                         'default'       => 'f6f6f6',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-content-wrap .section.uabb-content-current > .uabb-content',
+                            'property'      => 'border-color',
+                        )
                     ),
                     'content_border_radius'    => array(
                         'type'          => 'text',
@@ -538,6 +592,12 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                         'placeholder'   => '0',
                         'size'          => '8',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-content-wrap .section.uabb-content-current > .uabb-content',
+                            'property'      => 'border-radius',
+                            'unit'          => 'px'
+                        )
                     ),
                 )
             )
@@ -585,6 +645,12 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-tabs ul li a *',
+                            'property'        => 'font-size',
+                            'unit'             => 'px'
+                        )
                     ),
                     'title_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -594,6 +660,12 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-tabs ul li a *',
+                            'property'        => 'line-height',
+                            'unit'             => 'px'
+                        )
                     ),
                 )
             ),
@@ -620,6 +692,12 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-content-wrap .uabb-content, .uabb-content-wrap .uabb-content-current, .uabb-content-wrap .uabb-content p, .uabb-content-wrap .uabb-content-current p',
+                            'property' => 'font-size',
+                            'unit'     => 'px'
+                        )
                     ),
                     'content_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -629,6 +707,12 @@ FLBuilder::register_module('AdvancedTabsModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-content-wrap .uabb-content, .uabb-content-wrap .uabb-content-current, .uabb-content-wrap .uabb-content p, .uabb-content-wrap .uabb-content-current p',
+                            'property' => 'line-height',
+                            'unit'     => 'px'
+                        )
                     ),
                 )
             ),
@@ -651,7 +735,8 @@ FLBuilder::register_settings_form('uabb_tab_items_form', array(
                         'label'         => array(
                             'type'          => 'text',
                             'default'       => __('Ticketing', 'uabb'),
-                            'label'         => __('Tab Title', 'uabb')
+                            'label'         => __('Tab Title', 'uabb'),
+                            'connections'   => array( 'string', 'html' )
                         ),
                         'tab_icon'          => array(
                             'type'          => 'icon',
@@ -710,6 +795,7 @@ FLBuilder::register_settings_form('uabb_tab_items_form', array(
                             'type'                  => 'editor',
                             'label'                 => '',
                             'default'               => '',
+                            'connections'           => array( 'string', 'html' )
                         ),
                         'ct_photo'     => array(
                             'type'                  => 'photo',

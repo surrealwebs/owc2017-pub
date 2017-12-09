@@ -7,13 +7,12 @@
 		this.nodeClass  = '.fl-node-' + settings.id;
 		this.close_icon	= settings.close_icon;
 		this.open_icon	= settings.open_icon;
-		//console.log( this.close_icon);
-		//console.log( this.open_icon );
 		this._init();
 	};
 
+
 	UABBAdvAccordion.prototype = {
-	
+
 		settings	: {},
 		node 		: '',
 		nodeClass   : '',
@@ -23,12 +22,129 @@
 		_init: function()
 		{	
 			var button_level = $( this.nodeClass ).find('.uabb-adv-accordion-button').first().closest('.uabb-adv-accordion');
+
 			button_level.children('.uabb-adv-accordion-item').children('.uabb-adv-accordion-button').click( $.proxy( this._buttonClick, this ) );
+
 			this._enableFirst();
+			this._initAnchorLinks();
 		},
-		
+
+		/**
+		 * Initializes all anchor links on the page for smooth scrolling.
+		 *
+		 * @since 1.6.7
+		 * @access private
+		 * @method _initAnchorLinks
+		 */
+		_initAnchorLinks: function()
+		{
+			$( 'a' ).each( this._initAnchorLink );
+		},
+
+		/**
+		 * Initializes a single anchor link for smooth scrolling.
+		 *
+		 * @since 1.6.7
+		 * @access private
+		 * @method _initAnchorLink
+		 */
+		_initAnchorLink: function()
+		{
+			var link    = $( this ),
+				href    = link.attr( 'href' ),
+				loc     = window.location,
+				id      = null,
+				element = null;
+
+			if ( 'undefined' != typeof href && href.indexOf( '#' ) > -1 ) {
+
+				if ( loc.pathname.replace( /^\//, '' ) == this.pathname.replace( /^\//, '' ) && loc.hostname == this.hostname ) {
+
+					try {
+
+						id = href.split( '#' ).pop();
+
+						// If there is no ID then we have nowhere to look
+						if( ! id ) {
+							return;
+						}
+
+						element = $( '#' + id );
+						if ( element.length > 0 ) {
+							if ( element.hasClass( 'uabb-adv-accordion-item' ) ) {
+								jQuery( link ).on( 'click', UABBAdvAccordion.prototype._scrollToAccordionLink );
+
+							}
+						}
+					}
+					catch( e ) {}
+				}
+			}
+		},
+
+		/**
+		 * Scrolls to a tab when a link is clicked.
+		 *
+		 * @since 1.6.7
+		 * @access private
+		 * @method _scrollToAccordionLink
+		 * @param {Object} e An event object.
+		 */
+		_scrollToAccordionLink: function() {
+
+			var hashval = $( this ).attr( 'href' );
+			if (/^(f|ht)tps?:\/\//i.test(hashval)) {
+				hashvalarr = hashval.split( "/" );
+				hashval = hashvalarr[hashvalarr.length-1];
+			}
+
+			var	hashvalarr = hashval.split( "-" ),
+				dataindex = hashvalarr[hashvalarr.length-1],
+				tab_id = hashval.replace( '-' + dataindex, '' );
+
+			if( tab_id != '' ) {
+				if( jQuery( tab_id ).length > 0 ) {
+					if( jQuery(tab_id).find( '.uabb-adv-accordion > .uabb-adv-accordion-item[data-index="' + dataindex + '"]' ) ) {
+
+						jQuery('html, body').animate({
+						    scrollTop: jQuery( tab_id ).offset().top - 250
+						}, 1000);
+						var enable_first = '<?php echo $settings->enable_first; ?>';
+						if( !( parseInt( dataindex ) == 0 && enable_first == 'yes' ) ) {
+							setTimeout(function(){
+								jQuery( tab_id + ' .uabb-adv-accordion-button' ).eq(dataindex).trigger('click');
+							}, 1000);
+						}
+					}
+				}
+			}
+		},
+
+		_multiInstance: function( e )
+		{
+			// call to static variable
+			if( this._multiInstance.staticVar == undefined ) {
+				this._multiInstance.staticVar = 0;
+			}
+			this._multiInstance.staticVar++;
+		},
+
 		_buttonClick: function( e )
 		{
+			// initialize value of static variable
+
+			var firstitem = this.settings.enable_first;
+			this._multiInstance();
+			if( firstitem != 'yes' ) {
+				if( e.originalEvent == undefined && this._multiInstance.staticVar > 1 ) {
+					var totalAcc = $('.uabb-adv-accordion').length;
+					if( this._multiInstance.staticVar == totalAcc ) {
+						this._multiInstance.staticVar = 0;
+					}
+					return;
+				}
+			} 
+
 			var button      = $( e.target ).closest('.uabb-adv-accordion-button'),
 				accordion   = button.closest('.uabb-adv-accordion'),
 				item	    = button.closest('.uabb-adv-accordion-item'),
@@ -54,8 +170,7 @@
 					icon.removeClass( this.close_icon );
 					icon.addClass( this.open_icon );
 				}
-			}
-			else {
+			} else {
 				item.removeClass( 'uabb-adv-accordion-item-active' );
 				content.slideUp('normal', this._slideUpComplete);
 				if( this.settings.icon_animation == 'none' ) {
@@ -67,7 +182,6 @@
 			var trigger_args = '.fl-node-'+ this.node + ' .uabb-adv-accordion-item-active';
 			// Trigger the Adv Tab Click trigger.
 			UABBTrigger.triggerHook( 'uabb-accordion-click', trigger_args );
-
 		},
 		
 		_slideUpComplete: function()
@@ -96,13 +210,13 @@
 			}
 			
 			accordion.trigger( 'fl-builder.uabb-adv-accordion-toggle-complete' );
-			
+
 			//window.dispatchEvent(new Event('resize'));
 			var fireRefreshEventOnWindow = function () {
-			     var evt = document.createEvent("uabbAccordionCreate");
-			     evt.initEvent('resize', true, false);
-			     window.dispatchEvent(evt);
-			 };
+				var evt = document.createEvent("uabbAccordionCreate");
+				evt.initEvent('resize', true, false);
+				window.dispatchEvent(evt);
+			};
 		},
 
 		_enableFirst: function()

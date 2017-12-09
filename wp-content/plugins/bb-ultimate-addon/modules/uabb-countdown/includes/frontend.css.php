@@ -210,7 +210,6 @@ if ( isset( $settings->timer_style ) && $settings->timer_style != "normal" && is
 	<?php if ( isset( $settings->inside_options ) && $settings->inside_options == "in_below" ) { ?>
 	margin-bottom: <?php if( isset( $settings->space_between_unit ) && $settings->space_between_unit != "" ){ echo $settings->space_between_unit; }else{ echo 10 ; }?>px;
 	<?php } ?>
-	
 }
 .fl-node-<?php echo $id;?> .uabb-count-down-digit{
 	<?php if ( isset( $settings->inside_options ) && $settings->inside_options == "in_above" ) { ?>

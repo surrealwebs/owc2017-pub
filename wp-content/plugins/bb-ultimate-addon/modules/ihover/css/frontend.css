@@ -2609,6 +2609,11 @@
     backface-visibility: visible!important;
 }
 
+/* Scroll Issue Fixed */
+.fl-row-full-width .uabb-ih-container {
+    overflow: hidden;
+}
+
 /* Text editor support */
 
 .uabb-module-content .uabb-text-editor *:not(a) {

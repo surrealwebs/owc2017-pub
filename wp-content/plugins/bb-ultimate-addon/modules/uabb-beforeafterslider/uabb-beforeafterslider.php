@@ -13,17 +13,19 @@ class UABBBeforeaftersliderModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          => __('Before After Slider', 'uabb'),
 			'description'   => __('An animated before after slider area.', 'uabb'),
-			'category'       => UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$extra_additions ),
+            'group'         => UABB_CAT,
 			'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/uabb-beforeafterslider/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/uabb-beforeafterslider/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'  => true,
+            'icon'             => 'slides.svg',
 		));
         $this->add_css('baslider-foundation', $this->url . 'css/foundation.css');
         $this->add_css('baslider-twentytwenty', $this->url . 'css/twentytwenty.css');
         $this->add_js('baslider-move', $this->url ."js/jquery.event.move.js", array(), '', true);
         $this->add_js('baslider-plug', $this->url ."js/jquery.twentytwenty.js", array(), '',true);
-
 	}
 }
 
@@ -59,6 +61,7 @@ FLBuilder::register_module('UABBBeforeaftersliderModule', array(
                         'type'          => 'photo',
                         'label'         => __('Photo', 'uabb'),
                         'show_remove'   => true,
+                        'connections' => array( 'photo' )
                     ),
                     'before_photo_url'     => array(
                         'type'          => 'text',
@@ -68,7 +71,8 @@ FLBuilder::register_module('UABBBeforeaftersliderModule', array(
                     'before_label_text'     => array(
                         'type'          => 'text',
                         'label'         => __('Before Label Text', 'uabb'),
-                        'placeholder'   => __( 'Before', 'uabb' )
+                        'placeholder'   => __( 'Before', 'uabb' ),
+                        'connections' => array( 'string', 'html' )
                     ),
 				)
 			),
@@ -98,6 +102,7 @@ FLBuilder::register_module('UABBBeforeaftersliderModule', array(
                         'type'          => 'photo',
                         'label'         => __('Photo', 'uabb'),
                         'show_remove'   => true,
+                        'connections' => array( 'photo' )
                     ),
                     'after_photo_url'     => array(
                         'type'          => 'text',
@@ -107,7 +112,8 @@ FLBuilder::register_module('UABBBeforeaftersliderModule', array(
                     'after_label_text'     => array(
                         'type'          => 'text',
                         'label'         => __('After Label Text', 'uabb'),
-                        'placeholder'   => __( 'After', 'uabb' )
+                        'placeholder'   => __( 'After', 'uabb' ),
+                        'connections' => array( 'string', 'html' )
                     ),
                 )
             ),
@@ -167,6 +173,7 @@ FLBuilder::register_module('UABBBeforeaftersliderModule', array(
                         'label'         => __('Comparison Handle Initial Offset', 'uabb'),
                         'default'       => '0.5',
                         'options'       => array(
+                            '0.0'             => __('0.0', 'uabb'),
                             '0.1'             => __('0.1', 'uabb'),
                             '0.2'             => __('0.2', 'uabb'),
                             '0.3'             => __('0.3', 'uabb'),
@@ -180,7 +187,7 @@ FLBuilder::register_module('UABBBeforeaftersliderModule', array(
                     ),
                     'handle_color' => array( 
                         'type'       => 'color',
-                        'label'      => __('Comparison Handle Color', 'fl-builder'),
+                        'label'      => __('Comparison Handle Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
                     ),
@@ -193,7 +200,7 @@ FLBuilder::register_module('UABBBeforeaftersliderModule', array(
                     ),
                     'handle_back_overlay' => array( 
                         'type'       => 'color',
-                        'label'      => __('Slider Overlay Color', 'fl-builder'),
+                        'label'      => __('Slider Overlay Color', 'uabb'),
                         'default'    => '000000',
                         'show_reset' => true,
                         'help'       => __('The slider overlay color will be displayed on mouse hover.', 'uabb'),
@@ -244,7 +251,7 @@ FLBuilder::register_module('UABBBeforeaftersliderModule', array(
                     ),
                     'handle_triangle_color' => array( 
                         'type'       => 'color',
-                        'label' => __('Comparison Triangle Color', 'fl-builder'),
+                        'label' => __('Comparison Triangle Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
                     ),
@@ -272,7 +279,7 @@ FLBuilder::register_module('UABBBeforeaftersliderModule', array(
                     ),
                     'handle_shadow_color' => array( 
                         'type'       => 'color',
-                        'label' => __('Comparison Handle Shadow Color', 'fl-builder'),
+                        'label' => __('Comparison Handle Shadow Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
                     ),
@@ -329,7 +336,7 @@ FLBuilder::register_module('UABBBeforeaftersliderModule', array(
                     ),
                     'slider_label_back_color' => array( 
                         'type'       => 'color',
-                        'label' => __('Label Background Color', 'fl-builder'),
+                        'label' => __('Label Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
                     ),

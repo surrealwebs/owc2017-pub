@@ -19,6 +19,20 @@ $settings->second_heading_color = UABB_Helper::uabb_colorpicker( $settings, 'sec
 }
 <?php } ?>
 
+<?php if( $settings->add_spacing_option === "yes"  ) { ?>
+	[dir="rtl"] .fl-node-<?php echo $id; ?> .uabb-dual-color-heading .uabb-first-heading-text {
+	 	margin-left:<?php echo ( isset( $settings->heading_margin ) && $settings->heading_margin != '' ) ? $settings->heading_margin . 'px' : '10px' ; ?>;
+	 	margin-right: 0;
+	}
+<?php } ?>
+
+<?php if( $settings->add_spacing_option === "yes"  ) { ?>
+	[dir="ltr"] .fl-node-<?php echo $id; ?> .uabb-dual-color-heading .uabb-first-heading-text {
+	 	margin-right:<?php echo ( isset( $settings->heading_margin ) && $settings->heading_margin != '' ) ? $settings->heading_margin . 'px' : '10px' ; ?>;
+	 	margin-left: 0;
+	}
+<?php } ?>
+
 
 /* Second heading styling */
 <?php //if ( $settings->second_heading_color != "" ) { ?>

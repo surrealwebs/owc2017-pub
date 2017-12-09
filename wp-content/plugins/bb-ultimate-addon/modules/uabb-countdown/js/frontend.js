@@ -20,6 +20,11 @@
 		this.evergreen_date_hour = settings.evergreen_date_hour;
 		this.evergreen_date_minutes = settings.evergreen_date_minutes;
 		this.evergreen_date_seconds = settings.evergreen_date_seconds;
+		this.timezone = settings.time_zone;
+
+		if( this.timezone == 'NULL') {
+			this.timezone = null;
+		}
 
 		if ( settings.timer_exp_text ) {
 			this.timer_exp_text	= settings.timer_exp_text;
@@ -115,6 +120,7 @@
 							format: this.timer_format,
 							layout: this.timer_layout,
 							labels: this.timer_labels.split(","),
+							timezone: this.timezone,
 				    		labels1: this.timer_labels_singular.split(","),
 				        	expiryText: this.timer_exp_text
 						});
@@ -130,6 +136,7 @@
 							format: this.timer_format,
 							layout: this.timer_layout,
 							labels: this.timer_labels.split(","),
+							timezone: this.timezone,
 				    		labels1: this.timer_labels_singular.split(","),
 				        	expiryText: this.timer_exp_text
 						});
@@ -144,6 +151,7 @@
 							format: this.timer_format,
 							layout: this.timer_layout,
 							labels: this.timer_labels.split(","),
+							timezone: this.timezone,
 				    		labels1: this.timer_labels_singular.split(","),
 				        	expiryText: this.timer_exp_text
 						});
@@ -155,18 +163,19 @@
 						format: this.timer_format,
 						layout: this.timer_layout,
 						labels: this.timer_labels.split(","),
+						timezone: this.timezone,
 			    		labels1: this.timer_labels_singular.split(","),
 					});
 				}
 			} else {
 				if( this.fixed_timer_action == 'msg' ) {
-
 					if( parseInt(window.location.href.toLowerCase().indexOf("?fl_builder")) === parseInt(-1) ) {
 						$( this.timerid ).countdown({
 							until: this.timer_date,
 							format: this.timer_format,
 							layout: this.timer_layout,
 							labels: this.timer_labels.split(","),
+							timezone: this.timezone,
 				    		labels1: this.timer_labels_singular.split(","),
 				        	expiryText: this.timer_exp_text,
 						});
@@ -176,6 +185,7 @@
 							format: this.timer_format,
 							layout: this.timer_layout,
 							labels: this.timer_labels.split(","),
+							timezone: this.timezone,
 				    		labels1: this.timer_labels_singular.split(","),
 						});
 					}
@@ -186,6 +196,7 @@
 						format: this.timer_format,
 						layout: this.timer_layout,
 						labels: this.timer_labels.split(","),
+						timezone: this.timezone,
 			    		labels1: this.timer_labels_singular.split(","),
 			        	expiryText: this.timer_exp_text,
 			        	onExpiry: this._redirectCounter
@@ -198,6 +209,7 @@
 						format: this.timer_format,
 						layout: this.timer_layout,
 						labels: this.timer_labels.split(","),
+						timezone: this.timezone,
 			    		labels1: this.timer_labels_singular.split(","),
 			        	expiryText: this.timer_exp_text,
 			        	onExpiry: this._destroyCounter
@@ -209,6 +221,7 @@
 						format: this.timer_format,
 						layout: this.timer_layout,
 						labels: this.timer_labels.split(","),
+						timezone: this.timezone,
 			    		labels1: this.timer_labels_singular.split(","),
 			        	expiryText: this.timer_exp_text
 					});
@@ -236,10 +249,11 @@
 
 		_initEverGreenTimer: function() {
 			var dateNow = new Date();
-			
 			if( ( dateNow.getTime() - this.timer_date.getTime() ) > 0 ) {
 
 				if( this.evergreen_timer_action == 'msg' ) {
+
+
 					if( parseInt(window.location.href.toLowerCase().indexOf("?fl_builder")) === parseInt(-1) ) {
 						$( this.timerid ).append($.cookie( "countdown-" + this.settings.id + "expiremsg" ));
 					} else {
@@ -248,6 +262,7 @@
 							format: this.timer_format,
 							layout: this.timer_layout,
 							labels: this.timer_labels.split(","),
+							timezone: this.timezone,
 				    		labels1: this.timer_labels_singular.split(","),
 				    		expiryText: $.cookie( "countdown-" + this.settings.id + "expiremsg" ),
 						});
@@ -263,6 +278,7 @@
 							format: this.timer_format,
 							layout: this.timer_layout,
 							labels: this.timer_labels.split(","),
+							timezone: this.timezone,
 				    		labels1: this.timer_labels_singular.split(","),
 				    		onExpiry: this._redirectCounter
 						});
@@ -277,6 +293,7 @@
 							format: this.timer_format,
 							layout: this.timer_layout,
 							labels: this.timer_labels.split(","),
+							timezone: this.timezone,
 				    		labels1: this.timer_labels_singular.split(","),
 				    		onExpiry: this._destroyCounter
 						});
@@ -289,6 +306,7 @@
 						format: this.timer_format,
 						layout: this.timer_layout,
 						labels: this.timer_labels.split(","),
+						timezone: this.timezone,
 			    		labels1: this.timer_labels_singular.split(","),
 			        	onExpiry: this._restartCountdown
 					});
@@ -299,18 +317,19 @@
 						format: this.timer_format,
 						layout: this.timer_layout,
 						labels: this.timer_labels.split(","),
+						timezone: this.timezone,
 			    		labels1: this.timer_labels_singular.split(","),
 					});
 				}
 			} else {
 				if( this.evergreen_timer_action == 'msg' ) {
-
 					if( parseInt(window.location.href.toLowerCase().indexOf("?fl_builder")) === parseInt(-1) ) {
 						$( this.timerid ).countdown({
 							until: this.timer_date,
 							format: this.timer_format,
 							layout: this.timer_layout,
 							labels: this.timer_labels.split(","),
+							timezone: this.timezone,
 				    		labels1: this.timer_labels_singular.split(","),
 				        	expiryText: $.cookie( "countdown-" + this.settings.id + "expiremsg" ),
 						});
@@ -320,6 +339,7 @@
 							format: this.timer_format,
 							layout: this.timer_layout,
 							labels: this.timer_labels.split(","),
+							timezone: this.timezone,
 				    		labels1: this.timer_labels_singular.split(","),
 						});
 					}
@@ -331,6 +351,7 @@
 						format: this.timer_format,
 						layout: this.timer_layout,
 						labels: this.timer_labels.split(","),
+						timezone: this.timezone,
 			    		labels1: this.timer_labels_singular.split(","),
 			        	onExpiry: this._redirectCounter
 					});
@@ -342,6 +363,7 @@
 						format: this.timer_format,
 						layout: this.timer_layout,
 						labels: this.timer_labels.split(","),
+						timezone: this.timezone,
 			    		labels1: this.timer_labels_singular.split(","),
 			        	onExpiry: this._destroyCounter
 					});
@@ -353,6 +375,7 @@
 						format: this.timer_format,
 						layout: this.timer_layout,
 						labels: this.timer_labels.split(","),
+						timezone: this.timezone,
 			    		labels1: this.timer_labels_singular.split(","),
 			        	onExpiry: this._restartCountdown
 					});
@@ -363,6 +386,7 @@
 						format: this.timer_format,
 						layout: this.timer_layout,
 						labels: this.timer_labels.split(","),
+						timezone: this.timezone,
 			    		labels1: this.timer_labels_singular.split(","),
 					});
 				}

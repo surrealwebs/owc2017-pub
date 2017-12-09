@@ -13,10 +13,13 @@ class UABBFancyTextModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Fancy Text', 'uabb'),
 			'description'   	=> __('Awesome Animation Text.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/fancy-text/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/fancy-text/',
-            'partial_refresh'	=> true
+            'partial_refresh'	=> true,
+			'icon'				=> 'text.svg',
+
 		));
 
 		$this->add_js('jquery-waypoints');
@@ -52,20 +55,31 @@ FLBuilder::register_module('UABBFancyTextModule', array(
 						'type'            => 'text',
 						'label'           => __('Prefix', 'uabb'),
 						'default'         => '',
-						'help'			=> __('String placed before fancy text.', 'uabb')
+						'help'			=> __('String placed before fancy text.', 'uabb'),
+						'connections'	=> array( 'string', 'html' ),
+						'preview'       => array(
+							'type'          => 'text',
+							'selector'      => '.uabb-fancy-text-prefix',
+						)
 					),
 					'fancy_text'        => array(
 						'type'          => 'textarea',
 						'label'           => __('Fancy Text', 'uabb'),
 						'default'         => '',
 						'rows'          => '5',
-						'help'			=> __('String with fancy effects. You can add multiple strings by adding each string on a new line.', 'uabb')
+						'help'			=> __('String with fancy effects. You can add multiple strings by adding each string on a new line.', 'uabb'),
+						'connections'	=> array( 'string', 'html' ),
 					),
 					'suffix'        => array(
 						'type'            => 'text',
 						'label'           => __('Suffix', 'uabb'),
 						'default'         => '',
-						'help'			=> __('String placed at the end of fancy text.', 'uabb')
+						'help'			=> __('String placed at the end of fancy text.', 'uabb'),
+						'connections'	=> array( 'string', 'html' ),
+						'preview'       => array(
+							'type'          => 'text',
+							'selector'      => '.uabb-fancy-text-suffix',
+						)
 					)
 				)
 			),
@@ -158,7 +172,11 @@ FLBuilder::register_module('UABBFancyTextModule', array(
 						'default'       => '|',
 						'maxlength'     => '2',
 						'size'          => '8',
-						'help'			=> __('Enter the text / symbol for your cursor. e.g. Vertical Pipe Symbol ( | )', 'uabb')
+						'help'			=> __('Enter the text / symbol for your cursor. e.g. Vertical Pipe Symbol ( | )', 'uabb'),
+						'preview'       => array(
+							'type'          => 'text',
+							'selector'      => '.typed-cursor',
+						)
 					),
 					'cursor_blink' => array(
 						'type'          => 'select',
@@ -263,6 +281,12 @@ FLBuilder::register_module('UABBFancyTextModule', array(
 		                'size'          => '5',
 		                'placeholder'   => 'auto',
 		                'help'          => __('If your text is long and dropping down to next line then apply minimum height to prevent page to jump. Keep it empty for default', 'uabb'),
+		                'preview'         => array(
+							'type'            => 'css',
+							'selector'        => '.uabb-fancy-text-wrap',
+							'property'        => 'min-height',
+							'unit'			  => 'px'
+						),
 					),
 				)
 			),
@@ -312,6 +336,12 @@ FLBuilder::register_module('UABBFancyTextModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-fancy-text-prefix, .uabb-fancy-text-suffix',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -321,6 +351,12 @@ FLBuilder::register_module('UABBFancyTextModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-fancy-text-prefix, .uabb-fancy-text-suffix',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'color'        => array( 
                         'type'       => 'color',
@@ -358,6 +394,12 @@ FLBuilder::register_module('UABBFancyTextModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-fancy-text-main',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'fancy_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -367,6 +409,12 @@ FLBuilder::register_module('UABBFancyTextModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-fancy-text-main',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'fancy_color'        => array( 
                         'type'       => 'color',

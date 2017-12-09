@@ -25,11 +25,12 @@ if( $settings->hover_effect == 'simple' ) {
 ?>
 <div class="uabb-module-content uabb-photo<?php if ( ! empty( $settings->crop ) ) echo ' uabb-photo-crop-' . $settings->crop ; ?> uabb-photo-align-<?php echo $settings->align; ?> uabb-photo-mob-align-<?php echo $settings->responsive_align; ?>" itemscope itemtype="http://schema.org/ImageObject">
 	<div class="uabb-photo-content <?php echo $grayscale_class; ?>">
+
 		<?php if(!empty($link)) : ?>
-		<a href="<?php echo $link; ?>" target="<?php echo $settings->link_target; ?>" itemprop="url">
+		<a href="<?php echo $link; ?>" target="<?php echo $settings->link_target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $settings->link_target, 0, 1 ); ?> itemprop="url">
 		<?php endif; ?>
 		<img class="<?php echo $classes; ?>" src="<?php echo $src; ?>" alt="<?php echo $alt; ?>" itemprop="image" <?php echo $attrs; ?> />
-		
+
 		<?php if($photo && !empty($photo->caption) && 'hover' == $settings->show_caption) : ?>
 		<div class="uabb-photo-caption uabb-photo-caption-hover" itemprop="caption"><?php echo $photo->caption; ?></div>
 		<?php endif; ?>

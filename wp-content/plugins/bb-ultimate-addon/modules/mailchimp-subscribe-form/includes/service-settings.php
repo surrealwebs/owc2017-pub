@@ -8,15 +8,17 @@
 		if ( isset( $section['services'] ) && $section['services'] != 'all' ) {
 			$service_type = $section['services'];
 		}
-		
-		// Get the service data.
-		//$services = FLBuilderServices::get_services_data( $service_type );
 
-		$services['mailchimp'] = array(
-			'type'              => 'autoresponder',
-			'name'              => 'MailChimp',
-			'class'             => 'FLBuilderServiceMailChimp'
-		);
+		// Get the service data.
+		$services = FLBuilderServices::get_services_data( $service_type );
+
+		// Remove services that don't meet the requirements.
+		if ( isset( $services['mailpoet'] )
+			&& ! class_exists( 'WYSIJA' )
+			&& ( ! defined( 'MAILPOET_INITIALIZED' ) || ( defined( 'MAILPOET_INITIALIZED' ) && false === MAILPOET_INITIALIZED ) )
+			) {
+			unset( $services['mailpoet'] );
+		}
 		
 		// Build the select options.
 		//$options  = array( '' => __( 'Choose...', 'uabb' ) );

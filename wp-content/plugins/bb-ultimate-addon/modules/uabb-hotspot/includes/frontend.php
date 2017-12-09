@@ -20,7 +20,7 @@ if( isset( $photo_src ) ) {
 					$target = '';
 					if( $settings->hotspot_marker[$i]->on_click_action == 'link' ) {
 						$link = ' href="' . $settings->hotspot_marker[$i]->link . '"';
-						$target = ' target="' . $settings->hotspot_marker[$i]->target . '"';
+						$target = ' target="' . $settings->hotspot_marker[$i]->target . '" '. BB_Ultimate_Addon_Helper::get_link_rel( $settings->hotspot_marker[$i]->target, 0, 0 );
 						$tag = 'a';
 					} else {
 						$link = '';

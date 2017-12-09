@@ -1,3 +1,189 @@
+Version 1.6.7 - Tuesday, 14th November 2017
+- New: WPML Support
+- New: Added option in branding tab to list all UABB modules under Core BB Modules
+- Improvement: Advanced Accordion - Open accordion on link click from the same page
+- Improvement: Advanced Posts - Added typography option to advanced posts taxonomy filter
+- Improvement: Advanced Tabs - Open tab on link click from the same page
+- Improvement: Google Map - Add name option to identify address
+- Improvement: Modal popup - Option to hide related videos on YouTube
+- Improvement: Info List - Replace getimagesize function which was affecting loading time
+- Improvement: Info Box - Added option to add custom class to the button link
+- Fixed : Gradient color field design conflict with BB 2.0
+- Fixed : Modal popup - Close button on preview not visible
+- Fixed : HotSpot - Fix tool-tip issue on Internet explorer and mobile devices
+
+Version 1.6.6 - Tuesday, 3rd October 2017
+- Improvement: Added nofollow options to all buttons and links
+- Improvement: Advanced Posts - Added settings parameter to hooks
+- Improvement: Counter - Added support for decimal numbers
+- Improvement: Contact Form - Introduced reCaptcha option
+- Improvement: Google Map - Introduced auto-zoom option, so that the Map centers itself based on the pinpoints
+- Improvement: Info List - Added custom character option along with icons and images which lets you add numbered list
+- Improvement: Social Share - Added Email share option
+- Improvement: Testimonials - Introduced stack option for mobile devices
+- Fixed: Image Separator - Unable to edit image separator
+- Fixed: Price Box - Font-awesome icons do not load on front end
+
+Version 1.6.5 - Thursday, 21st September 2017
+- Security Fix: A cross-site scripting (XSS) vulnerability was discovered in html links, WordPress core has patched it's vulnerability in 4.8.2 release and we've also fix it for UABB
+- Fixed: Google Map - JSON map style option not working
+- Fixed: Row Separator - Duplicate class names while using custom class name
+
+Version 1.6.4 - Tuesday, 19th September 2017
+- Improvement: Advanced Menu - Option to add submenu icon in overlay and off-canvas layout
+- Improvement: Advanced Posts - Added drop-down filter option for masonry layout
+- Improvement: Contact Form - From field in the mail show sender name than the WordPress default name
+- Improvement: Countdown - Added time zone option
+- Improvement: Google Map - Added field connections support to the latitude & longitude field
+- Improvement: Modal Popup - Added field connections support to the video URL field
+- Improvement: Row Separator - Added new row separator styles
+- Improvement: Row Separator - Added width option
+- Fixed: Advanced Menu - List style being overridden by third-party applications
+- Fixed: Advanced Posts - Fixed shortcodes in HTML attributes not being parsed in the context of the current post in the custom layout.
+- Fixed: Countdown - Evergreen Countdown does not work with minutes
+- Fixed: Countdown - Countdown module shows incorrect label for singular values
+- Fixed: Fancy Text - Text overlap issue when slide effect is applied
+- Fixed: Google Map - Map type option was not working
+- Fixed: Modal Popup - Text Blur issue
+- Fixed: Modal Popup - After closing modal audio/video player doesn't stop which is added by content
+- Fixed: Photo - Changed field connection support to photo rather than a string, HTML
+- Fixed: Row Separator - Tilt Left and Tilt Right doesn't go edge to edge
+- Fixed: Row Separator - z-index issue in row separator and photo module
+
+Version 1.6.3 - Tuesday, 29th August 2017
+- Improvement: Photo Gallery - Get full-size image in lightbox rather than large
+- Improvement: Info Circle - Icon background color opacity option
+- Fixed: Row Separator - Bottom row separator duplicated to top row separator
+
+Version 1.6.2 - Tuesday, 22nd August 2017
+- Improvement: Advanced Posts - Added equal height option for masonry layout
+- Improvement: Advanced Posts - Added custom icon support for arrows in carousel layout
+- Improvement: Advanced Posts - Added filter uabb_advanced_post_title_link to control heading link
+- Improvement: Advanced Posts - Added Beaver Themer shortcode support in CTA fields
+- Improvement: Advanced Menu - Improved submenu text alignment when parent menu aligned to right
+- Improvement: Advanced Menu - Introduced new actions uabb_advanced_menu_before and uabb_advanced_menu_after
+- Improvement: Advanced Menu - Added overlay option to off canvas menu
+- Improvement: Advanced Menu - Added option to manage submenu width
+- Improvement: Advanced Menu - Partial refresh support for submenu
+- Improvement: Before After Slider - Add alt text to the images
+- Improvement: Button - Provided option to add photo or icon
+- Improvement: Price Box - Introduced new action uabb_price_box_button to add custom HTML after price box button
+- Improvement: Team - Added field connections support to the name field
+- Improvement: UABB dashboard menu capability changed to "manage_options"
+- Fixed: Image Carousel - Arrows not displayed on front end
+- Fixed: Advanced Icons - Display icons if link is empty
+- Fixed: Advanced Menu - Increase overlay z-index value
+- Fixed: Advanced Menu - Close icon styling for overlay and off-canvas menu
+- Fixed: Advanced Menu - Toggle button container width applying to whole menu container
+- Fixed: Advanced Posts - Fixed PHP error produced by canonical redirection on single post
+- Fixed: Advanced Posts - Number of posts to scroll issue on medium and small device in carousel layout
+- Fixed: Dual Button - Custom width on preview showing width of single button
+- Fixed: Row Separator - Prevent the output of empty div when no row separator is active
+- Fixed: Row Separator - Top row separator background color compatibility issue
+
+Version 1.6.1 - Wednesday, 2nd August, 2017
+- Improvement: Advanced Posts - Introduced new actions uabb_blog_posts_before_image and uabb_blog_posts_after_image.
+- Fixed: Advanced Posts - Existing user compatibility issue.
+
+Version 1.6.0 - Tuesday, 1st August, 2017
+- New: Advanced Menu
+- New: Row Gradient Background
+- New: Column Gradient Background
+- Improvement: Branding settings - New options to hide Knowledge Base and Support Link.
+- Improvement: Branding settings - In case of custom plugin short name, removed 'Modules' string from modules category panel.
+- Improvement: Live preview for all possible options in all modules.
+- Improvement: Mailchimp Subscription Form - Renamed Module to Subscription Form.
+- Improvement: Gravity Form Styler - Support for Page Break field.
+- Improvement: Subscription Form Module - Support for all third party mailers.
+- Improvement: Add field connection support to the button form options.
+- Improvement: Advanced Posts - Custom Layout Support.
+- Improvement: Button - Added Custom Class Option.
+- Improvement: Hide Global Settings button for UABB compatible themes.
+- Fixed: Advanced Posts - Multiple isotope taxonomy filter on same page not working.
+- Fixed: Info Circle - Custom icons looks smaller on frontend.
+- Fixed: Advanced Accordion - Open accordion by URL console error fixed.
+- Fixed: Advanced Tabs - Page breaks when used with saved template, modules and rows. 
+- Fixed: Photo - Source breaks when used with Beaver Themer connections.
+
+Version 1.5.0 - Tuesday, 18th July, 2017
+- New: Introduced CF7 Styler
+- New: Progress Bar - Introduced Semi Circular layout
+- Improvement: Advanced Posts - Added scroll option for pagination
+- Improvement: Advanced Posts - Left image layout CSS fix
+- Improvement: Counter - Added WordPress locale support for counter number format
+- Improvement: Gravity Form Styler - Added Ajax on/off option.
+- Improvement: Gravity Form Styler - Added Tab Index option.
+- Improvement: Gravity Form Styler - Added options to style Radio Button and Checkboxes.
+- Improvement: Counter - Added WordPress locale support for counter number format.
+- Fixed: Advanced Tabs - Open tab by URL console error fixed.
+- Fixed: Gravity Form Styler - Margin not applying to Select field, Radio Button and Checkbox.
+- Fixed: Gravity Form Styler - Spacing issue while using the default classes of gravity form.
+
+Version 1.4.7 - Tuesday, 4th July, 2017
+- New: Introduced Gravity Forms Styler
+- New: Counter - Introduced Semicircle counter type
+- Improvement: Advanced Posts - Added "No Result Message" option for pagination
+- Improvement: Advanced Posts - Added match - unnmatch filter in custom query builder
+- Improvement: Advanced Posts - Added "Sort by Meta Value ( Alphabetical & Numeric )" option in custom query builder
+- Improvement: Advanced Posts - Added "Remove Line Break" option to get content without paragraph & line break
+- Improvement: Counter - Circle stroke size now applying from inside
+- Fixed: Advanced Posts - Pagination visibility issue, when using main query in Beaver Themer template
+- Fixed: Advanced Posts - Pagination breaks, if more than one Advanced Post module is used on same page
+- Fixed: Contact Form - Text area and input placeholder alignment issues
+- Fixed: Contact Form - RTL issue
+- Fixed: Image Carousel - RTL issue
+- Fixed: Info Box - RTL issue
+- Fixed: Info List - Connector alignment and spacing issue
+
+Version 1.4.6 - Thursday, 15th June, 2017
+- New: Compatibility with Beaver Builder 2.0
+- Improvement: Added new field connections support to the Progress Bar element.
+- Fixed: UABB update not showinng up in the WordPress site management services like ManageWP or InfiniteWP etc.
+- Fixed: Image Separator - Visiblity issue
+
+Version 1.4.5 - Monday, 05th June, 2017
+- Improvement: Advanced Posts - This module now uses FLBuilderLoop::query()
+- Improvement: Advanced Posts - Added before/after actions for custom setting fields
+- Improvement: Added new field connections support to the more elements
+- Fixed: Advanced Posts - Fixed Layout Sort order input type hidden issue
+- Fixed: Info List - Fixed typecast related notice issue for width option
+
+Version 1.4.4 - Monday, 08th May, 2017
+- New: Added Beaver Themer support, Use modules from ultimate beaver to create dynamic page layouts with Beaver Themer.
+- Fixed: Photo Gallery - Photo Gallery's use in Advanced tab module
+
+Version 1.4.3 - Wednesday, 03rd May, 2017
+- Fixed: Sections and Templates not visible issue
+
+Version 1.4.2 - Thursday, 27th April, 2017
+- Fixed: Advanced Icon - Fallback condition added for background size
+- Fixed: Advanced Posts - Fixed image fetching issue for Custom Image size
+- Fixed: Advanced Separator - Fixed image display issue
+- Fixed: Beaver Builder 1.10 compatibility
+- Fixed: Contact Form - Placeholder color issue for Mozilla Firefox fixed
+- Fixed: Image Carousel - CSS referencing issue fixed
+- Fixed: Image Carousel - Light Box caption not visible issue fixed
+- Fixed: Image Carousel - Link Target option added
+- Fixed: iHover - Fixed Border color opacity issue
+- Fixed: iHover - Fixed hover issue for small devices
+- Fixed: iHover - Page scroll issue fixed
+- Fixed: Image Separator - Fixed scroll bar issue on small devices
+- Fixed: Info Box - Link issue fixed
+- Fixed: Interactive Banner 1 - Added alt tag for images
+- Fixed: Interactive Banner 2 - Added alt tag for images
+- Fixed: Interactive Banner 2 - Fixed ipad visibility issue
+- Fixed: Modal Popup - Issue on iPad with youtube video height
+- Fixed: Modal Popup - Saved row page break issue fixed
+- Fixed: Modal Popup - Trigger issue on small device fixed
+- Fixed: Modal Popup - IE close button visibility issue fixed
+- Improvement: Advanced Accordion - Added video support for content
+- Improvement: Advanced Posts - Added actions for before/after of title, meta & content of posts
+- Improvement: Advanced Posts - Added mobile view option for Left/Right Layout
+- Improvement: Advanced Posts - Added filter to WP_Query arguments
+- Improvement: Advanced Tabs - Added video support for content
+- Improvement: Modal Popup - Added video support for content
+
+
 Version 1.4.1 - Tuesday, 24th January, 2017
 - Fixed: Before After Slider - Inital load issue fixed
 - Fixed: Countdown - Evergreen Timer issue fixed
@@ -11,13 +197,13 @@ Version 1.4.0 - Wednesday, 18 January, 2017
 - New: Introduced Image Carousel Module
 - New: Introduced Social Share Module
 - New: Global colors fetch from beaver builder & GeneratePress theme ( If UABB Global settings is off )
-- Improvement: Advanced Post - Added filter for custom image size
-- Improvement: Advanced Post - Added link from URL to masonry categories
-- Improvement: Advanced Post - Added 8 column support for posts
-- Improvement: Advanced Post - Introduced post meta sorting options
-- Improvement: Advanced Post - Introduced post layout sorting options
-- Improvement: Advanced Post - Organized all module settings
-- Improvement: Advanced Post - Added filter to give custom URL for posts
+- Improvement: Advanced Posts - Added filter for custom image size
+- Improvement: Advanced Posts - Added link from URL to masonry categories
+- Improvement: Advanced Posts - Added 8 column support for posts
+- Improvement: Advanced Posts - Introduced post meta sorting options
+- Improvement: Advanced Posts - Introduced post layout sorting options
+- Improvement: Advanced Posts - Organized all module settings
+- Improvement: Advanced Posts - Added filter to give custom URL for posts
 - Improvement: Advanced Accordion - Added link from URL to item using module ID and index
 - Improvement: Advanced Tabs - Added link from URL to item using module ID and index
 - Improvement: Info Table - CTA target option added

@@ -8,6 +8,7 @@
 
 .fl-node-<?php echo $id; ?> .adv-icon-horizontal .adv-icon-link {
 	margin-bottom: <?php echo $settings->spacing; ?>px;
+	display: inline-block;
 }
 
 /* Left */
@@ -40,6 +41,8 @@
 <?php 
 $icon_count = 1;
 $settings->bg_border_radius = ( $settings->bg_border_radius !== '' ) ? $settings->bg_border_radius : '0';
+$settings->bg_size = ( $settings->bg_size != '' ) ? (int) trim( $settings->bg_size ) : 0;
+
 foreach ( $settings->icons as $i => $icon ) : 	
 	$imageicon_array = array(
 

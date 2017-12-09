@@ -7,9 +7,12 @@ class UABBDualButtonModule extends FLBuilderModule {
         parent::__construct(array(
             'name'            => __( 'Dual Button', 'uabb' ),
             'description'     => __( 'A totally awesome module!', 'uabb' ),
-            'category'        => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
             'dir'             => BB_ULTIMATE_ADDON_DIR . 'modules/dual-button/',
             'url'             => BB_ULTIMATE_ADDON_URL . 'modules/dual-button/',
+            'partial_refresh' => true,
+            'icon'              => 'button.svg',
         ));
     }
 
@@ -192,7 +195,7 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                         'size'          => '6',
                         'placeholder'   => '100',
                         'help'          => __('Custom Width of Single Button.', 'uabb'),
-                        'description'   => 'px'
+                        'description'   => 'px',
                     ),
                     'dual_button_height' => array(
                         'type'          => 'text',
@@ -222,7 +225,7 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                             'left'      => __('Left', 'uabb'),
                             'right'      => __('Right', 'uabb'),
                             'center'      => __('Center', 'uabb'),
-                        )
+                        ),
                     ),
                     'dual_button_radius'   => array(
                         'type'          => 'text',
@@ -364,12 +367,26 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                         'type'          => 'text',
                         'label'         => __('Button Text', 'uabb'),
                         'placeholder'   => "Button One",
-                        'default'       => __('Check Demo','uabb')
+                        'default'       => __('Check Demo','uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-btn-one-text',
+                        )
                     ),
                     'button_one_link'   => array(
                         'type'          => 'link',
                         'label'         => __('Button Link', 'uabb'),
                         'default'       => '#',
+                        'connections'   => array( 'url' )
+                    ),
+                    'button_one_class'          => array(
+                        'type'          => 'text',
+                        'label'         => __('Class', 'uabb'),
+                        'default'       => '',
+                        'preview'       => array(
+                            'type'          => 'none'
+                        ),
                     ),
                     'button_one_link_target'   => array(
                         'type'          => 'select',
@@ -480,12 +497,27 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                         'type'          => 'text',
                         'label'         => __('Button Text', 'uabb'),
                         'placeholder'   => "Button two",
-                        'default'       => __('Learn More','uabb')
+                        'default'       => __('Learn More','uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-btn-one-text',
+                        )
                     ),
+
                     'button_two_link'   => array(
                         'type'          => 'link',
                         'label'         => __('Button Link', 'uabb'),
                         'default'       => '#',
+                        'connections'   => array( 'url' )
+                    ),
+                    'button_two_class'          => array(
+                        'type'          => 'text',
+                        'label'         => __('Class', 'uabb'),
+                        'default'       => '',
+                        'preview'       => array(
+                            'type'          => 'none'
+                        ),
                     ),
                     'button_two_link_target'   => array(
                         'type'          => 'select',
@@ -621,7 +653,12 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                     'divider_text'   => array(
                         'type'          => 'text',
                         'label'         => __('Text', 'uabb'),
-                        'default'       => 'or'
+                        'default'       => 'or',
+                        'connections' => array( 'string' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-middle-text',
+                        )
                     ),
                     'divider_icon'   => array(
                         'type'          => 'icon',
@@ -630,7 +667,8 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                     ),
                     'divider_photo'         => array(
                         'type'          => 'photo',
-                        'label'         => __('Photo', 'uabb')
+                        'label'         => __('Photo', 'uabb'),
+                        'connections' => array( 'photo' )
                     ),
                 )
             ),
@@ -642,12 +680,22 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                         'label'         => __('Text / Icon Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-middle-text',
+                            'property'      => 'color',
+                        )
                     ),
                     'divider_background_color' => array( 
                         'type'       => 'color',
                         'label'         => __('Background Color', 'uabb'),
                         'default'    => 'ffffff',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-middle-text',
+                            'property'      => 'background',
+                        )
                     ),
                     'divider_background_color_opc' => array( 
                         'type'        => 'text',
@@ -669,6 +717,12 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                         'maxlength'     => '3',
                         'placeholder'   => '50',
                         'size'          => '5',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-middle-text',
+                            'property'      => 'border-radius',
+                            'unit'          => 'px',
+                        )
                     ),
                     'divider_border'   => array(
                         'type'          => 'select',
@@ -702,6 +756,11 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                             'outset'     => array(
                                 'fields'    => array( 'divider_border_color', 'divider_border_width' )
                             ),
+                        ),
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-middle-text',
+                            'property'      => 'border-style',
                         )
                     ),
                     'divider_border_color' => array( 
@@ -709,6 +768,11 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                         'label'         => __('Border Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-middle-text',
+                            'property'      => 'border-color',
+                        )
                     ),
                     'divider_border_width'   => array(
                         'type'          => 'text',
@@ -716,7 +780,13 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                         'description'   => 'px',
                         'maxlength'     => '3',
                         'size'          => '5',
-                        'placeholder'   => '1'
+                        'placeholder'   => '1',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-middle-text',
+                            'property'      => 'border-width',
+                            'unit'          => 'px',
+                        )
                     ),
                     
                 )
@@ -777,12 +847,20 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                         'label'         => __('Button Color', 'uabb'),  
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-btn-one-text',
+                            'property'        => 'color',
+                        )
                     ),
                     '_btn_one_text_hover_color' => array( 
                         'type'       => 'color',
                         'label'         => __('Button Hover Color', 'uabb'),  
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'none',
+                        )
                     ),
                 )
             ),
@@ -836,6 +914,11 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                         'label'         => __('Button Color', 'uabb'), 
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-btn-two-text',
+                            'property'        => 'color',
+                        )
                     ),
                     '_btn_two_text_hover_color' => array( 
                         'type'       => 'color',
@@ -869,6 +952,12 @@ FLBuilder::register_module('UABBDualButtonModule', array(
                             'small'         => '',
                         ),
                         'help'  => __( 'Divider width and height will adjust according to font size', 'uabb' ),
+                         'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-middle-text',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
+                        )
                     ),
                 )
             ),

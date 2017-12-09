@@ -13,10 +13,12 @@ class UABBAdvancedAccordionModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Advanced Accordion', 'uabb'),
 			'description'   	=> __('Display a collapsible accordion of items.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/advanced-accordion/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/advanced-accordion/',
-			'partial_refresh'	=> false
+			'partial_refresh'	=> true,
+			'icon'				=> 'layout.svg',
 		));
 
 		add_filter( 'fl_builder_render_settings_field', array( $this , 'uabb_accordion_render_settings_field' ), 10, 3 );
@@ -44,7 +46,8 @@ class UABBAdvancedAccordionModule extends FLBuilderModule {
         $content_type = $settings->content_type;
         switch($content_type) {
             case 'content':
-                return $settings->ct_content;
+            	global $wp_embed;
+                return wpautop( $wp_embed->autoembed( $settings->ct_content ) );
             break;
             case 'photo':
             	if ( isset( $settings->ct_photo_src ) ) {
@@ -58,15 +61,15 @@ class UABBAdvancedAccordionModule extends FLBuilderModule {
             break;
             case 'saved_rows':
             	ob_start();
-                echo do_shortcode('[fl_builder_insert_layout id="'.$settings->ct_saved_rows.'" type="fl-builder-template"]');
+                echo '[fl_builder_insert_layout id="'.$settings->ct_saved_rows.'" type="fl-builder-template"]';
                 return ob_get_clean();
             case 'saved_modules':
             	ob_start();
-                echo do_shortcode('[fl_builder_insert_layout id="'.$settings->ct_saved_modules.'" type="fl-builder-template"]');
+                echo '[fl_builder_insert_layout id="'.$settings->ct_saved_modules.'" type="fl-builder-template"]';
                 return ob_get_clean();
             case 'saved_page_templates':
                 ob_start();
-                echo do_shortcode('[fl_builder_insert_layout id="'.$settings->ct_page_templates.'" type="fl-builder-template"]');
+                echo '[fl_builder_insert_layout id="'.$settings->ct_page_templates.'" type="fl-builder-template"]';
                 return ob_get_clean();
             break;
             default:
@@ -168,7 +171,13 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 						'type'          => 'uabb-spacing',
                         'label'         => __( 'Padding', 'uabb' ),
                         'mode'			=> 'padding',
-                        'default'       => 'padding: 15px;' // Optional
+                        'default'       => 'padding: 15px;', // Optional
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-button',
+                            'property'      => 'padding',
+                            'unit'			=> 'px'
+                        )
 					),
 					'title_margin'     => array(
 						'type'          => 'text',
@@ -177,6 +186,12 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 						'maxlength'     => '2',
 						'size'          => '6',
 						'description'   => 'px',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-item',
+                            'property'      => 'margin-bottom',
+                            'unit'			=> 'px'
+                        )
 					),
 					'title_align'         => array(
 						'type'          => 'select',
@@ -187,27 +202,47 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 							'center'        => __('Center', 'uabb'),
 							'left'          => __('Left', 'uabb'),
 							'right'         => __('Right', 'uabb')
-						)
+						),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-button-label',
+                            'property'      => 'text-align',
+                        )
 					),
 					'title_color' => array( 
 						'type'       => 'color',
 						'label'      => __('Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button-label',
+                            'property'      => 'color',
+                        )
 					),
                     'title_hover_color' => array( 
 						'type'       => 'color',
 						'label'      => __('Hover Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-item-active .uabb-adv-accordion-button-label',
+                            'property'      => 'color',
+                        )
 					),
-					'title_bg_color' => array( 
+					'title_bg_color' => array(
 						'type'       => 'color',
 						'label'      => __('Background Color', 'uabb'),
 						'default'	 => 'f6f6f6',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button',
+                            'property'      => 'background',
+                        )
 					),
-                    'title_bg_color_opc' => array( 
+                    'title_bg_color_opc' => array(
 						'type'        => 'text',
 						'label'       => __('Opacity', 'uabb'),
 						'default'     => '',
@@ -215,11 +250,16 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 						'maxlength'   => '3',
 						'size'        => '5',
 					),
-					'title_bg_hover_color' => array( 
+					'title_bg_hover_color' => array(
 						'type'       => 'color',
 						'label'      => __('Background Hover/Focus Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-item-active .uabb-adv-accordion-button',
+                            'property'      => 'background',
+                        )
 					),
                     'title_bg_hover_color_opc' => array( 
 						'type'        => 'text',
@@ -262,7 +302,12 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                    'double'        => array(
 		                        'fields'        => array('title_border_color', 'title_border_top', 'title_border_bottom', 'title_border_left', 'title_border_right' )
 		                    )
-		                )
+		                ),
+		                'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button',
+                            'property'      => 'border-style',
+                        )
 		            ),
 		            'title_border_top'    => array(
 		                'type'          => 'text',
@@ -270,7 +315,13 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '1'
+		                'placeholder'   => '1',
+		                'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button',
+                            'property'      => 'border-top-width',
+                            'unit'			=>	'px',
+                        )
 		            ),
 		            'title_border_bottom' => array(
 		                'type'          => 'text',
@@ -278,7 +329,13 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '1'
+		                'placeholder'   => '1',
+		                'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button',
+                            'property'      => 'border-bottom-width',
+                            'unit'			=>	'px',
+                        )
 		            ),
 		            'title_border_left'   => array(
 		                'type'          => 'text',
@@ -286,7 +343,13 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '1'
+		                'placeholder'   => '1',
+		                'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button',
+                            'property'      => 'border-left-width',
+                            'unit'			=>	'px',
+                        )
 		            ),
 		            'title_border_right'  => array(
 		                'type'          => 'text',
@@ -294,7 +357,13 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '1'
+		                'placeholder'   => '1',
+		                'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button',
+                            'property'      => 'border-right-width',
+                            'unit'			=>	'px',
+                        )
 		            ),
 		            'title_border_radius'   => array(
 		                'type'          => 'text',
@@ -302,13 +371,24 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '0'
+		                'placeholder'   => '0',
+		                'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button',
+                            'property'      => 'border-radius',
+                            'unit'			=>	'px',
+                        )
 		            ),
 		            'title_border_color' => array( 
 						'type'       => 'color',
 						'label'      => __('Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button',
+                            'property'      => 'border-color',
+                        )
 					),
 		        )
 			),
@@ -327,13 +407,19 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 						'default'		=> 'fa fa-minus',
 						'show_remove'	=> true
 					),
-					 'icon_size'    => array(
+					'icon_size'    => array(
 		                'type'          => 'text',
 		                'label'         => __('Icon Size', 'uabb'),
 		                'placeholder'   => '16',
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
+		                'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button-icon',
+                            'property'      => 'font-size',
+                            'unit'			=> 'px',
+                        )
 		            ),
 					'icon_position' => array(
 						'type'          => 'select',
@@ -361,12 +447,22 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
                         'label'      => __('Icon Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button-icon',
+                            'property'      => 'color',
+                        )
 					),
 					'icon_hover_color' => array( 
 						'type'       => 'color',
 						'label'      => __('Icon Hover/Focus Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-item-active .uabb-adv-accordion-button-icon',
+                            'property'      => 'color',
+                        )
 					),
 				)
 			),
@@ -382,7 +478,13 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 						'type'          => 'uabb-spacing',
                         'label'         => __( 'Padding', 'uabb' ),
                         'mode'			=> 'padding',
-                        'default'       => 'padding: 20px;' // Optional
+                        'default'       => 'padding: 20px;', // Optional
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'padding',
+                            'unit'			=> 'px'
+                        )
 					),
 					'content_align'         => array(
 						'type'          => 'select',
@@ -393,19 +495,34 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 							'center'        => __('Center', 'uabb'),
 							'left'          => __('Left', 'uabb'),
 							'right'         => __('Right', 'uabb')
-						)
+						),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'text-align',
+                        )
 					),
 					'content_color' => array( 
 						'type'       => 'color',
 						'label'      => __('Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'color',
+                        )
 					),
 					'content_bg_color' => array( 
 						'type'       => 'color',
 						'label'      => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'background',
+                        )
 					),
                     'content_bg_color_opc' => array( 
 						'type'        => 'text',
@@ -448,7 +565,12 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                    'double'        => array(
 		                        'fields'        => array('content_border_color', 'content_border_top', 'content_border_bottom', 'content_border_left', 'content_border_right', 'responsive_border')
 		                    )
-		                )
+		                ),
+		                'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'border-style',
+                        )
 		            ),
 		            'content_border_top'    => array(
 		                'type'          => 'text',
@@ -456,7 +578,13 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '1'
+		                'placeholder'   => '1',
+		                'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'border-top-width',
+                            'unit'			=> 'px',
+                        )
 		            ),
 		            'content_border_bottom' => array(
 		                'type'          => 'text',
@@ -464,7 +592,13 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '1'
+		                'placeholder'   => '1',
+		                'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'border-bottom-width',
+                            'unit'			=> 'px',
+                        )
 		            ),
 		            'content_border_left'   => array(
 		                'type'          => 'text',
@@ -472,7 +606,13 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '1'
+		                'placeholder'   => '1',
+		                'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'border-left-width',
+                            'unit'			=> 'px',
+                        )
 		            ),
 		            'content_border_right'  => array(
 		                'type'          => 'text',
@@ -480,21 +620,38 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '1'
+		                'placeholder'   => '1',
+		                'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'border-right-width',
+                            'unit'			=> 'px',
+                        )
 		            ),
-		             'content_border_radius'   => array(
+		            'content_border_radius'   => array(
 		                'type'          => 'text',
 		                'label'         => __('Border Radius', 'uabb'),
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '0'
+		                'placeholder'   => '0',
+		                'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'border-radius',
+                            'unit'			=> 'px',
+                        )
 		            ),
-		            'content_border_color' => array( 
+		            'content_border_color' => array(
 						'type'       => 'color',
 						'label'      => __('Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-adv-accordion-content',
+                            'property'      => 'border-color',
+                        )
 					),
 				)
 			)
@@ -542,6 +699,12 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button-label',
+                            'property'      => 'font-size',
+                            'unit'      => 'px',
+                        )
                     ),
                     'line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -551,6 +714,12 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-button-label',
+                            'property'      => 'line-height',
+                            'unit'      => 'px',
+                        )
                     ),
                 )
             ),
@@ -577,6 +746,12 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-content, .uabb-adv-accordion-content *',
+                            'property'      => 'font-size',
+                            'unit'      => 'px',
+                        )
                     ),
                     'content_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -586,6 +761,12 @@ FLBuilder::register_module('UABBAdvancedAccordionModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-adv-accordion-content, .uabb-adv-accordion-content *',
+                            'property'      => 'line-height',
+                            'unit'      => 'px',
+                        )
                     ),
                 )
             ),
@@ -608,7 +789,8 @@ FLBuilder::register_settings_form('uabb_advAccordion_items_form', array(
 						'acc_title'         => array(
 							'type'          => 'text',
 							'label'         => __('Title', 'uabb'),
-							'default'		=> 'Nuper quisque evolvit praebebat turba hunc viseret foret vultus.'
+							'default'		=> 'Nuper quisque evolvit praebebat turba hunc viseret foret vultus.',
+							'connections'   => array( 'string', 'html' )
 						)
 					)
 				),
@@ -661,6 +843,7 @@ FLBuilder::register_settings_form('uabb_advAccordion_items_form', array(
 			                'type'                  => 'editor',
 			                'label'                 => '',
 			                'default'				=> '',
+			                'connections'			=> array( 'string', 'html' )
 			            ),
 			            'ct_photo'     => array(
 			                'type'                  => 'photo',

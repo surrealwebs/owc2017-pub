@@ -689,10 +689,13 @@
     perspective: 1000px
 }
 .uabb-ib-effect-style11 img {
-    -webkit-transition: opacity .35s, -webkit-transform .35s;
-    transition: opacity .35s, transform .35s;
-    -webkit-transform: translate3d(0, 0, 200px);
-    transform: translate3d(0, 0, 200px)
+    -webkit-transition: opacity .35s,-webkit-transform .35s;
+    transition: opacity .35s,-webkit-transform .35s;
+    transition: opacity .35s,transform .35s;
+    transition: opacity .35s,transform .35s,-webkit-transform .35s;
+    -webkit-transform: scale(1.2);
+    -ms-transform: scale(1.2);
+    transform: scale(1.2);
 }
 .uabb-new-ib.uabb-ib-effect-style11.uabb-ib2-min-height img {
     min-height: 100%;
@@ -700,8 +703,9 @@
     max-width: none!important
 }
 .uabb-ib-effect-style11.uabb-ib2-hover img {
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0)
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
 }
 .uabb-ib-effect-style11 .uabb-new-ib-desc::after,
 .uabb-ib-effect-style11 .uabb-new-ib-desc::before {

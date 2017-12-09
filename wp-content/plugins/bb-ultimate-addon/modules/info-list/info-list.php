@@ -7,12 +7,13 @@ class UABBInfoList extends FLBuilderModule {
         parent::__construct(array(
             'name'            => __( 'Info List', 'uabb' ),
             'description'     => __( 'A totally awesome module!', 'uabb' ),
-            'category'      => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/info-list/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/info-list/',
             'editor_export'   => true, // Defaults to true and can be omitted.
             'enabled'         => true, // Defaults to true and can be omitted.
-            'partial_refresh' => false, // Defaults to false and can be omitted.
+            'partial_refresh' => true, // Defaults to false and can be omitted.
         ));
         $this->add_js( 'jquery-waypoints' );
         // Register and enqueue your own.
@@ -25,20 +26,21 @@ class UABBInfoList extends FLBuilderModule {
      */
     public function render_image( $item, $settings )
     {
+        $settings->icon_image_size = isset( $settings->icon_image_size ) ? $settings->icon_image_size : 75;
         if ( $settings->list_icon_style == 'circle' ) {
-            $infolist_icon_size = $settings->icon_image_size / 2;
+            $infolist_icon_size = (int) $settings->icon_image_size / 2;
         }else if ( $settings->list_icon_style == 'square' ) {
-            $infolist_icon_size = $settings->icon_image_size / 2;
+            $infolist_icon_size = (int) $settings->icon_image_size / 2;
         }else if ( $settings->list_icon_style == 'custom' ) {
-            $infolist_icon_size = $settings->icon_image_size;
+            $infolist_icon_size = (int) $settings->icon_image_size;
         }else {
-            $infolist_icon_size = $settings->icon_image_size;
+            $infolist_icon_size = (int) $settings->icon_image_size;
         }
         $imageicon_array = array(
  
             /* General Section */
-            'image_type' => $item->image_type,
-         
+            'image_type' => ( isset( $item->image_type ) ) ? $item->image_type : 'none',
+
             /* Icon Basics */
             'icon' => $item->icon,
             'icon_size' => $infolist_icon_size,
@@ -48,7 +50,7 @@ class UABBInfoList extends FLBuilderModule {
             'photo_source' => $item->photo_source,
             'photo' => $item->photo,
             'photo_url' => $item->photo_url,
-            'img_size' => $settings->icon_image_size,
+            'img_size' => (int) $settings->icon_image_size,
             'img_align' => "center",
             'photo_src' => ( isset( $item->photo_src ) ) ? $item->photo_src : '' ,
          
@@ -76,33 +78,39 @@ class UABBInfoList extends FLBuilderModule {
     public function render_each_item( $item, $list_item_counter )
     {
         echo '<li class="uabb-info-list-item info-list-item-dynamic'.$list_item_counter.'">';
-        echo '<div class="uabb-info-list-content-wrapper uabb-info-list-'.$this->settings->icon_position.'">';
+        echo '<div class="uabb-info-list-content-wrapper fl-clearfix uabb-info-list-'.$this->settings->icon_position.'">';
 
         if ( !empty( $item->list_item_link ) && $item->list_item_link === "complete" && !empty($item->list_item_url) ) {
 
-            echo '<a href="'.$item->list_item_url.'" class="uabb-info-list-link" target="'.$item->list_item_link_target.'"></a>';
+            echo '<a href="'.$item->list_item_url.'" class="uabb-info-list-link" target="'.$item->list_item_link_target.'" '. BB_Ultimate_Addon_Helper::get_link_rel( $item->list_item_link_target, $item->list_item_link_nofollow, 0 ) .'></a>';
         }
 
-        if( $item->image_type != "none" ) {
+        if( isset( $item->image_type ) && $item->image_type != "none" ) {
             echo '<div class="uabb-info-list-icon info-list-icon-dynamic'. $list_item_counter.'">';
 
             if ( !empty( $item->list_item_link ) && $item->list_item_link == "icon") {
-                echo '<a href="'. $item->list_item_url .'" class="uabb-info-list-link" target="'. $item->list_item_link_target .'"></a>';
+                echo '<a href="'. $item->list_item_url .'" class="uabb-info-list-link" target="'. $item->list_item_link_target .'" '. BB_Ultimate_Addon_Helper::get_link_rel( $item->list_item_link_target, $item->list_item_link_nofollow, 0 ) .'></a>';
             }
-                $this->render_image( $item, $this->settings );
-          
+            $this->render_image( $item, $this->settings );
+
+            if ( !empty( $item->image_type ) && $item->image_type == "custom_char") {
+                echo '<div class="custom-character'. $list_item_counter.'">'.$item->custom_text.'</div>';
+            }
             echo '</div>';
         }
 
         echo '<div class="uabb-info-list-content uabb-info-list-'. $this->settings->icon_position.' info-list-content-dynamic'. $list_item_counter.'">';
-        
+
         echo '<'. $this->settings->heading_tag_selection . ' class="uabb-info-list-title">';
         if ( !empty( $item->list_item_link ) && $item->list_item_link === "list-title" && !empty($item->list_item_url) ) {
 
-            echo '<a href="'. $item->list_item_url .'" target="'.$item->list_item_link_target.'">';
+            echo '<a href="'. $item->list_item_url .'" target="'.$item->list_item_link_target.'" '. BB_Ultimate_Addon_Helper::get_link_rel( $item->list_item_link_target, $item->list_item_link_nofollow, 0 ) .'>';
 
         }
-        echo $item->list_item_title;
+        if( isset( $item->list_item_title ) ) {
+
+            echo $item->list_item_title;
+        }
         if ( !empty( $item->list_item_link ) && $item->list_item_link === "list-title" && !empty($item->list_item_url) ) {
 
             echo '</a>';
@@ -110,7 +118,7 @@ class UABBInfoList extends FLBuilderModule {
         }
         echo '</'. $this->settings->heading_tag_selection . ' >';
         
-        if( $item->list_item_description != '' ) {
+        if( isset( $item->list_item_description ) && $item->list_item_description != '' ) {
             echo '<div class="uabb-info-list-description uabb-text-editor info-list-description-dynamic'. $list_item_counter.'">';
             if ( strpos( $item->list_item_description, "</p>" ) > 0 ) {
                 echo $item->list_item_description;
@@ -125,7 +133,7 @@ class UABBInfoList extends FLBuilderModule {
 
         $list_item_counter = $list_item_counter + 1;
         echo '</div>';
-        if( $item->image_type != "none" ) {
+        if(  isset( $item->image_type ) && $item->image_type != "none" ) {
             if( $this->settings->align_items == 'center' && $this->settings->icon_position != 'top' ) {
                 echo '<div class="uabb-info-list-connector-top uabb-info-list-'. $this->settings->icon_position.'"></div>';
             }
@@ -345,6 +353,11 @@ FLBuilder::register_module('UABBInfoList', array(
                         'label'      => __('Connector Line Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-info-list-connector',
+                            'property'  => 'color',
+                        )
                     ),
                     'list_connector_style'   => array(
                         'type'          => 'select',
@@ -356,6 +369,11 @@ FLBuilder::register_module('UABBInfoList', array(
                             'dashed'        => __('Dashed', 'uabb'),
                             'dotted'        => __('Dotted', 'uabb')
                         ),
+                        'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-info-list-connector',
+                            'property'  => 'border-style',
+                        )
                     ),
                 )
             )
@@ -404,6 +422,12 @@ FLBuilder::register_module('UABBInfoList', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-info-list-title',
+                            'property'      => 'font-size',
+                            'unit'          => 'px'
+                        )
                     ),
                     'heading_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -413,6 +437,12 @@ FLBuilder::register_module('UABBInfoList', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-info-list-title',
+                            'property'      => 'line-height',
+                            'unit'          => 'px'
+                        )
                     ),
                     'heading_color'        => array( 
                         'type'       => 'color',
@@ -431,6 +461,12 @@ FLBuilder::register_module('UABBInfoList', array(
                         'size'  => '8',
                         'description'   => 'px',
                         'max_length'    => '3',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-info-list-title',
+                            'property'        => 'margin-top',
+                            'unit'            => 'px',
+                        )
                     ),
                     'heading_margin_bottom' => array(
                         'label' => __('Margin Bottom', 'uabb'),
@@ -438,6 +474,12 @@ FLBuilder::register_module('UABBInfoList', array(
                         'size'  => '8',
                         'description'   => 'px',
                         'max_length'    => '3',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-info-list-title',
+                            'property'        => 'margin-bottom',
+                            'unit'            => 'px',
+                        )
                     ),
                 )
             ),
@@ -454,7 +496,6 @@ FLBuilder::register_module('UABBInfoList', array(
                         'preview'         => array(
                             'type'            => 'font',
                             'selector'        => '.uabb-info-list-description *',
-                            
                         )
                     ),
                     'description_font_size'     => array(
@@ -465,6 +506,12 @@ FLBuilder::register_module('UABBInfoList', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-info-list-description *',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
+                        )
                     ),
                     'description_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -474,6 +521,12 @@ FLBuilder::register_module('UABBInfoList', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-info-list-description *',
+                            'property'        => 'line-height',
+                            'unit'            => 'px'
+                        )
                     ),
                     'description_color'        => array( 
                         'type'       => 'color',
@@ -510,11 +563,13 @@ FLBuilder::register_settings_form('info_list_item_form', array(
                             'default'       => __('Name of the element','uabb'),
                             'help'          => __( 'Provide a title for this icon list item.', 'uabb' ),
                             'placeholder'         => __('Title','uabb'),
-                            'class'         => 'uabb-list-item-title'
+                            'class'         => 'uabb-list-item-title',
+                            'connections'   => array( 'string', 'html' )
                         ),
                         'list_item_url'          => array(
                             'type'          => 'link',
-                            'label'         => __('Link', 'uabb')
+                            'label'         => __('Link', 'uabb'),
+                            'connections'   => array( 'url' )
                         ),
                         'list_item_link'          => array(
                             'type'          => 'select',
@@ -537,11 +592,23 @@ FLBuilder::register_settings_form('info_list_item_form', array(
                                 '_blank'        => __('New Window', 'uabb')
                             ),
                         ),
+                        'list_item_link_nofollow'   => array(
+                            'type'          => 'uabb-toggle-switch',
+                            'label'         => __('Link nofollow', 'uabb'),
+                            'description'   => '',
+                            'default'       => '0',
+                            'help'          => __('Enable this to make this link nofollow', 'uabb'),
+                            'options'       => array(
+                                '1'       => __('Yes','uabb'),
+                                '0'       => __('No','uabb'),
+                            ),
+                        ),
                         'list_item_description'          => array(
                             'type'          => 'editor',
                             'default'       => __('Enter description text here.','uabb'),
                             'label'         => '',
-                            'rows'          => 13
+                            'rows'          => 13,
+                            'connections'   => array( 'string', 'html' )
                         )
                     ),
                 ),
@@ -562,6 +629,7 @@ FLBuilder::register_settings_form('info_list_item_form', array(
                                 'none'          => __( 'None', 'Image type.', 'uabb' ),
                                 'icon'          => __('Icon', 'uabb'),
                                 'photo'         => __('Photo', 'uabb'),
+                                'custom_char'         => __('Custom Character', 'uabb'),
                             ),
                             'toggle'        => array(
                                 'icon'          => array(
@@ -569,6 +637,9 @@ FLBuilder::register_settings_form('info_list_item_form', array(
                                 ),
                                 'photo'         => array(
                                     'sections'   => array( 'img_basic', 'img_style' ),
+                                ),
+                                'custom_char'         => array(
+                                    'sections'   => array( 'custom_char' ),
                                 )
                             ),
                         ),
@@ -616,11 +687,29 @@ FLBuilder::register_settings_form('info_list_item_form', array(
                             'type'          => 'photo',
                             'label'         => __('Photo', 'uabb'),
                             'show_remove'   => true,
+                            'connections'   => array( 'photo' )
                         ),
                         'photo_url'     => array(
                             'type'          => 'text',
                             'label'         => __('Photo URL', 'uabb'),
                             'placeholder'   => 'http://www.example.com/my-photo.jpg',
+                        ),
+                    )
+                ),
+                /* Image Basic Setting */
+                'custom_char'     => array( // Section
+                    'title'         => __('Image','uabb'), // Section Title
+                    'fields'        => array( // Section Fields
+                        'custom_text'          => array(
+                            'type'          => 'text',
+                            'label'         => __('Custom Text', 'uabb'),
+                            'description'   => '',
+                        ),
+                        'custom_color' => array( 
+                            'type'       => 'color',
+                            'label'      => __('Icon Color', 'uabb'),
+                            'default'    => '',
+                            'show_reset' => true,
                         ),
                     )
                 ),

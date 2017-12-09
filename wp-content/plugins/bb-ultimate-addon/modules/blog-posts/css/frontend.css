@@ -35,6 +35,30 @@
 .uabb-blog-posts {
     overflow: hidden;
 }
+
+.uabb-blog-posts #infscr-loading {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.uabb-blog-posts #infscr-loading img {
+    margin-top: 10px;
+    width: 10%;
+}
+
+.uabb-blog-posts-masonary #infscr-loading {
+    bottom: -40px;
+    position: absolute;
+}
+
+.uabb-blog-posts-masonary {
+    overflow: visible;
+}
+
 .uabb-blog-posts-carousel {
     overflow: visible;
 }
@@ -490,6 +514,10 @@ ul.uabb-masonary-filters > li {
 
 ul.uabb-masonary-filters > li:last-of-type {
     margin-right: 0;
+}
+
+select.uabb-masonary-filters {
+    outline: none;
 }
 
 .uabb-blogs-pagination {

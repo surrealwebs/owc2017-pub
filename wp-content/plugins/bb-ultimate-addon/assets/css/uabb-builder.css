@@ -149,3 +149,10 @@ html.uabb-active-live-preview .fl-builder-shortcode-mask {
 .fl-builder-settings .fl-builder-field-multiples a:focus {
 	color: inherit;
 }
+
+/* Modal Popup drag fix */
+.uabb-modal-parent-wrapper .uabb-drag-fix {
+    position: fixed;
+    left: -9999px;
+    top: -9999px;
+}

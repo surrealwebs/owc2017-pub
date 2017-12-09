@@ -285,7 +285,6 @@
 }
 
 .internet-explorer11 .uabb-tooltip-style-classic .uabb-hotspot-tooltip-content {
-    width: auto;
     transform: translateY(-50%) translateX(-100%) !important;
 }
 .internet-explorer .uabb-hotspot-container .uabb-hotspot-items .uabb-hotspot-item.uabb-hotspot-hover .uabb-hotspot-tooltip {
@@ -346,3 +345,16 @@
         cursor: default;
     }
 }
+
+@media only screen and (max-device-width: 768px) {
+    .uabb-hotspot-tooltip-content {
+        width: 120px;
+    }
+}
+
+@media only screen and (max-device-width: 320px) {
+    .uabb-hotspot-tooltip-content {
+        width: auto;
+    }
+}
+

@@ -90,6 +90,29 @@ if( $settings->layout == 'circle' ) {
 		?>
 	</div>
 <?php
+/***** Semi-Circle ******/
+} elseif( $settings->layout == 'semi-circle' ) {
+			/* Before Text */
+?>
+	<div class="uabb-number-semi-circle-container">	
+		<div class="uabb-number-text">
+		<?php
+			/* Above Title */
+			$module->render_image('above-title');
+
+			/* Render Number */
+			$module->render_number();
+
+			/* Render Separator */
+			$module->render_separator();
+
+			/* Below Title */
+			$module->render_image('below-title'); 
+		?>
+		</div>
+		<?php $module->render_semi_circle_bar(); ?>
+	</div>
+<?php
 /***** Default ******/
 } else {
 ?>

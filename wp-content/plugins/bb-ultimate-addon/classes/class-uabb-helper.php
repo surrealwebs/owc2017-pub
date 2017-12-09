@@ -7,6 +7,17 @@ if( !class_exists( "BB_Ultimate_Addon_Helper" ) ) {
 	
 	class BB_Ultimate_Addon_Helper {
 
+		/**
+		 * Holds any category strings of modules.
+		 *
+		 * @since 1.3.0
+		 * @var Category Strings
+		 */
+		static public $creative_modules = 'Creative Modules';
+		static public $content_modules 	= 'Content Modules';
+		static public $lead_generation = 'Lead Generation';
+		static public $extra_additions = 'Extra Additions';
+
 		/*
 		* Constructor function that initializes required actions and hooks
 		* @Since 1.0
@@ -34,13 +45,25 @@ if( !class_exists( "BB_Ultimate_Addon_Helper" ) ) {
 
 			//	Branding - %s Modules
 			if ( $branding_name != 'UABB') {
-				$branding_modules = sprintf( __( '%s Modules', 'uabb' ), $branding_name );
+				$branding_modules = sprintf( __( '%s', 'uabb' ), $branding_name );
+			}
+
+			if( isset( $branding['uabb-global-module-listing'] ) && $branding['uabb-global-module-listing'] ) {
+
+				$branding_modules = '';
+				if ( version_compare( '2.0', FL_BUILDER_VERSION, '>' ) ) {
+					$branding_modules = 'Advanced Modules';
+				}
 			}
 
 			define( 'UABB_PREFIX', $branding_name );
-			define( 'UABB_CAT', $branding_modules );			
+			define( 'UABB_CAT', $branding_modules );
 		}
 		
+		static public function module_cat( $cat ) {
+			return class_exists( 'FLBuilderUIContentPanel' ) ? $cat : UABB_CAT;
+		}
+
 		static public function get_builder_uabb()
 		{
 			$uabb = UABB_Init::$uabb_options['fl_builder_uabb'];
@@ -191,12 +214,15 @@ if( !class_exists( "BB_Ultimate_Addon_Helper" ) ) {
 			$modules_array = array(
 				'advanced-accordion'       	=> 'Advanced Accordion',
 				'advanced-icon'            	=> 'Advanced Icons',
+				'uabb-advanced-menu'        => 'Advanced Menu',
 				'blog-posts'               	=> 'Advanced Posts',
 				'advanced-separator'       	=> 'Advanced Separator',
 				'advanced-tabs'            	=> 'Advanced Tabs',
+				'uabb-beforeafterslider'   	=> 'Before After Slider',
 				'uabb-button'              	=> 'Button',
 				'uabb-call-to-action'      	=> 'Call to Action',
 				'uabb-contact-form'        	=> 'Contact Form',
+				'uabb-countdown'           	=> 'Countdown',
 				'uabb-numbers'             	=> 'Counter',
 				'creative-link'            	=> 'Creative Link',
 				'dual-button'              	=> 'Dual Button',
@@ -205,8 +231,11 @@ if( !class_exists( "BB_Ultimate_Addon_Helper" ) ) {
 				'flip-box'                 	=> 'Flip Box',
 				'google-map'               	=> 'Google Map',
 				'uabb-heading'             	=> 'Heading',
+				'uabb-hotspot'				=> 'Hotspot',
+				'ihover'                   	=> 'iHover',
 				'image-icon'               	=> 'Image / Icon',
 				'image-separator'          	=> 'Image Separator',
+				'uabb-image-carousel'	   	=> 'Image Carousel',
 				'info-banner'              	=> 'Info Banner',
 				'info-box'                 	=> 'Info Box',
 				'info-circle'              	=> 'Info Circle',
@@ -224,18 +253,32 @@ if( !class_exists( "BB_Ultimate_Addon_Helper" ) ) {
 				'ribbon'                   	=> 'Ribbon',
 				'uabb-separator'           	=> 'Simple Separator',
 				'slide-box'                	=> 'Slide Box',
+				'uabb-social-share'	    	=> 'Social Share',
 				'spacer-gap'               	=> 'Spacer / Gap',
 				'team'                     	=> 'Team',
 				'adv-testimonials'         	=> 'Testimonials',
-				'ihover'                   	=> 'iHover',
-				'uabb-hotspot'				=> 'Hotspot',
-				'uabb-social-share'	    	=> 'Social Share',
-				'uabb-countdown'           	=> 'Countdown',
-				'uabb-beforeafterslider'   	=> 'Before After Slider',
-				'uabb-image-carousel'	   	=> 'Image Carousel',
 			);
-			
+
+			/* Include Contact form styler */
+			if ( class_exists( 'WPCF7_ContactForm' ) ) {
+				$modules_array['uabb-contact-form7'] = 'CF7 Styler';
+			}
+			/* Include Gravity form styler */
+			if ( class_exists( 'GFForms' ) ) {
+				$modules_array['uabb-gravity-form'] = 'Gravity Forms Styler';
+			}
+			natcasesort( $modules_array );
 			return $modules_array;
+		}
+
+		static public function get_all_extenstions()
+		{
+			$extenstions_array = array(
+				'uabb-row-separator'		=> 'Row Separator',
+				'uabb-row-gradient'			=> 'Row Gradient Background',
+				'uabb-col-gradient'			=> 'Column Gradient Background',
+				);
+			return $extenstions_array;
 		}
 
 		static public function get_builder_uabb_modules()
@@ -334,7 +377,34 @@ if( !class_exists( "BB_Ultimate_Addon_Helper" ) ) {
 
 			return $_templates_exist;
 		}
-	
+
+		/**
+		 *	Get link rel attribute
+		 *
+	 	 *  @since 1.6.1
+		 *	@return string
+		 */
+		static public function get_link_rel( $target, $is_nofollow = 0, $echo = 0 )  {
+
+			$attr = '';
+			if( '_blank' == $target ) {
+				$attr.= 'noopener';
+			}
+
+			if( 1 == $is_nofollow ) {
+				$attr.= ' nofollow';
+			}
+
+			if( '' == $attr ) {
+				return;
+			}
+
+			$attr = trim($attr);
+			if ( ! $echo  ) {
+				return 'rel="'.$attr.'"';
+			}
+			echo 'rel="'.$attr.'"';
+		}
 	}
 	new BB_Ultimate_Addon_Helper();
 }

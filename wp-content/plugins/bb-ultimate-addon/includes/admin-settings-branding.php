@@ -18,7 +18,7 @@
 				$uabb    = BB_Ultimate_Addon_Helper::get_builder_uabb_branding();
 				$checked = '';
 
-				$uabb_plugin_name = $uabb_plugin_desc = $uabb_author_name = $uabb_author_url = $uabb_plugin_short_name = $uabb_knowledge_base_url = $uabb_contact_support_url = $uabb_hide_branding = $uabb_enable_template_cloud = '';
+				$uabb_plugin_name = $uabb_plugin_desc = $uabb_author_name = $uabb_author_url = $uabb_plugin_short_name = $uabb_knowledge_base_url = $uabb_contact_support_url = $uabb_hide_branding = $uabb_enable_template_cloud = $uabb_enable_knowledge_base = $uabb_enable_contact_support = '';
 
 				if( is_array($uabb) ) {
 
@@ -34,6 +34,12 @@
 					$uabb_hide_branding		  = ( get_option( 'uabb_hide_branding' ) != false ) ? ' checked' : '' ;
 					
 					$uabb_enable_template_cloud = ( array_key_exists( 'uabb-enable-template-cloud' , $uabb ) && $uabb['uabb-enable-template-cloud'] == 1 ) ? ' checked' : '';
+
+					$uabb_global_module_listing = ( array_key_exists( 'uabb-global-module-listing' , $uabb ) && $uabb['uabb-global-module-listing'] == 1 ) ? ' checked' : '';
+
+					$uabb_enable_knowledge_base = ( array_key_exists( 'uabb-enable-knowledge-base' , $uabb ) && $uabb['uabb-enable-knowledge-base'] != 1 ) ? '' : 'checked';
+
+					$uabb_enable_contact_support = ( array_key_exists( 'uabb-enable-contact-support' , $uabb ) && $uabb['uabb-enable-contact-support'] != 1 ) ? '' : 'checked';
 				} ?>
 
 			<?php /* Plugin Name*/ ?> 
@@ -69,25 +75,39 @@
 			<?php /* Knowledge Base URL */ ?>
 			<div class="uabb-branding-fields">
 			<h4 class="field-title"><?php _e( 'Knowledge Base URL', 'uabb' ); ?></h4>
-			<input type="text" name="uabb-knowledge-base-url" placeholder="https://www.ultimatebeaver.com/docs/" value="<?php echo $uabb_knowledge_base_url; ?>" class="regular-text uabb-knowledge-base-url" />
+			<p class="uabb-admin-help"><?php _e('Enable this option to display Knowledge Base link in Help tab.', 'uabb'); ?></p>
+			<label>
+				<input type="checkbox" class="uabb-enable-knowledge-base" name="uabb-enable-knowledge-base" value="1" <?php echo $uabb_enable_knowledge_base; ?> ><?php _e( 'Enable Knowledge Base', 'uabb' ); ?>
+			</label>
+			<p class="knowledge-base-url"><input type="text" name="uabb-knowledge-base-url" placeholder="https://www.ultimatebeaver.com/docs/" value="<?php echo $uabb_knowledge_base_url; ?>" class="regular-text uabb-knowledge-base-url" /></p>
 			</div>
 
 			<?php /* Contact Support URL */ ?>
 			<div class="uabb-branding-fields">
 			<h4 class="field-title"><?php _e( 'Contact Support URL', 'uabb' ); ?></h4>
-			<input type="text" name="uabb-contact-support-url" placeholder="https://store.brainstormforce.com/support/" value="<?php echo $uabb_contact_support_url; ?>" class="regular-text uabb-contact-support-url" />
+			<p class="uabb-admin-help"><?php _e('Enable this option to display support link in Help tab.', 'uabb'); ?></p>
+ 				<label>
+ 					<input type="checkbox" class="uabb-enable-contact-support" name="uabb-enable-contact-support" value="1" <?php echo $uabb_enable_contact_support; ?> ><?php _e( 'Enable Contact Support', 'uabb' ); ?>
+ 				</label>
+			<p class="contact-support-url"><input type="text" name="uabb-contact-support-url" placeholder="https://www.ultimatebeaver.com/contact/" value="<?php echo $uabb_contact_support_url; ?>" class="regular-text uabb-contact-support-url" /></p>
 			</div>
 
-			<?php /* Enable Template Cloud */ ?>
+			<div class="uabb-form-setting">
+				<h4><?php echo _e( 'Enable Template Cloud', 'uabb' ); ?></h4>
+				<p class="uabb-admin-help"><?php _e('Enable this option to activate Template Cloud functionality.', 'uabb'); ?></p>
+				<label>
+					<input type="checkbox" class="uabb-enable-template-cloud" name="uabb-enable-template-cloud" value="" <?php echo $uabb_enable_template_cloud; ?> ><?php _e( 'Enable Template Cloud Settings', 'uabb' ); ?>
+				</label>
+			</div>
 
- 			<div class="uabb-form-setting">
- 				<h4><?php echo _e( 'Enable Template Cloud', 'uabb' ); ?></h4>
- 				<p class="uabb-admin-help"><?php _e('Enable this option to activate Template Cloud functionality.', 'uabb'); ?></p>
- 				<label>					
- 					<input type="checkbox" class="uabb-enable-template-cloud" name="uabb-enable-template-cloud" value="" <?php echo $uabb_enable_template_cloud; ?> ><?php _e( 'Enable Template Cloud Settings', 'uabb' ); ?>
- 				</label>
- 			</div>
- 		
+			<div class="uabb-form-setting">
+				<h4><?php echo _e( 'List Modules under Standard Modules', 'uabb' ); ?></h4>
+				<p class="uabb-admin-help"><?php _e('Enable this to list UABB Modules under standard modules.', 'uabb'); ?></p>
+				<label>
+					<input type="checkbox" class="uabb-global-module-listing" name="uabb-global-module-listing" value="" <?php echo $uabb_global_module_listing; ?> ><?php _e( 'Enable UABB modules listing in default Standard category', 'uabb' ); ?>
+				</label>
+			</div>
+
 			<?php /* Hide This Form */ ?>
 			<div class="uabb-form-setting">
 				<h4><?php echo _e( 'Hide White Label Settings', 'uabb' ); ?></h4>
@@ -101,7 +121,7 @@
 
 		<p class="submit">
 			<input type="submit" name="fl-save-uabb-branding" class="button-primary" value="<?php esc_attr_e( 'Save Settings', 'uabb' ); ?>" />
-			
+
 			<?php wp_nonce_field('uabb-branding', 'fl-uabb-branding-nonce'); ?>
 		</p>
 	</form>

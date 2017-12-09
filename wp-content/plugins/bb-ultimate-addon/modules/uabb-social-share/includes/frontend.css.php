@@ -66,7 +66,7 @@ foreach ( $settings->social_icons as $i => $icon ) :
 
 	  /* Icon Style */
 	  'icon_style' => $settings->icoimage_style,
-	  'icon_bg_size' => ( $settings->bg_size * 2 ),
+	  'icon_bg_size' => ( (int)$settings->bg_size * 2 ),
 	  'icon_border_style' => $settings->border_style,
 	  'icon_border_width' => $settings->border_width,
 	  'icon_bg_border_radius' => $settings->bg_border_radius,

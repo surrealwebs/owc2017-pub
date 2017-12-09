@@ -15,11 +15,13 @@ class iHoverModule extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('iHover', 'uabb'),
             'description'   => __('iHover', 'uabb'),
-            'category'      => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/ihover/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/ihover/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'   => true,
         ));
     }
 
@@ -74,6 +76,11 @@ FLBuilder::register_module('iHoverModule', array(
                             'left'      => __('Left', 'uabb'),
                             'right'      => __('Right', 'uabb'),
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-list',
+                            'property'        => 'text-align',
+                        )
                     ),                    
                     'spacing'      => array(
                         'type'          => 'text',
@@ -129,6 +136,21 @@ FLBuilder::register_module('iHoverModule', array(
                         'default'       => '250',
                         'size'          => '8',
                         'description'   => 'px',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'rules'           => array(
+                                array(
+                                    'selector'     => '.uabb-ih-image-block, .uabb-ih-item, .uabb-ih-list-item',
+                                    'property'     => 'width',
+                                    'unit'         => 'px'
+                                ),
+                                array(
+                                    'selector'     => '.uabb-ih-image-block, .uabb-ih-item, .uabb-ih-list-item',
+                                    'property'     => 'height',
+                                    'unit'         => 'px'
+                                ),    
+                            )
+                        )
                     ),
                     'responsive_size'     => array(
                         'type'          => 'uabb-toggle-switch',
@@ -201,6 +223,12 @@ FLBuilder::register_module('iHoverModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-heading',
+                            'property'        => 'font-size',
+                            'unit'          => 'px'
+                        )
                     ),
                     'title_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -210,6 +238,12 @@ FLBuilder::register_module('iHoverModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-heading',
+                            'property'        => 'line-height',
+                            'unit'          => 'px'
+                        )
                     ),
                 )
             ),
@@ -225,7 +259,7 @@ FLBuilder::register_module('iHoverModule', array(
                         ),
                         'preview'         => array(
                             'type'            => 'font',
-                            'selector'        => '.uabb-ih-description p'
+                            'selector'        => '.uabb-ih-description'
                         )
                     ),
                     'desc_typography_font_size'     => array(
@@ -236,6 +270,12 @@ FLBuilder::register_module('iHoverModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-description',
+                            'property'         => 'font-size',
+                            'unit'              => 'px' 
+                        )
                     ),
                     'desc_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -245,6 +285,12 @@ FLBuilder::register_module('iHoverModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-description',
+                            'property'         => 'line-height',
+                            'unit'              => 'px' 
+                        )
                     ),
                 )
             ),
@@ -257,7 +303,14 @@ FLBuilder::register_module('iHoverModule', array(
                         'size'          => '8',
                         'placeholder'   => '5',
                         'class'         => '',
-                        'description'   => 'px',                    ),
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-heading',
+                            'property'        => 'margin-top',
+                            'unit'            => 'px',
+                        )
+                    ),
                     'title_margin_bottom'    => array(
                         'type'          => 'text',
                         'label'         => __( 'Title Bottom Margin', 'uabb' ),
@@ -265,6 +318,12 @@ FLBuilder::register_module('iHoverModule', array(
                         'placeholder'   => '5',
                         'class'         => '',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-heading',
+                            'property'        => 'margin-bottom',
+                            'unit'            => 'px',
+                        )
                     ),
                     'separator_margin_top'    => array(
                         'type'          => 'text',
@@ -273,6 +332,12 @@ FLBuilder::register_module('iHoverModule', array(
                         'placeholder'   => '7',
                         'class'         => '',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-divider-block',
+                            'property'        => 'margin-bottom',
+                            'unit'            => 'px',
+                        )
                     ),
                     'separator_margin_bottom'    => array(
                         'type'          => 'text',
@@ -281,6 +346,12 @@ FLBuilder::register_module('iHoverModule', array(
                         'placeholder'   => '7',
                         'class'         => '',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-divider-block',
+                            'property'        => 'margin-bottom',
+                            'unit'            => 'px',
+                        )
                     ),
                     'desc_margin_top'    => array(
                         'type'          => 'text',
@@ -289,6 +360,12 @@ FLBuilder::register_module('iHoverModule', array(
                         'placeholder'   => '5',
                         'class'         => '',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-description-block',
+                            'property'        => 'margin-bottom',
+                            'unit'            => 'px',
+                        )
                     ),
                     'desc_margin_bottom'    => array(
                         'type'          => 'text',
@@ -297,6 +374,12 @@ FLBuilder::register_module('iHoverModule', array(
                         'placeholder'   => '5',
                         'class'         => '',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ih-description-block',
+                            'property'        => 'margin-bottom',
+                            'unit'            => 'px',
+                        )
                     ),
                 )
             ),
@@ -320,6 +403,7 @@ FLBuilder::register_settings_form('ihover_item_form', array(
                             'type'          => 'photo',
                             'label'         => __('iHover Image', 'uabb'),
                             'show_remove'   => true,
+                            'connections'   => array( 'photo' )
                         ),
                     )
                 ),
@@ -331,6 +415,7 @@ FLBuilder::register_settings_form('ihover_item_form', array(
                             'label'         => __('Title', 'uabb'),
                             'default'       => 'iHover',
                             'help'          => __('Perhaps, this is the most highlighted text.','uabb'),
+                            'connections'   => array( 'string', 'html' )
                         ),
                     )
                 ),
@@ -406,6 +491,7 @@ FLBuilder::register_settings_form('ihover_item_form', array(
                             'rows'          => 10,
                             'label'         => '',
                             'default'       => __('Enter description text here.','uabb'),
+                            'connections'   => array( 'string', 'html' )
                         ),
                     )
                 ),
@@ -433,6 +519,7 @@ FLBuilder::register_settings_form('ihover_item_form', array(
                             'type'          => 'text',
                             'label'         => __( 'Link URL', 'uabb' ),
                             'placeholder'   => __( 'URL', 'uabb' ),
+                            'connections' => array( 'url' )
                         ),
                         'link_target'    => array(
                             'type'          => 'select',
@@ -645,6 +732,14 @@ FLBuilder::register_settings_form('ihover_item_form', array(
                             'label'      => __('Border Color', 'uabb'),
                             'default'    => '',
                             'show_reset' => true,
+                        ),
+                        'border_color_opc' => array( 
+                            'type'        => 'text',
+                            'label'       => __('Opacity', 'uabb'),
+                            'default'     => '',
+                            'description' => '%',
+                            'maxlength'   => '3',
+                            'size'        => '5',
                         ),
                     )
                 ),

@@ -16,11 +16,14 @@ class UABBSocialShare extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('Social Share', 'uabb'),
             'description'   => __('Social Share', 'uabb'),
-            'category'      => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$extra_additions ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/uabb-social-share/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/uabb-social-share/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'  => true,
+            'icon'             => 'share-alt2.svg',
         ));
     }
 
@@ -208,7 +211,7 @@ FLBuilder::register_settings_form('uabb_social_share_form', array(
                             'options'       => array(
                                 'facebook' => __('Facebook', 'uabb'),
                                 'twitter'  => __('Twitter', 'uabb'),
-                                'google'  => __('Google', 'uabb'),
+                                'google'  => __('Google Plus', 'uabb'),
                                 'pinterest'  => __('Pinterest', 'uabb'),
                                 'linkedin'  => __('LinkedIn', 'uabb'),
                                 'digg'  => __('Digg', 'uabb'),
@@ -217,6 +220,7 @@ FLBuilder::register_settings_form('uabb_social_share_form', array(
                                 'stumbleupon'  => __('StumbleUpon', 'uabb'),
                                 'tumblr'  => __('Tumblr', 'uabb'),
                                 'myspace'  => __('Myspace', 'uabb'),
+                                'email'  => __('Email', 'uabb'),
                             )
                         ),
                         'image_type'    => array(
@@ -247,6 +251,7 @@ FLBuilder::register_settings_form('uabb_social_share_form', array(
                             'type'          => 'photo',
                             'label'         => __( 'Photo', 'uabb' ),
                             'show_remove'   => true,
+                            'connections'   => array( 'photo' )
                         ),
                     )
                 )

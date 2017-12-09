@@ -13,9 +13,12 @@ class UABBAdvancedTestimonialsModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          => __('Testimonials', 'uabb'),
 			'description'   => __('An animated tesimonials area.', 'uabb'),
-			'category'      => UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
 			'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/adv-testimonials/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/adv-testimonials/',
+            'partial_refresh'  => true,
+            'icon'             => 'format-quote.svg'
 		));
 
 		$this->add_css('jquery-bxslider');
@@ -293,12 +296,20 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'label'         => __('Author Name', 'uabb'),
                         'default'       => 'John Doe',
                         'description'   => '',
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-testimonial-author-name',
+                        )
                     ),
                     'testimonial_designation_no_slider' => array(
                         'type'          => 'text',
                         'label'         => __('Designation', 'uabb'),
                         'default'       => 'Designation',
                         'description'   => '',
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-testimonial-author-designation',
+                        )
                     ),
                 ),
             ),
@@ -425,7 +436,13 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'placeholder'   => '75',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-image .uabb-photo-img',
+                            'property'      => 'width',
+                            'unit'          => 'px',
+                        )
                     ),
                     'responsive_img_size'     => array(
                         'type'          => 'text',
@@ -562,6 +579,19 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'label'         => __('Box Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'rules'           => array(
+                                array(
+                                    'selector'      => '.uabb-testimonial',
+                                    'property'      => 'background',
+                                ),
+                                array(
+                                    'selector'     => '.testimonial-arrow-down',
+                                    'property'     => 'border-top-color'
+                                ),    
+                            )
+                        )
                     ),
                     'layout_background_opc' => array( 
                         'type'        => 'text',
@@ -570,6 +600,18 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'description' => '%',
                         'maxlength'   => '3',
                         'size'        => '5',
+                    ),
+                    'mobile_view' => array(
+                        'type'          => 'uabb-toggle-switch',
+                        'label'         => __('Mobile Structure', 'uabb'),
+                        'default'       => 'inline',
+                        'options'       => array(
+                            'inline'  => __('Inline', 'uabb'),
+                            'stack'   => __('Stack', 'uabb'),
+                        ),
+                        'preview'       => array(
+                            'type'    => 'none'
+                        )
                     ),
                 ),
             ),
@@ -694,6 +736,12 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-name',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
                         )
                     ),
                     'testimonial_heading_line_height'    => array(
@@ -703,6 +751,12 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-name',
+                            'property'        => 'line-height',
+                            'unit'            => 'px'
                         )
                     ),
                     'testimonial_heading_color'        => array( 
@@ -710,13 +764,24 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-name',
+                            'property'        => 'color',
+                        )
                     ),
                     'testimonial_heading_margin_top' => array(
                         'type'          => 'text',
                         'label'         => __( 'Margin Top', 'uabb' ),
                         'size'          => '8',
                         'max-length'    => '6',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-name',
+                            'property'        => 'margin-top',
+                            'unit'            => 'px'
+                        )
                     ),
                     'testimonial_heading_margin_bottom' => array(
                         'type'          => 'text',
@@ -724,7 +789,13 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'size'          => '8',
                         'placeholder'   => '5',
                         'max-length'    => '6',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-name',
+                            'property'        => 'margin-bottom',
+                            'unit'            => 'px'
+                        )
                     )
                 )
             ),
@@ -738,6 +809,12 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-rating .uabb-rating__ico',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
                         )
                     ),
                     'rating_color'        => array( 
@@ -745,6 +822,11 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-rating .uabb-rating__ico',
+                            'property'        => 'color',
+                        )
                     ),
                 )
             ),
@@ -770,6 +852,12 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-designation',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
                         )
                     ),
                     'testimonial_designation_line_height'    => array(
@@ -779,6 +867,12 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-designation',
+                            'property'        => 'line-height',
+                            'unit'            => 'px'
                         )
                     ),
                     'testimonial_designation_color'        => array( 
@@ -786,6 +880,11 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-designation',
+                            'property'        => 'color',
+                        )
                     ),
                     'testimonial_designation_margin_top' => array(
                         'type'          => 'text',
@@ -793,14 +892,26 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'size'          => '8',
                         'placeholder'   => '5',
                         'max-length'    => '6',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-designation',
+                            'property'        => 'margin-top',
+                            'unit'            => 'px',
+                        )
                     ),
                     'testimonial_designation_margin_bottom' => array(
                         'type'          => 'text',
                         'label'         => __( 'Margin Bottom', 'uabb' ),
                         'size'          => '8',
                         'max-length'    => '6',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-designation',
+                            'property'        => 'margin-bottom',
+                            'unit'            => 'px',
+                        )
                     )
                 )
             ),
@@ -826,6 +937,12 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-description *',
+                            'property'        => 'font-size',
+                            'unit'            => 'px',
                         )
                     ),
                     'testimonial_description_opt_line_height'    => array(
@@ -835,6 +952,12 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
+                        ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-description *',
+                            'property'        => 'line-height',
+                            'unit'            => 'px',
                         )
                     ),
                     'testimonial_description_opt_color'        => array( 
@@ -842,6 +965,12 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-description *',
+                            'property'        => 'color',
+                            'unit'            => 'px',
+                        )
                     ),
                     'testimonial_description_opt_margin_top' => array(
                         'type'      => 'text',
@@ -849,14 +978,26 @@ FLBuilder::register_module('UABBAdvancedTestimonialsModule', array(
                         'size'      => '8',
                         'placeholder'   => '10',
                         'max-length'    => '6',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-description *',
+                            'property'        => 'padding-top',
+                            'unit'            => 'px',
+                        )
                     ),
                     'testimonial_description_opt_margin_bottom' => array(
                         'type'      => 'text',
                         'label'     => __( 'Padding Bottom', 'uabb' ),
                         'size'      => '8',
                         'max-length'    => '6',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                         'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-testimonial-author-description *',
+                            'property'        => 'padding-bottom',
+                            'unit'            => 'px',
+                        )
                     )
                 )
             ),

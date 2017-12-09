@@ -14,15 +14,16 @@ class FlipBoxModule extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('Flip Box', 'uabb'),
             'description'   => __('Flip Box', 'uabb'),
-            'category'      => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/flip-box/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/flip-box/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh' => true,
         ));
         $this->add_css('font-awesome');
     }
-
 
     /**
      * @method render_button
@@ -248,6 +249,11 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'label'         => __('Title on Front', 'uabb'),
                         'default'       => __( "Let's Flip!", "uabb"),
                         'help'          => __('Perhaps, this is the most highlighted text.','uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-face-text-title',
+                        )
                     ),
                     'desc_front'     => array(
                         'type'          => 'editor',
@@ -255,6 +261,11 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'rows'          => 10,
                         'label'         => '',
                         'default'       => __('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.','uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-flip-box-section-content',
+                        )
                     ),
                 )
             ),     
@@ -324,6 +335,11 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'label'      => __('Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-front',
+                            'property'      => 'background'
+                        )
                     ),
                     'front_background_color_opc'    => array( 
                         'type'        => 'text',
@@ -370,6 +386,11 @@ FLBuilder::register_module('FlipBoxModule', array(
                                 'fields' => array( 'front_border_size', 'front_border_color' )
                             ),
                         ),
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-front',
+                            'property'      => 'border-style'
+                        )
                     ),
                     'front_border_size'    => array(
                         'type'          => 'text',
@@ -391,6 +412,11 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'label'      => __('Border Color', 'uabb'),
                         'default'    => 'dbdbdb',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'             => 'css',
+                            'selector'         => '.uabb-front',
+                            'property'         => 'border-color',
+                        )
                     ),
                 )
             ),       
@@ -407,6 +433,11 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'label'         => __('Title on Back', 'uabb'),
                         'default'       => __('Cool!','uabb'),
                         'help'          => __('Perhaps, this is the most highlighted text.','uabb'),
+                        'connections' => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-back-text-title',
+                        )
                     ),
                     'desc_back'     => array(
                         'type'          => 'editor',
@@ -414,6 +445,11 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'rows'          => 10,
                         'label'         => '',
                         'default'       => __('Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s','uabb'),
+                        'connections' => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-back-flip-box-section-content',
+                        )
                     ),                 
                 )
             ),
@@ -483,6 +519,11 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'label'      => __('Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-back',
+                            'property'      => 'background'
+                        )
                     ),
                     'back_background_color_opc'    => array( 
                         'type'        => 'text',
@@ -529,7 +570,11 @@ FLBuilder::register_module('FlipBoxModule', array(
                                 'fields' => array( 'back_border_size', 'back_border_color' )
                             ),
                         ),
-
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-back',
+                            'property'      => 'border-style',
+                        )
                     ),
                     'back_border_size'    => array(
                         'type'          => 'text',
@@ -551,6 +596,11 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'label'      => __('Border Color', 'uabb'),
                         'default'    => 'dbdbdb',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'             => 'css',
+                            'selector'         => '.uabb-back',
+                            'property'         => 'border-color',
+                        )
                     ),
                 )
             ),
@@ -716,7 +766,13 @@ FLBuilder::register_module('FlipBoxModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
-                        )
+                        ),
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-face-text-title',
+                            'property'      => 'font-size',
+                            'unit'          => 'px',
+                        ),
                     ),
                     'front_title_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -725,13 +781,24 @@ FLBuilder::register_module('FlipBoxModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
-                        )
+                        ),
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-face-text-title',
+                            'property'      => 'line-height',
+                            'unit'          => 'px',
+                        ),
                     ),
                     'front_title_typography_color'        => array( 
                         'type'       => 'color',
                         'label'         => __('Front Title Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-face-text-title',
+                            'property'      => 'color',
+                        ),
                     ),
                     'front_title_typography_margin_top'    => array(
                         'type'          => 'text',
@@ -739,6 +806,12 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'placeholder'   => '0',
                         'description'   => 'px',
                         'size'          => '8',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-face-text-title',
+                            'property'      => 'margin-top',
+                            'unit'          => 'px'
+                        ),
                     ),
                     'front_title_typography_margin_bottom'    => array(
                         'type'          => 'text',
@@ -746,6 +819,12 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'placeholder'   => '12',
                         'description'   => 'px',
                         'size'          => '8',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-face-text-title',
+                            'property'      => 'margin-bottom',
+                            'unit'          => 'px'
+                        ),
                     ),
                 )
             ),
@@ -771,7 +850,13 @@ FLBuilder::register_module('FlipBoxModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
-                        )
+                        ),
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-flip-box-section-content',
+                            'property'  => 'font-size',
+                            'unit'      => 'px'
+                        ),
                     ),
                     'front_desc_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -780,13 +865,24 @@ FLBuilder::register_module('FlipBoxModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
-                        )
+                        ),
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-flip-box-section-content',
+                            'property'  => 'line-height',
+                            'unit'      => 'px'
+                        ),
                     ),
                     'front_desc_typography_color'        => array( 
                         'type'       => 'color',
                         'label'         => __('Front Description Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-flip-box-section-content',
+                            'property'  => 'color',
+                        ),
                     ),
                     'front_desc_typography_margin_top'    => array(
                         'type'          => 'text',
@@ -794,6 +890,12 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'placeholder'   => '0',
                         'description'   => 'px',
                         'size'          => '8',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-flip-box-section-content',
+                            'property'  => 'margin-top',
+                            'unit'      => 'px'
+                        ),
                     ),
                     'front_desc_typography_margin_bottom'    => array(
                         'type'          => 'text',
@@ -801,6 +903,12 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'placeholder'   => '25',
                         'description'   => 'px',
                         'size'          => '8',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-flip-box-section-content',
+                            'property'  => 'margin-bottom',
+                            'unit'      => 'px'
+                        ),
                     ),
                 )
             ),
@@ -842,7 +950,13 @@ FLBuilder::register_module('FlipBoxModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
-                        )
+                        ),
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-back-text-title',
+                            'property'  => 'font-size',
+                            'unit'      => 'px'
+                        ),
                     ),
                     'back_title_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -851,13 +965,24 @@ FLBuilder::register_module('FlipBoxModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
-                        )
+                        ),
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-back-text-title',
+                            'property'  => 'line-height',
+                            'unit'      => 'px'
+                        ),
                     ),
                     'back_title_typography_color'        => array( 
                         'type'       => 'color',
                         'label'         => __('Back Title Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-back-text-title',
+                            'property'  => 'color',
+                        ),
                     ),
                     'back_title_typography_margin_top'    => array(
                         'type'          => 'text',
@@ -865,6 +990,12 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'placeholder'   => '25',
                         'description'   => 'px',
                         'size'          => '8',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-back-text-title',
+                            'property'  => 'margin-top',
+                            'unit'      => 'px'
+                        ),
                     ),
                     'back_title_typography_margin_bottom'    => array(
                         'type'          => 'text',
@@ -872,6 +1003,12 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'placeholder'   => '12',
                         'description'   => 'px',
                         'size'          => '8',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-back-text-title',
+                            'property'  => 'margin-bottom',
+                            'unit'      => 'px'
+                        ),
                     ),
                 )
             ),
@@ -897,7 +1034,13 @@ FLBuilder::register_module('FlipBoxModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
-                        )
+                        ),
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-back-flip-box-section-content',
+                            'property'  => 'font-size',
+                            'unit'      => 'px'
+                        ),
                     ),
                     'back_desc_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -906,13 +1049,24 @@ FLBuilder::register_module('FlipBoxModule', array(
                             'desktop'       => '',
                             'medium'        => '',
                             'small'         => '',
-                        )
+                        ),
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-back-flip-box-section-content',
+                            'property'  => 'line-height',
+                            'unit'      => 'px'
+                        ),
                     ),
                     'back_desc_typography_color'        => array( 
                         'type'       => 'color',
                         'label'         => __('Back Description Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-back-flip-box-section-content',
+                            'property'  => 'color',
+                        ),
                     ),
                     'back_desc_typography_margin_top'    => array(
                         'type'          => 'text',
@@ -920,6 +1074,12 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'placeholder'   => '0',
                         'description'   => 'px',
                         'size'          => '8',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-back-flip-box-section-content',
+                            'property'  => 'margin-top',
+                            'unit'      => 'px'
+                        ),
                     ),
                     'back_desc_typography_margin_bottom'    => array(
                         'type'          => 'text',
@@ -927,6 +1087,12 @@ FLBuilder::register_module('FlipBoxModule', array(
                         'placeholder'   => '0',
                         'description'   => 'px',
                         'size'          => '8',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-back-flip-box-section-content',
+                            'property'  => 'margin-bottom',
+                            'unit'      => 'px'
+                        ),
                     ),
                 )
             ),

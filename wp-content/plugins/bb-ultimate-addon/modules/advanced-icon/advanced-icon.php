@@ -13,11 +13,13 @@ class UABBAdvancedIconModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Advanced Icons', 'uabb'),
 			'description'   	=> __('Display a group of Image / Icons.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/advanced-icon/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/advanced-icon/',
 			'editor_export' 	=> false,
-			'partial_refresh'	=> false
+			'partial_refresh'	=> true,
+			'icon'				=> 'star-filled.svg',
 		));
 	}
 }
@@ -75,6 +77,12 @@ FLBuilder::register_module('UABBAdvancedIconModule', array(
 						'size'          => '4',
 						'description'   => 'px',
 						'help'          => __('To manage the space between Icons / Image use this option','uabb'),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.adv-icon-link',
+                            'property'      => 'margin-right',
+                            'unit'			=> 'px'
+                        )
 					),
 					'icoimage_style'         => array(
                     	'type'          => 'select',
@@ -159,7 +167,7 @@ FLBuilder::register_module('UABBAdvancedIconModule', array(
 							'center'        => __('Center', 'uabb'),
 							'left'          => __('Left', 'uabb'),
 							'right'         => __('Right', 'uabb')
-						)
+						),
 					),
 					'responsive_align' => array(
 						'type'          => 'select',
@@ -171,7 +179,7 @@ FLBuilder::register_module('UABBAdvancedIconModule', array(
 							'center'        => __('Center', 'uabb'),
 							'left'          => __('Left', 'uabb'),
 							'right'         => __('Right', 'uabb')
-						)
+						),
 					)
 				)
 			),
@@ -306,7 +314,8 @@ FLBuilder::register_settings_form('uabb_advicon_group_form', array(
 						),
 						'link'          => array(
 							'type'          => 'link',
-							'label'         => __( 'Link', 'uabb' )
+							'label'         => __( 'Link', 'uabb' ),
+							'connections'   => array( 'url' )
 						),
 						'link_target'   => array(
 							'type'          => 'select',
@@ -319,7 +328,18 @@ FLBuilder::register_settings_form('uabb_advicon_group_form', array(
 							'preview'       => array(
 								'type'          => 'none'
 							)
-						)
+						),
+						'link_nofollow'   => array(
+							'type'          => 'uabb-toggle-switch',
+							'label'         => __('Link nofollow', 'uabb'),
+							'description'   => '',
+							'default'       => '0',
+							'help'			=> __('Enable this to make this link nofollow', 'uabb'),
+							'options'       => array(
+								'1'       => __('Yes','uabb'),
+								'0'       => __('No','uabb'),
+							),
+						),
 					)
 				)
 			)

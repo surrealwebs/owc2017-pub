@@ -10,7 +10,7 @@ $info_banner_id = rand(1000, 9999);
 <div class="uabb-module-content uabb-ultb3-box <?php echo $settings->banner_image_effect; ?>">
 	<?php
 	if( $settings->cta_type == 'module' && !empty( $settings->link ) ) {
-		echo '<a href="' . $settings->link . '" target="' . $settings->link_target . '" class="uabb-infobanner-module-link"></a>';
+		echo '<a href="' . $settings->link . '" target="' . $settings->link_target . '" '. BB_Ultimate_Addon_Helper::get_link_rel( $settings->link_target, 0, 0 ) .' class="uabb-infobanner-module-link"></a>';
 	}
 
 	if( isset( $settings->banner_image_src ) ) {

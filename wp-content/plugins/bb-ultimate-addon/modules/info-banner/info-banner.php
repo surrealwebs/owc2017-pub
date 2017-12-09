@@ -1,7 +1,6 @@
 <?php
 
 /**
-
  *
  * @class InfoBannerModule
  */
@@ -21,7 +20,8 @@ class InfoBannerModule extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('Info Banner', 'uabb'),
             'description'   => __('Info Banner', 'uabb'),
-            'category'      => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/info-banner/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/info-banner/',
             'partial_refresh'   => true
@@ -89,7 +89,8 @@ class InfoBannerModule extends FLBuilderModule {
     public function render_link()
     {
         if($this->settings->cta_type == 'link') {
-            echo '<a href="' . $this->settings->link . '" target="' . $this->settings->link_target . '" class="uabb-infobanner-cta-link">' . $this->settings->cta_text . '</a>';
+            $nofollow = ( isset( $this->settings->link_nofollow ) ) ? $this->settings->link_nofollow : '0';
+            echo '<a href="' . $this->settings->link . '" target="' . $this->settings->link_target . '" '. BB_Ultimate_Addon_Helper::get_link_rel( $this->settings->link_target, $nofollow, 0 ) .' class="uabb-infobanner-cta-link">' . $this->settings->cta_text . '</a>';
         }
     }
 
@@ -107,6 +108,7 @@ class InfoBannerModule extends FLBuilderModule {
                 /* Link Section */
                 'link'              => $this->settings->btn_link,
                 'link_target'       => $this->settings->btn_link_target,
+                'link_nofollow'       => $this->settings->btn_link_nofollow,
                 
                 /* Style Section */
                 'style'             => $this->settings->btn_style,
@@ -165,7 +167,8 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'preview'         => array(
                             'type'             => 'text',
                             'selector'         => '.uabb-ultb3-title',
-                        )
+                        ),
+                        'connections'   => array( 'string', 'html' )
                     ),
                 )
             ),
@@ -177,11 +180,12 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'media_buttons' => false,
                         'rows'          => 10,
                         'label'         => __('', 'uabb'),
-                        'default'       => __('<p>Enter description text here.</p>','uabb'),
+                        'default'       => '<p>' . __('Enter description text here.','uabb') . '</p>',
                         'preview'         => array(
                             'type'             => 'text',
                             'selector'         => '.uabb-ultb3-desc',
-                        )
+                        ),
+                        'connections'   => array( 'string', 'html' )
                     ),
                 )
             ),
@@ -193,6 +197,11 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'label'      => __('Background Color', 'uabb'),
                         'default'    => 'f2f2f2',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-ultb3-box',
+                            'property'      => 'background',
+                        )
                     ),
                     'background_color_opc'    => array( 
                         'type'        => 'text',
@@ -293,7 +302,8 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'type'          => 'photo',
                         'label'         => __('Banner Image', 'uabb'),
                         'show_remove'   => true,
-                        'help'          => __('The image that would be appear as Background. Make sure overlay color you\'ve chosen must be transparent, to work this setting.', 'uabb')
+                        'help'          => __('The image that would be appear as Background. Make sure overlay color you\'ve chosen must be transparent, to work this setting.', 'uabb'),
+                        'connections'   => array( 'photo' )
                     ),
                     'banner_image_alignemnt'     => array(
                         'type'          => 'select',
@@ -380,7 +390,10 @@ FLBuilder::register_module('InfoBannerModule', array(
                     'spacer'            => array(
                         'type'      => 'uabb-blank-spacer',
                         'height'    => '100px'
-                    )
+                    ),
+                    'preview'         => array(
+                        'type'            => 'none'
+                    ),
                 )
             ),
         )
@@ -420,6 +433,11 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'type'          => 'text',
                         'label'         => __('Text', 'uabb'),
                         'default'       => __('Read More', 'uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'            => 'text',
+                            'selector'        => '.uabb-infobanner-cta-link'
+                        ),
                     ),
                 )
             ),
@@ -430,6 +448,11 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'type'          => 'text',
                         'label'         => __('Text', 'uabb'),
                         'default'       => __('Click Here', 'uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'            => 'text',
+                            'selector'        => '.uabb-creative-button-text'
+                        ),
                     ),
                 )
             ),
@@ -442,7 +465,8 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'placeholder'   => 'http://www.example.com',
                         'preview'       => array(
                             'type'          => 'none'
-                        )
+                        ),
+                        'connections'   => array( 'url' )
                     ),
                     'btn_link_target'   => array(
                         'type'          => 'select',
@@ -455,7 +479,18 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'preview'       => array(
                             'type'          => 'none'
                         )
-                    )
+                    ),
+                    'btn_link_nofollow'   => array(
+                        'type'          => 'uabb-toggle-switch',
+                        'label'         => __('Link nofollow', 'uabb'),
+                        'description'   => '',
+                        'default'       => '0',
+                        'help'          => __('Enable this to make this link nofollow', 'uabb'),
+                        'options'       => array(
+                            '1'       => __('Yes','uabb'),
+                            '0'       => __('No','uabb'),
+                        ),
+                    ),
                 )
             ),
             'btn-style'      => array(
@@ -553,6 +588,11 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'label'      => __('Text Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-creative-button-wrap a, .uabb-creative-button-wrap span',
+                            'property'         => 'color',
+                        ),
                     ),
                     'btn_text_hover_color'        => array( 
                         'type'       => 'color',
@@ -681,7 +721,8 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'help'          => __('The link applies to the entire module. If choosing a call to action type below, this link will also be used for the text or button.', 'uabb'),
                         'preview'       => array(
                             'type'          => 'none'
-                        )
+                        ),
+                        'connections'   => array( 'url' )
                     ),
                     'link_target'   => array(
                         'type'          => 'select',
@@ -694,7 +735,18 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'preview'       => array(
                             'type'          => 'none'
                         )
-                    )
+                    ),
+                    'link_nofollow'   => array(
+                        'type'          => 'uabb-toggle-switch',
+                        'label'         => __('Link nofollow', 'uabb'),
+                        'description'   => '',
+                        'default'       => '0',
+                        'help'          => __('Enable this to make this link nofollow', 'uabb'),
+                        'options'       => array(
+                            '1'       => __('Yes','uabb'),
+                            '0'       => __('No','uabb'),
+                        ),
+                    ),
                 )
             ),
         )
@@ -768,6 +820,11 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-ultb3-title',
+                            'property'  => 'color',
+                        ),
                     ),
                     'title_margin_top' => array(
                         'type'          => 'text',
@@ -776,6 +833,12 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'maxlength'     => '4',
                         'size'          => '8',
                         'default'       => '0',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-ultb3-title',
+                            'property'  => 'margin-top',
+                            'unit'      => 'px',
+                        ),
                     ),
                     'title_margin_bottom' => array(
                         'type'          => 'text',
@@ -784,6 +847,12 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'maxlength'     => '4',
                         'size'          => '8',
                         'default'       => '0',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-ultb3-title',
+                            'property'  => 'margin-bottom',
+                            'unit'      => 'px',
+                        ),
                     ),
                 )
             ),
@@ -837,6 +906,11 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'label'     => __('Description Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-ultb3-desc',
+                            'property'  => 'color',
+                        ),
                     ),
                     'desc_margin_top' => array(
                         'type'          => 'text',
@@ -845,6 +919,12 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'maxlength'     => '4',
                         'size'          => '8',
                         'default'       => '0',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-ultb3-desc',
+                            'property'  => 'margin-top',
+                            'unit'      => 'px',
+                        ),
                     ),
                     'desc_margin_bottom' => array(
                         'type'          => 'text',
@@ -853,6 +933,12 @@ FLBuilder::register_module('InfoBannerModule', array(
                         'maxlength'     => '4',
                         'size'          => '8',
                         'default'       => '0',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-ultb3-desc',
+                            'property'  => 'margin-bottom',
+                            'unit'      => 'px',
+                        ),
                     ),
                 )
             ),
@@ -926,6 +1012,12 @@ FLBuilder::register_module('InfoBannerModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-infobanner-cta-link',
+                            'property'  => 'font-size',
+                            'unit'      => 'px'
+                        ),
                     ),
                     'link_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -935,12 +1027,23 @@ FLBuilder::register_module('InfoBannerModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-infobanner-cta-link',
+                            'property'  => 'line-height',
+                            'unit'      => 'px'
+                        ),
                     ),
-                    'link_color'        => array( 
+                    'link_color'        => array(
                         'type'       => 'color',
                         'label'         => __('Link Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-infobanner-cta-link',
+                            'property'  => 'color',
+                        ),
                     ),
                 )
             ),

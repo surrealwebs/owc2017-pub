@@ -13,7 +13,7 @@
 			<div class="uabb-info-circle-icon-content uabb-ic-<?php echo $circle_item_count; ?> <?php echo ( $circle_item_count == 1 ) ? 'active' : ''; ?>">
 				
 				<?php if( $settings->info_trigger_type == 'hover' && ( $item->cta == 'icon' || $item->cta == 'both' ) ) : ?>
-					<a href='<?php echo $item->cta_link; ?>' target='<?php echo $item->cta_link_target; ?>'> <!-- Link on Icon -->
+					<a href='<?php echo $item->cta_link; ?>' target='<?php echo $item->cta_link_target; ?>' <?php BB_Ultimate_Addon_Helper::get_link_rel( $item->cta_link_target, 0, 1 ); ?>> <!-- Link on Icon -->
 				<?php endif; ?>
 					
 					<div class="uabb-info-circle uabb-info-circle-small uabb-circle-<?php echo $circle_item_count; ?> <?php echo $img_active_effect; ?>" data-circle-id="<?php echo $circle_item_count; ?>">

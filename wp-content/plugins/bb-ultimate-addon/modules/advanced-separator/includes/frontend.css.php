@@ -14,7 +14,7 @@
 }
 
 .fl-node-<?php echo $id; ?> .uabb-image-outter-wrap {
-	width: <?php echo ( 2 * ( $settings->img_border_width ) ) + ( 2 * ( $settings->img_bg_size ) ) + ( $settings->img_size ); ?>px;
+	width: <?php echo ( 2 * ( (int)$settings->img_border_width ) ) + ( 2 * ( (int)$settings->img_bg_size ) ) + ( (int)$settings->img_size ); ?>px;
 }
 
 <?php if( $settings->separator == 'line' ) { ?> 

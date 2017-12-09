@@ -6,20 +6,19 @@
 
 		<div class="fl-settings-form-content">
 
-			<p><?php _e('Check or uncheck modules below to enable or disable them.', 'uabb'); ?></p>
+			<p><?php _e('Check or uncheck modules and extensions below to enable or disable them.', 'uabb'); ?></p>
 			<?php
 
 			$modules_array   = BB_Ultimate_Addon_Helper::get_all_modules();
+			$extenstions_array = BB_Ultimate_Addon_Helper::get_all_extenstions();
 			$enabled_modules = BB_Ultimate_Addon_Helper::get_builder_uabb_modules();
 			$checked     	 = in_array('all', $enabled_modules) ? 'checked' : '';
-			
+			$uabb_options = UABB_Init::$uabb_options['fl_builder_uabb'];
+
 			unset( $modules_array['image-icon'] );
 			unset( $modules_array['advanced-separator'] );
 			unset( $modules_array['uabb-separator' ] );
 			unset( $modules_array['uabb-button' ] );
-
-			//var_dump( $enabled_modules );
-			
 			?>
 			<label>
 				<input class="uabb-module-all-cb" type="checkbox" name="uabb-modules[all]" value="all" <?php echo $checked; ?> />
@@ -28,8 +27,7 @@
 			
 			<h3><?php echo sprintf( __( '%s Modules', 'uabb' ), UABB_PREFIX ); ?></h3>
 			<?php foreach ( $modules_array as $slug => $name ) : ?>
-					
-					<?php 
+					<?php
 						$checked = '';
 						if ( array_key_exists( $slug, $enabled_modules ) && $enabled_modules[$slug] != 'false' ){
 							$checked = 'checked';
@@ -38,6 +36,25 @@
 					<p>
 						<label>
 							<input class="uabb-module-cb" type="checkbox" name="uabb-modules[<?php echo $slug; ?>]" value="<?php echo $slug; ?>" <?php echo $checked; ?> />
+							<?php echo $name; ?>
+						</label>
+					</p>
+			<?php endforeach; ?>
+			<h3><?php echo sprintf( __( '%s Extensions', 'uabb' ), UABB_PREFIX ); ?></h3>
+
+			<?php foreach ( $extenstions_array as $slug => $name ) : ?>
+					<?php
+						$checked = 'checked';
+						if ( !empty( $uabb_options ) && array_key_exists( $slug, $uabb_options ) )
+						{
+							if( $uabb_options[ $slug ] != 1 ) {
+								$checked = '';
+							}
+						}
+					?>
+					<p>
+						<label>
+							<input class="uabb-module-cb" type="checkbox" name="<?php echo $slug; ?>" value="<?php echo $slug; ?>" <?php echo $checked; ?> />
 							<?php echo $name; ?>
 						</label>
 					</p>

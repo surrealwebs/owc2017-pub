@@ -118,12 +118,12 @@ $settings->ct_content_color = UABB_Helper::uabb_colorpicker( $settings, 'ct_cont
 
 <?php }elseif( $settings->modal_on == 'icon') { ?>
 
-.fl-node-<?php echo $id; ?> .uabb-modal-icon {
+.fl-node-<?php echo $id; ?> .fl-module-content .uabb-modal-action-wrap .uabb-modal-action .uabb-modal-icon {
     font-size: <?php echo $settings->icon_size; ?>px;
     color: <?php echo $settings->icon_color; ?>;
 }
 
-.fl-node-<?php echo $id; ?> .uabb-modal-action:hover .uabb-modal-icon {
+.fl-node-<?php echo $id; ?> .fl-module-content .uabb-modal-action-wrap .uabb-modal-action:hover .uabb-modal-icon {
     color: <?php echo $settings->icon_hover_color; ?>;
 }
 
@@ -221,7 +221,7 @@ $settings->ct_content_color = UABB_Helper::uabb_colorpicker( $settings, 'ct_cont
             max-width: 100%;
             /*max-height: 100%;*/
         }
-        @media ( max-width: <?php echo $size['width'] .'px'; ?> ) { 
+        @media ( max-height: <?php echo $size['height'] .'px'; ?> ) { 
             .uamodal-<?php echo $id; ?> .uabb-modal-content-data {
                 height: auto;
             }

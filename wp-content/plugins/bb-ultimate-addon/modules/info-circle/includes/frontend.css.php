@@ -108,9 +108,9 @@ foreach( $settings->add_circle_item as $item ) {
             'icon_color' => $settings->icon_img_color,
             'icon_hover_color' => $settings->icon_img_color, // Hover color same as normal
             'icon_bg_color' => $settings->icon_img_bg_color,
-            'icon_bg_color_opc' => $settings->icon_img_bg_color_opc,
+            'icon_bg_color_opc' => ( isset( $settings->icon_img_bg_color_opc ) ) ? $settings->icon_img_bg_color_opc : '',
             'icon_bg_hover_color' => $settings->icon_img_bg_color,  // Hover bg color same as normal
-            'icon_bg_hover_color_opc' => $settings->icon_img_bg_color_opc,  // Hover bg color same as normal
+            'icon_bg_hover_color_opc' => ( isset( $settings->icon_img_bg_color_opc ) ) ? $settings->icon_img_bg_color_opc : '',  // Hover bg color same as normal
             'icon_bg_size' => $settings->icon_img_bg_padding,
             'icon_bg_border_radius' => $settings->icon_img_border_radius,
             'icon_border_style' => $settings->info_icon_img_border_style,

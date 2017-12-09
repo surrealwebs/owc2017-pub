@@ -57,8 +57,8 @@ $settings->spacing_between_buttons = ( $settings->spacing_between_buttons != '' 
         $fn_calc     = '';
     if( ( $settings->divider_options != 'none' && $settings->dual_button_width_type == "custom" ) || ( $settings->_divider_font_size['desktop'] != '' ) ) :
         if( ( $settings->dual_button_pad_top_bot != '' ||  $settings->dual_button_pad_lef_rig != '' ) ||  ( $settings->_divider_font_size['desktop'] != '' && $settings->divider_options == 'text' ) ) :
-			$tb_padding = $settings->dual_button_pad_top_bot * 2;
-			$lr_padding = $settings->dual_button_pad_lef_rig * 2;
+			$tb_padding = (int) $settings->dual_button_pad_top_bot * 2;
+			$lr_padding = (int) $settings->dual_button_pad_lef_rig * 2;
 			$sm_pad_value = (min ($tb_padding,$lr_padding) );
 			if( $settings->dual_button_pad_lef_rig == '' ) {
 				$sm_pad_value = $tb_padding;
@@ -189,6 +189,25 @@ $settings->spacing_between_buttons = ( $settings->spacing_between_buttons != '' 
 .fl-node-<?php echo $id;?> .uabb-btn-one {
 	background: <?php echo uabb_theme_base_color( $settings->_btn_one_back_color ); ?>;
 	display: block;
+}
+
+.fl-node-<?php echo $id;?> .uabb-horizontal .uabb-btn.uabb-btn-one {
+	color: <?php echo uabb_theme_button_text_color( $settings->_btn_one_text_color ); ?>;
+}
+.fl-node-<?php echo $id;?> .uabb-horizontal .uabb-btn.uabb-btn-two {
+	color: <?php echo uabb_theme_button_text_color( $settings->_btn_two_text_color ); ?>;
+}
+
+.fl-node-<?php echo $id;?> .uabb-btn-one:hover {
+	color: <?php echo uabb_theme_button_text_color( $settings->_btn_one_text_hover_color ); ?>;
+}
+
+.fl-node-<?php echo $id;?> .uabb-btn-two:hover{
+	color: <?php echo uabb_theme_button_text_color( $settings->_btn_two_text_hover_color ); ?>;
+}
+
+.fl-node-<?php echo $id;?> .uabb-dual-button .uabb-middle-text {
+	color: <?php echo uabb_theme_base_color( $settings->divider_color ); ?>;
 }
 
 .fl-node-<?php echo $id;?> .uabb-btn-one .uabb-btn-one-text,
@@ -864,6 +883,22 @@ if( $settings->dual_button_type == 'horizontal' && $settings->join_buttons == 'n
 .fl-node-<?php echo $id;?> .uabb-horizontal .uabb-btn.uabb-btn-two {
 	border-radius: <?php echo $settings->dual_button_radius;?>px;
 }
+
+.fl-node-<?php echo $id;?> .uabb-horizontal .uabb-btn.uabb-btn-one {
+	color: <?php echo uabb_theme_button_text_color( $settings->_btn_one_text_color ); ?>;
+}
+.fl-node-<?php echo $id;?> .uabb-horizontal .uabb-btn.uabb-btn-two {
+	color: <?php echo uabb_theme_button_text_color( $settings->_btn_two_text_color ); ?>;
+}
+
+.fl-node-<?php echo $id;?> .uabb-horizontal .uabb-btn-one:hover {
+	color: <?php echo uabb_theme_button_text_color( $settings->_btn_one_text_hover_color ); ?>;
+}
+
+.fl-node-<?php echo $id;?> .uabb-horizontal .uabb-btn-two:hover {
+	color: <?php echo uabb_theme_button_text_color( $settings->_btn_two_text_hover_color ); ?>;
+}
+
 
 <?php
 }

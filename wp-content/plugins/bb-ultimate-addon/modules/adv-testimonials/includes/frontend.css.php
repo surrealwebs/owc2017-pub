@@ -534,7 +534,7 @@ FLBuilder::render_module_css( 'image-icon',$id , $imageicon_array );
 	<?php 
 	}
 
-	if( $settings->testimonial_heading_font_size['small'] != "" || $settings->testimonial_heading_line_height['small'] !="" || $settings->testimonial_designation_font_size['small'] != "" || $settings->testimonial_designation_line_height['small'] != "" || $settings->testimonial_description_opt_font_size['small'] != "" || $settings->testimonial_description_opt_line_height['small'] != "" || $settings->responsive_img_size != '' || $settings->testimonial_image_position != "top" || $settings->rating_font_size['small'] != '' )
+	if( $settings->testimonial_heading_font_size['small'] != "" || $settings->testimonial_heading_line_height['small'] !="" || $settings->testimonial_designation_font_size['small'] != "" || $settings->testimonial_designation_line_height['small'] != "" || $settings->testimonial_description_opt_font_size['small'] != "" || $settings->testimonial_description_opt_line_height['small'] != "" || $settings->responsive_img_size != '' || $settings->testimonial_image_position != "top" || $settings->rating_font_size['small'] != '' || $settings->mobile_view == 'stack' )
 	{
 	?>
 		@media ( max-width: <?php echo $global_settings->responsive_breakpoint .'px'; ?> ) {
@@ -610,6 +610,25 @@ FLBuilder::render_module_css( 'image-icon',$id , $imageicon_array );
 			.fl-node-<?php echo $id;?> .uabb-testimonial .uabb-rating .uabb-rating__ico {
 				font-size: <?php echo $settings->rating_font_size['small']; ?>px;
 			}
+			<?php if( $settings->mobile_view == 'stack' ) { ?>
+				.fl-node-<?php echo $id;?> .uabb-testimonials .uabb-testimonial-photo.testimonial-photo<?php echo $id;?> {
+					display: block;
+				}
+
+				.fl-node-<?php echo $id;?> .uabb-testimonials .uabb-testimonial-info.testimonial-info<?php echo $id; ?> {
+					display: block;
+				}
+
+				.fl-node-<?php echo $id;?> .uabb-testimonials .uabb-testimonial-photo.testimonial-photo<?php echo $id;?> .uabb-module-content {
+					width: 100%;
+				}
+
+				.fl-node-<?php echo $id;?> .uabb-testimonial-author.testimonial-author<?php echo $id;?>,
+				.fl-node-<?php echo $id;?> .uabb-testimonial-author-description.testimonial-author-description<?php echo $id;?> {
+					text-align: center;
+				}
+
+			<?php } ?>
 		}
 	<?php 
 	} 

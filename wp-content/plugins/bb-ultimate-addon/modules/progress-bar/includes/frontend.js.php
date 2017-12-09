@@ -73,6 +73,10 @@
 					?>
 					this._executeProgressBarCircular();
 					<?php
+					} elseif( $settings->layout == 'semi-circular' ) {
+					?>
+					this._executeProgressBarSemiCircular();
+					<?php
 					}
 					?>
 					this._countProgressNumber();
@@ -91,6 +95,10 @@
 				} elseif( $settings->layout == 'circular' ) {
 				?>
 				this._executeProgressBarCircular();
+				<?php
+				} elseif( $settings->layout == 'semi-circular' ) {
+				?>
+				this._executeProgressBarSemiCircular();
 				<?php
 				}
 				?>
@@ -112,7 +120,7 @@
 				var text_field = form.find('.uabb-progress-value');
 				var number = form.data( 'number' );
 				<?php
-				} elseif( $settings->layout == 'circular' ) {
+				} elseif( $settings->layout == 'circular' || $settings->layout == 'semi-circular' ) {
 				?>
 				var text_field = form.find('.uabb-percent-counter');
 				var number = form.find('.uabb-svg-wrap').data( 'number' );
@@ -213,12 +221,12 @@
 				    	circular_number = Math.ceil( form.find('.uabb-svg-wrap').data( 'number' ) );
 
 					<?php
-				    $width = !empty( $settings->circular_thickness ) ? $settings->circular_thickness : 300;
-				    $pos = ( $width / 2 );
-				    $radius = $pos - 10;
-				    ?>
+					$width = !empty( $settings->circular_thickness ) ? $settings->circular_thickness : 300;
+					$pos = ( $width / 2 );
+					$radius = $pos - 10;
+					?>
 
-				    var r      = <?php echo $radius; ?>,
+					var r      = <?php echo $radius; ?>,
 						circlePi = Math.PI*(r*2);
 					
 					var pct = ( ( 100 - circular_number ) /100) * circlePi;
@@ -230,6 +238,42 @@
 				    });
 
 				    form.addClass( 'uabb-progress-complete' );
+				}
+			});
+		},
+
+		_executeProgressBarSemiCircular: function( e )
+		{
+			<?php $settings->animation_speed = ( $settings->animation_speed != '' ) ? $settings->animation_speed : '1'; ?>
+			var ani_speed = parseInt('<?php echo ( $settings->animation_speed * 1000 ); ?>');
+			jQuery( '.fl-node-<?php echo $id ?>' ).find( '.uabb-layout-semi-circular' ).each(	function( index ) {
+
+				var form = jQuery( '.fl-node-<?php echo $id ?>' ).find( '.uabb-layout-semi-circular.uabb-progress-bar-' + index );
+
+				var completeClass = form.hasClass('uabb-progress-complete');
+
+				if( !completeClass ) {
+
+					var circle = form.find('.uabb-bar'),
+					circular_number = Math.ceil( form.find('.uabb-svg-wrap').data( 'number' ) ) / 2;
+
+					<?php
+					$stroke_thickness = !empty( $settings->stroke_thickness ) ? $settings->stroke_thickness : 10;
+					$width = !empty( $settings->circular_thickness ) ? $settings->circular_thickness : 300;
+					$pos = ( $width / 2 );
+					$radius = $pos - ( $stroke_thickness / 2 );
+					?>
+					var r      = <?php echo $radius; ?>,
+						circlePi = Math.PI*(r*2);
+					var pct = ( ( 100 - circular_number ) /100) * circlePi;
+					circle.animate({
+						strokeDashoffset: pct
+					}, {
+						duration: ani_speed,
+						easing: 'linear'
+					});
+
+					form.addClass( 'uabb-progress-complete' );
 				}
 			});
 		},

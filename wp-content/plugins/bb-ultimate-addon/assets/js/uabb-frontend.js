@@ -611,5 +611,7 @@ jQuery(document).ready(function( $ ) {
       uabb_browser_class = uabb_browser.replace(/\s+/g, '-').toLowerCase(),
       uabb_browser_v_class = uabb_browser_class + parseInt( uabb_browser_v );
 
-      $('html').addClass(uabb_browser_class).addClass(uabb_browser_v_class); 
+      $('html').addClass(uabb_browser_class).addClass(uabb_browser_v_class);
+      $('.uabb-row-separator').parents('.fl-builder').css('overflow-x', 'hidden');
+      $('.uabb-row-separator').parents('.fl-builder').css('overflow-y', 'visible');      
 });

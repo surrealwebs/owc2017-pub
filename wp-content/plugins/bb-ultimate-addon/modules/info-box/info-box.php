@@ -13,7 +13,8 @@ class UABBInfoBoxModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Info Box', 'uabb'),
 			'description'   	=> __('A heading and snippet of text with an optional link, icon and image.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/info-box/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/info-box/',
             'partial_refresh'	=> true
@@ -97,7 +98,6 @@ class UABBInfoBoxModule extends FLBuilderModule {
 		if ($flag) {
 			echo '</div>';
 		}
-
 	}
 
 	/**
@@ -116,7 +116,8 @@ class UABBInfoBoxModule extends FLBuilderModule {
 	public function render_link()
 	{
 		if($this->settings->cta_type == 'link') {
-			echo '<a href="' . $this->settings->link . '" target="' . $this->settings->link_target . '" class="uabb-infobox-cta-link">' . $this->settings->cta_text . '</a>';
+			$nofollow = ( isset( $this->settings->link_nofollow ) ) ? $this->settings->link_nofollow : '0';
+			echo '<a href="' . $this->settings->link . '" target="' . $this->settings->link_target . '" '. BB_Ultimate_Addon_Helper::get_link_rel( $this->settings->link_target, $nofollow, 0 ) .' class="uabb-infobox-cta-link">' . $this->settings->cta_text . '</a>';
 		}
 	}
 
@@ -135,6 +136,7 @@ class UABBInfoBoxModule extends FLBuilderModule {
                 /* Link Section */
                 'link'              => $this->settings->btn_link,
                 'link_target'       => $this->settings->btn_link_target,
+                'link_nofollow'     => $this->settings->btn_link_nofollow,
 
                 /* Style Section */
                 'style'             => $this->settings->btn_style,
@@ -161,6 +163,7 @@ class UABBInfoBoxModule extends FLBuilderModule {
                 'padding_top_bottom' => $this->settings->btn_padding_top_bottom,
                 'padding_left_right' => $this->settings->btn_padding_left_right,
                 'border_radius'      => $this->settings->btn_border_radius,
+                'custom_class'       => $this->settings->custom_class,
                 'align'              => '',
                 'mob_align'          => '',
 
@@ -266,7 +269,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 					'heading_prefix'          => array(
 						'type'          => 'text',
 						'label'         => __('Title Prefix','uabb'),
-						'help'			=> __('The small text appear above the title. You can leave it empty if not required.','uabb')
+						'help'			=> __('The small text appear above the title. You can leave it empty if not required.','uabb'),
+						'connections'	=> array( 'string', 'html' ),
+						'preview'       => array(
+                            'type'            => 'text',
+                            'selector'        => '.uabb-infobox-title-prefix'
+                        ),
 					),
 					'title'         => array(
 						'type'          => 'text',
@@ -275,7 +283,8 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'preview'       => array(
 							'type'          => 'text',
 							'selector'      => '.uabb-infobox-title'
-						)
+						),
+						'connections'	=> array( 'string', 'html' )
 					),
 				)
 			),
@@ -288,6 +297,11 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'media_buttons' => false,
 						'rows'			=> 6,
 						'default'		=> __('Enter description text here.','uabb'),
+						'connections'	=> array( 'string', 'html' ),
+						'preview'       => array(
+							'type'          => 'text',
+							'selector'      => '.uabb-infobox-text'
+						),
 					),
 				)
 			),
@@ -325,6 +339,11 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'label'      => __('Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-separator',
+							'property'      => 'border-top-color',
+						),
 					),
 					'separator_height'	=> array(
 						'type'          => 'text',
@@ -347,7 +366,7 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'placeholder'       => '100',
 						'maxlength'     => '3',
 						'size'          => '5',
-						'description'   => '%'
+						'description'   => '%',
 					),
 					'separator_alignment'         => array(
 						'type'          => 'select',
@@ -395,7 +414,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 		                    'double'        => array(
 		                        'fields'        => array('uabb_border_color', 'uabb_border_top', 'uabb_border_bottom', 'uabb_border_left', 'uabb_border_right', 'responsive_border', 'medium_border')
 		                    )
-		                )
+		                ),
+		                'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-infobox',
+							'property'      => 'border-style',
+						),
 		            ),
 		            'uabb_border_top'    => array(
 		                'type'          => 'text',
@@ -404,8 +428,14 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '0'
-		            ),
+		                'placeholder'   => '0',
+		                'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-infobox',
+							'property'      => 'border-top-width',
+							'unit'			=> 'px',
+						),
+					),
 		            'uabb_border_bottom' => array(
 		                'type'          => 'text',
 		                'label'         => __('Bottom Width', 'uabb'),
@@ -413,7 +443,13 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '0'
+		                'placeholder'   => '0',
+		                'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-infobox',
+							'property'      => 'border-bottom-width',
+							'unit'			=> 'px',
+						),
 		            ),
 		            'uabb_border_left'   => array(
 		                'type'          => 'text',
@@ -422,7 +458,13 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '0'
+		                'placeholder'   => '0',
+						'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-infobox',
+							'property'      => 'border-left-width',
+							'unit'			=> 'px',
+						),
 		            ),
 		            'uabb_border_right'  => array(
 		                'type'          => 'text',
@@ -431,13 +473,24 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 		                'description'   => 'px',
 		                'maxlength'     => '3',
 		                'size'          => '5',
-		                'placeholder'   => '0'
+		                'placeholder'   => '0',
+		                'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-infobox',
+							'property'      => 'border-right-width',
+							'unit'			=> 'px',
+						),
 		            ),
 		            'uabb_border_color'        => array( 
 						'type'       => 'color',
 						'label'      => __('Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-infobox',
+							'property'      => 'border-color',
+						),
 					),
 		            'responsive_border'   => array(
 		                'type'          => 'select',
@@ -534,11 +587,13 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'type'          => 'photo',
 						'label'         => __('Photo', 'uabb'),
 						'show_remove'	=> true,
+						'connections'   => array( 'photo' )
 					),
 					'photo_url'     => array(
 						'type'          => 'text',
 						'label'         => __('Photo URL', 'uabb'),
 						'placeholder'   => 'http://www.example.com/my-photo.jpg',
+						'connections'	=> array( 'url' )
 					),
 					'img_size'     => array(
 						'type'          => 'text',
@@ -547,6 +602,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'maxlength'     => '5',
 						'size'          => '6',
 						'description'   => 'px',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-photo-img',
+                            'property'      => 'width',
+                            'unit'			=> 'px'
+                        )
 					),
 					'responsive_img_size'     => array(
 						'type'          => 'text',
@@ -1020,6 +1081,11 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'label'         => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-infobox',
+							'property'      => 'background',
+						),
 					),
 		            'bg_color_opc' => array( 
 						'type'        => 'text',
@@ -1106,6 +1172,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-infobox-title',
+							'property'      => 'margin-bottom',
+							'unit'          => 'px'
+						),
 					),
 					'prefix_margin_top' => array(
 						'type'              => 'text',
@@ -1212,7 +1284,6 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 			),
 		)
 	),
-
 	'cta'           => array(
 		'title'         => __('Link', 'uabb'),
 		'sections'      => array(
@@ -1248,6 +1319,11 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'type'          => 'text',
 						'label'         => __('Text', 'uabb'),
 						'default'		=> __('Read More', 'uabb'),
+						'connections'	=> array( 'string', 'html' ),
+						'preview'       => array(
+							'type'          => 'text',
+							'selector'      => '.uabb-infobox-cta-link',
+						)
 					),
 				)
 			),
@@ -1258,6 +1334,11 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                         'type'          => 'text',
                         'label'         => __('Text', 'uabb'),
                         'default'       => __('Click Here', 'uabb'),
+                        'connections'	=> array( 'string', 'html' ),
+                        'preview'       => array(
+							'type'          => 'text',
+							'selector'      => '.uabb-button-text',
+						)
                     ),
                 )
             ),
@@ -1270,7 +1351,8 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                         'placeholder'   => 'http://www.example.com',
                         'preview'       => array(
                             'type'          => 'none'
-                        )
+                        ),
+                        'connections'	=> array( 'url' )
                     ),
                     'btn_link_target'   => array(
                         'type'          => 'select',
@@ -1283,7 +1365,18 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                         'preview'       => array(
                             'type'          => 'none'
                         )
-                    )
+					),
+					'btn_link_nofollow'   => array(
+						'type'          => 'uabb-toggle-switch',
+						'label'         => __('Link nofollow', 'uabb'),
+						'description'   => '',
+						'default'       => '0',
+						'help'			=> __('Enable this to make this link nofollow', 'uabb'),
+						'options'       => array(
+							'1'       => __('Yes','uabb'),
+							'0'       => __('No','uabb'),
+						),
+					),
                 )
             ),
             'btn-style'      => array(
@@ -1309,7 +1402,7 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                         'size'          => '5',
                         'placeholder'   => '2'
                     ),
-                    'btn_transparent_button_options'         => array(
+                    'btn_transparent_button_options'  => array(
                         'type'          => 'select',
                         'label'         => __('Hover Styles', 'uabb'),
                         'default'       => 'transparent-fade',
@@ -1381,6 +1474,11 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                         'label'      => __('Text Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-creative-button-wrap a *',
+							'property'		=> 'color',
+						)
                     ),
                     'btn_text_hover_color'        => array( 
                         'type'       => 'color',
@@ -1396,6 +1494,11 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                         'label'      => __('Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-creative-button-wrap a',
+							'property'		=> 'background',
+						)
                     ),
                     'btn_bg_color_opc'    => array( 
                         'type'        => 'text',
@@ -1465,7 +1568,13 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                         'default'       => '200',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-creative-button-wrap a',
+                            'property'  => 'width',
+                            'unit'		=> 'px'
+                        ),
                     ),
                     'btn_custom_height'  => array(
                         'type'          => 'text',
@@ -1473,7 +1582,13 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                         'default'       => '45',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-creative-button-wrap a',
+                            'property'  => 'min-height',
+                            'unit'		=> 'px'
+                        ),
                     ),
                     'btn_padding_top_bottom'       => array(
                         'type'          => 'text',
@@ -1481,7 +1596,22 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                         'placeholder'   => '0',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-top',
+					                'unit'		=> 'px'
+					            ),
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-bottom',
+					                'unit'		=> 'px'
+					            ),    
+					        )
+					    )
                     ),
                     'btn_padding_left_right'       => array(
                         'type'          => 'text',
@@ -1489,15 +1619,44 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                         'placeholder'   => '0',
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'       => array(
+					        'type'          => 'css',
+					        'rules'           => array(
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-left',
+					                'unit'		=> 'px'
+					            ),
+					            array(
+					                'selector'     => '.uabb-creative-button-wrap a',
+					                'property'     => 'padding-right',
+					                'unit'		=> 'px'
+					            ),
+					        )
+					    )
                     ),
                     'btn_border_radius' => array(
                         'type'          => 'text',
                         'label'         => __('Round Corners', 'uabb'),
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'   => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-creative-button-wrap a',
+                            'property'  => 'border-radius',
+                            'unit'		=> 'px'
+                        ),
                     ),
+					'custom_class'          => array(
+						'type'          => 'text',
+						'label'         => __('Custom Class', 'uabb'),
+						'default'		=> '',
+						'preview'       => array(
+							'type'          => 'none'
+						),
+					),
                 )
             ),
 			'link'          => array(
@@ -1509,7 +1668,8 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'help'          => __('The link applies to the entire module. If choosing a call to action type below, this link will also be used for the text or button.', 'uabb'),
 						'preview'       => array(
 							'type'          => 'none'
-						)
+						),
+						'connections'	=> array( 'url' )
 					),
 					'link_target'   => array(
 						'type'          => 'select',
@@ -1522,7 +1682,18 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'preview'       => array(
 							'type'          => 'none'
 						)
-					)
+					),
+					'link_nofollow'   => array(
+						'type'          => 'uabb-toggle-switch',
+						'label'         => __('Link nofollow', 'uabb'),
+						'description'   => '',
+						'default'       => '0',
+						'help'			=> __('Enable this to make this link nofollow', 'uabb'),
+						'options'       => array(
+							'1'       => __('Yes','uabb'),
+							'0'       => __('No','uabb'),
+						),
+					),
 				)
 			),
 		)
@@ -1569,6 +1740,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-title-prefix',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'prefix_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -1578,12 +1755,23 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-title-prefix',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'prefix_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-title-prefix',
+                            'property'	=> 'color',
+                    	),
                     ),
                 )
             ),
@@ -1626,6 +1814,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-title',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px',
+                    	),
                     ),
                     'title_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -1635,12 +1829,23 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-title',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px',
+                    	),
                     ),
-                    'title_color'        => array( 
+                    'title_color'        => array(
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-title',
+                            'property'	=> 'color',
+                    	),
                     ),
                 )
             ),
@@ -1667,6 +1872,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-text, .uabb-infobox-text * ',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px',
+                    	),
                     ),
                     'subhead_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -1676,12 +1887,23 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-text, .uabb-infobox-text * ',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px',
+                    	),
                     ),
                     'subhead_color'        => array( 
                         'type'       => 'color',
                         'label'         => __('Description Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-text, .uabb-infobox-text * ',
+                            'property'	=> 'color',
+                    	),
                     ),
                 )
             ),
@@ -1708,6 +1930,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> 'a.uabb-button',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px',
+                    	),
                     ),
                     'btn_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -1717,6 +1945,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> 'a.uabb-button',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px',
+                    	),
                     ),
                     'btn_margin_top' => array(
 						'type'              => 'text',
@@ -1725,6 +1959,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-button',
+                            'property'	=> 'margin-top',
+                            'unit'		=> 'px',
+                    	),
 					),
 					'btn_margin_bottom' => array(
 						'type'              => 'text',
@@ -1733,6 +1973,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-button',
+                            'property'	=> 'margin-bottom',
+                            'unit'		=> 'px',
+                    	),
 					),
                 )
             ),
@@ -1759,6 +2005,12 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-cta-link',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px',
+                    	)
                     ),
                     'link_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -1768,8 +2020,14 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-infobox-cta-link',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px',
+                    	)
                     ),
-                    'link_color'        => array( 
+                    'link_color'        => array(
                         'type'       => 'color',
                         'label'         => __('Link Color', 'uabb'),
                         'default'    => '',
@@ -1777,7 +2035,7 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
                     ),
                     'link_margin_top' => array(
 						'type'              => 'text',
-						'label'             => __('Top', 'uabb'),
+						'label'             => __('Margin Top', 'uabb'),
 						'placeholder'		=> '0',
 						'maxlength'         => '3',
 						'size'              => '4',
@@ -1785,7 +2043,7 @@ FLBuilder::register_module('UABBInfoBoxModule', array(
 					),
 					'link_margin_bottom' => array(
 						'type'              => 'text',
-						'label'             => __('Bottom', 'uabb'),
+						'label'             => __('Margin Bottom', 'uabb'),
 						'placeholder'		=> '0',
 						'maxlength'         => '3',
 						'size'              => '4',

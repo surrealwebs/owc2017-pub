@@ -1,5 +1,5 @@
 <?php if( $settings->it_link_type == "complete_link") { ?>
-<a href="<?php echo $settings->it_link;?>" target="<?php echo $settings->it_link_target; ?>">
+<a href="<?php echo $settings->it_link;?>" target="<?php echo $settings->it_link_target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $settings->it_link_target, 0, 1 ); ?>>
 <?php } ?>
 <div class="uabb-module-content info-table-wrap info-table-<?php echo $settings->box_design;?> info-table-cs-<?php echo $settings->color_scheme;?>">
 	<div class="info-table">
@@ -13,7 +13,7 @@
 			<?php echo "</" . $settings->sub_heading_tag_selection. ">"; ?>
 			<?php if( $settings->it_link_type == "cta" && $settings->box_design =="design02") { ?>
 			<div class="info-table-button">
-				<a href="<?php echo $settings->it_link;?>" target="<?php echo $settings->it_link_target; ?>"><?php echo $settings->button_text;?></a>
+				<a href="<?php echo $settings->it_link;?>" target="<?php echo $settings->it_link_target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $settings->it_link_target, 0, 1 ); ?>><?php echo $settings->button_text;?></a>
 			</div>
 			<?php } ?>	
 		</div>
@@ -60,7 +60,7 @@
 		</div>
 		<?php if( $settings->it_link_type == "cta" && $settings->box_design !="design02") { ?>
 		<div class="info-table-button">
-			<a href="<?php echo $settings->it_link;?>" target="<?php echo $settings->it_link_target; ?>"><?php echo $settings->button_text;?></a>
+			<a href="<?php echo $settings->it_link;?>" target="<?php echo $settings->it_link_target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $settings->it_link_target, 0, 1 ); ?>><?php echo $settings->button_text;?></a>
 		</div>
 		<?php } ?>
 	</div>

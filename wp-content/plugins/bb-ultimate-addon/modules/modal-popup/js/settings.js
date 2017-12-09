@@ -49,6 +49,9 @@
 				// console.log( modal_effect_style );
 				
 			if ( preview_modal == 1 ) {
+				
+				modal_node.removeClass('uabb-drag-fix');
+
 				if ( modal_node.hasClass('uabb-show') ) {
 					if( old_modal_effect_style != modal_effect_style ){ 
 						modal_node.removeClass('uabb-show');
@@ -63,9 +66,19 @@
 					}
 				}else{
 					modal_node.addClass('uabb-show');
+
+					var active_popup = $('.uamodal-' + node_id );
+					if ( active_popup.find( '.uabb-content' ).outerHeight() > $(window).height() ) {
+						$('html').addClass('uabb-html-modal');
+						active_popup.find('.uabb-modal').addClass('uabb-modal-scroll');
+					} else {
+						$('html').removeClass('uabb-html-modal');
+						active_popup.find('.uabb-modal').removeClass('uabb-modal-scroll');
+					}
 				}
 			}else{
 				modal_node.removeClass('uabb-show');
+				modal_node.addClass('uabb-drag-fix');
 			}
 		},
 		_closeModal: function() {
@@ -74,6 +87,7 @@
 
 			if ( $('#modal-'+ node_id ).hasClass('uabb-show') ) {
 				$('#modal-'+ node_id ).removeClass('uabb-show');
+				$('#modal-'+ node_id ).addClass('uabb-drag-fix');
 			}
 		}
 	});

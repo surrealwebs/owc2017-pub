@@ -99,6 +99,10 @@
     display: block;
 }
 
+.uabb-flip-box-wrap .uabb-flip-box .uabb-icon i {
+    display: inline-block;
+}
+
 .uabb-flip-box-wrap .uabb-back .uabb-back-flip-box-section-content {
     overflow: hidden
 }

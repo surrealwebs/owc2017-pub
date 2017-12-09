@@ -17,15 +17,20 @@
 }
 
 .uabb-simplify-wrapper .uabb-simplify-items i.dashicons {
-    width: 23px;
-    height: 23px;
+    width: 29px;
+    height: 32px;
     text-align: center;
-    line-height: 23px;
+    line-height: 32px;
     /* border: 1px solid; */
 }
 
 .uabb-simplify-wrapper .uabb-simplify-item.desktop {
     margin: 0;
+}
+
+.fl-builder-ui-skin--dark .uabb-simplify-wrapper span.uabb-icon {
+    background: transparent;
+    border-color: transparent;
 }
 
 .uabb-simplify-wrapper span.uabb-icon {
@@ -75,13 +80,21 @@
 }
 
 .uabb-simplify-wrapper .uabb-icon .uabb-tooltip:before{
-	border-top: 5px solid #444;
+    border-top: 5px solid #444;
 }
 .uabb-simplify-wrapper .simplify .uabb-tooltip:before{
     border-top: 5px solid #00aef0;
 }
 
-
+/* Dark theme css */
+.fl-builder-ui-skin--dark .uabb-simplify-wrapper .uabb-icon .uabb-tooltip,
+.fl-builder-ui-skin--dark .uabb-simplify-wrapper .simplify .uabb-tooltip {
+    background: #101215;
+}
+.fl-builder-ui-skin--dark .uabb-simplify-wrapper .uabb-icon .uabb-tooltip:before,
+.fl-builder-ui-skin--dark .uabb-simplify-wrapper .simplify .uabb-tooltip:before {
+    border-top-color: #101215;
+}
 
 /*************
 New
@@ -106,7 +119,7 @@ New
 .uabb-simplify-wrapper .uabb-simplify-item input.uabb-simplify-input {
     box-sizing: border-box!important;
     margin: 0 0 0 -0.4em !important;
-    height: 25px !important;
+    height: 34px !important;
     padding-left: 5px !important;
     width: 40px;
     vertical-align: middle;

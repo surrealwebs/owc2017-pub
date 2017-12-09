@@ -25,7 +25,7 @@ if($settings->layout == 'grid') : ?>
 						//$click_action_target = '_self';
 					}
 				?>
-			<a href="<?php echo $click_action_link; ?>" target="<?php echo $click_action_target; ?>">
+			<a href="<?php echo $click_action_link; ?>" target="<?php echo $click_action_target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $click_action_target, 0, 1 ); ?> data-caption="<?php echo $photo->caption; ?>">
 			<?php endif; ?>
 
 			<img class="uabb-gallery-img" src="<?php echo $photo->src; ?>" alt="<?php echo $photo->alt; ?>" />
@@ -93,7 +93,7 @@ if($settings->layout == 'grid') : ?>
 							//$click_action_target = '_self';
 						}
 					?>
-				<a href="<?php echo $click_action_link; ?>" target="<?php echo $click_action_target; ?>">
+				<a href="<?php echo $click_action_link; ?>" target="<?php echo $click_action_target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $click_action_target, 0, 1 ); ?> data-caption="<?php echo $photo->caption; ?>">
 				<?php endif; ?>
 
 				<img class="uabb-gallery-img" src="<?php echo $photo->src; ?>" alt="<?php echo $photo->alt; ?>" />

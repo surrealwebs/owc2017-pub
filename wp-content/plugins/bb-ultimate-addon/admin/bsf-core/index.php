@@ -15,15 +15,6 @@ Text Domain: bsf
 	# Change "include_once" and "require_once" directory path as per your "auto-updater" path (Line no. 72, 78, 79)
 
 */
-/* product registration */
-require_once 'auto-update/admin-functions.php';
-require_once 'auto-update/updater.php';
-require_once 'BSF_License_Manager.php';
-require_once 'BSF_Update_Manager.php';
-
-if ( defined( 'WP_CLI' ) ) {
-	require 'BSF_WP_CLI_Command.php';
-}
 
 // abspath of groupi
 
@@ -37,6 +28,37 @@ if ( ! defined( 'BSF_UPDATER_FULLNAME' ) ) {
 
 if ( ! defined( 'BSF_UPDATER_SHORTNAME' ) ) {
 	define( 'BSF_UPDATER_SHORTNAME', apply_filters( 'agency_updater_shortname', 'Brainstorm' ) );
+}
+
+/* product registration */
+require_once 'auto-update/admin-functions.php';
+require_once 'auto-update/updater.php';
+require_once 'BSF_License_Manager.php';
+require_once 'BSF_Update_Manager.php';
+
+if ( defined( 'WP_CLI' ) ) {
+	require 'BSF_WP_CLI_Command.php';
+}
+
+function get_api_site() {
+
+	if ( defined( 'BSF_API_URL' ) ) {
+		$bsf_api_site = BSF_API_URL;
+	} else {
+		$bsf_api_site = 'http://support.brainstormforce.com/';
+
+		if ( wp_http_supports( array( 'ssl' ) ) ) {
+		    $bsf_api_site = set_url_scheme( $bsf_api_site, 'https' );
+		}
+	}
+
+	return $bsf_api_site;
+}
+
+function get_api_url() {
+	$url = get_api_site() . 'wp-admin/admin-ajax.php';
+
+	return $url;
 }
 
 if(!function_exists('bsf_convert_core_path_to_relative')) {
@@ -90,14 +112,14 @@ if ( ! function_exists( 'register_bsf_products_registration_page' ) ) {
 			if ( ! defined( 'BSF_MENU_POS' ) ) {
 				define( 'BSF_MENU_POS', $place );
 			}
-			if(is_multisite()) {
+			if( is_multisite() && is_network_admin() ) {
 				if(defined('BSF_REG_MENU_TO_SETTINGS') && (BSF_REG_MENU_TO_SETTINGS == true || BSF_REG_MENU_TO_SETTINGS == 'true')) {
 					$page = add_submenu_page('settings.php', BSF_UPDATER_FULLNAME, BSF_UPDATER_SHORTNAME, 'administrator', 'bsf-registration', 'bsf_registration'); 
 				} else {
 					$page = add_menu_page(BSF_UPDATER_FULLNAME, BSF_UPDATER_SHORTNAME, 'administrator', 'bsf-registration', 'bsf_registration','',$place);
 				}
 			}
-			else {
+			elseif ( ! is_multisite() && ! is_network_admin() )  {
 				if(defined('BSF_REG_MENU_TO_SETTINGS') && (BSF_REG_MENU_TO_SETTINGS == true || BSF_REG_MENU_TO_SETTINGS == 'true')) {
 					$page = add_options_page(BSF_UPDATER_FULLNAME, BSF_UPDATER_SHORTNAME, 'administrator', 'bsf-registration', 'bsf_registration' );
 				}
@@ -489,6 +511,9 @@ if(!function_exists('register_bsf_core_admin_styles')) {
 			
 			wp_register_script( 'brainstorm-switch', $bsf_core_url.'/assets/js/switch.js', array( 'jquery' ), '', true );
 			wp_enqueue_script( 'brainstorm-switch' );
+
+			wp_register_script( 'bsf-core', $bsf_core_url . '/assets/js/bsf-core.js', array( 'jquery' ), '', true );
+			wp_enqueue_script( 'bsf-core' );
 		}
 
 		// frosty script
@@ -624,7 +649,7 @@ if ( ! function_exists( 'brainstrom_product_id_by_name' ) ) {
 		
 		foreach ( $brainstrom_products as $key => $value ) {
 			foreach ( $value as $key => $product ) {
-				if ( strcasecmp( $product['product_name'], $product_name ) == 0 ) {
+				if ( isset( $product['product_name'] ) && strcasecmp( $product['product_name'], $product_name ) == 0 ) {
 					$product_id = isset( $product['id'] ) ? $product['id'] : '';
 				}
 			}
@@ -1064,8 +1089,15 @@ if ( ! function_exists( 'bsf_set_options' ) ) {
 		}
 
 		// Skip Brainstorm Menu
+		$default_skip_brainstorm_menu = array(
+			'uabb',
+			'convertpro',
+			'astra-addon',
+			'astra-pro-sites',
+			'aiosrs-pro'
+		);
 
-		$skip_brainstorm_menu_products = apply_filters( 'bsf_skip_braisntorm_menu', $products = array() );
+		$skip_brainstorm_menu_products = apply_filters( 'bsf_skip_braisntorm_menu', $default_skip_brainstorm_menu );
 		$ids                           = array();
 		$skip_brainstorm_menu          = get_site_option( 'bsf_skip_braisntorm_menu', false );
 		$brainstorm_products           = bsf_get_brainstorm_products( true );
@@ -1153,3 +1185,278 @@ if ( ! function_exists( 'bsf_get_brainstorm_products' ) ) {
 	}
 
 }
+
+function bsf_systeminfo() {
+
+	?>
+
+	<table class="wp-list-table widefat fixed bsf-sys-info">
+		<tbody>
+		<tr class="alternate">
+			<th colspan="2"><?php echo __( 'WordPress Environment', 'bsf' ); ?></th>
+		</tr>
+		<tr>
+			<td>Home URL</td>
+			<td><?php echo site_url(); ?></td>
+		</tr>
+		<tr>
+			<td>Site URL</td>
+			<td><?php echo site_url(); ?></td>
+		</tr>
+		<tr>
+			<?php global $wp_version ?>
+			<td>WP Version</td>
+			<td><?php echo $wp_version; ?></td>
+		</tr>
+		<tr>
+			<td>Multisite</td>
+			<td><?php echo ( is_multisite() ) ? 'Yes' : 'No'; ?></td>
+		</tr>
+		<?php
+		$limit = (int) ini_get( 'memory_limit' );
+		$usage = function_exists( 'memory_get_usage' ) ? round( memory_get_usage() / 1024 / 1024, 2 ) : 0;
+		?>
+		<tr>
+			<td>Memory Usage</td>
+			<td>
+				<?php echo $usage ?>
+				MB of
+				<?php echo $limit ?>
+				MB
+			</td>
+		</tr>
+		<tr>
+			<td>WP Memory Limit</td>
+			<td>
+				<?php echo WP_MEMORY_LIMIT ?>
+			</td>
+		</tr>
+		<tr>
+			<td>WP Debug</td>
+			<td><?php echo ( WP_DEBUG ) ? 'Enabled' : 'Disabled'; ?></td>
+		</tr>
+		<tr>
+			<td>WP Lang</td>
+			<td><?php echo $currentlang = get_bloginfo( 'language' ); ?></td>
+		</tr>
+		<tr>
+			<td>WP Uploads Directory</td>
+			<td>
+				<?php
+				$wp_up = wp_upload_dir();
+				echo ( is_writable( $wp_up['basedir'] ) ) ? 'Writable' : 'Readable';
+				?>
+			</td>
+		</tr>
+		<tr>
+			<td>BSF Updater Path</td>
+			<td>
+				<?php global $bsf_core_version; ?>
+				<?php echo '(v' . $bsf_core_version . ') ' . BSF_UPDATER_PATH; ?>
+			</td>
+		</tr>
+		<?php if ( defined( 'WPB_VC_VERSION' ) ) : ?>
+			<tr>
+				<td>vc_shortcode_output Filter</td>
+				<td>
+					<?php echo ( has_filter( 'vc_shortcode_output' ) ) ? 'Available' : 'Not Available'; ?>
+				</td>
+			</tr>
+		<?php endif; ?>
+		<?php
+		$mix           = bsf_get_brainstorm_products( true );
+		$temp_constant = '';
+		if ( ! empty( $mix ) ) :
+			foreach ( $mix as $key => $product ) :
+				$constant = strtoupper( str_replace( '-', '_', $product['id'] ) );
+				$constant = 'BSF_' . $constant . '_CHECK_UPDATES';
+				if ( defined( $constant ) && ( constant( $constant ) === 'false' || constant( $constant ) === false ) ) {
+					$temp_constant .= $constant . '<br/>';
+					continue;
+				}
+			endforeach;
+		endif;
+		if ( defined( 'BSF_CHECK_PRODUCT_UPDATES' ) && BSF_CHECK_PRODUCT_UPDATES == false ) {
+			$temp_constant .= 'BSF_CHECK_PRODUCT_UPDATES';
+		}
+		if ( $temp_constant != '' ) {
+			if ( ! defined( 'BSF_RESTRICTED_UPDATES' ) ) {
+				define( 'BSF_RESTRICTED_UPDATES', $temp_constant );
+			}
+		}
+		?>
+		<?php if ( defined( 'BSF_RESTRICTED_UPDATES' ) ) : ?>
+			<tr>
+				<td>Restrited Updates Filter</td>
+				<td>
+					<?php echo BSF_RESTRICTED_UPDATES; ?>
+				</td>
+			</tr>
+		<?php endif; ?>
+		</tbody>
+	</table>
+	<table class="wp-list-table widefat fixed bsf-sys-info">
+		<tbody>
+		<tr class="alternate">
+			<th colspan="2"><?php echo __( 'Server Environment', 'bsf' ); ?></th>
+		</tr>
+		<tr>
+			<td>Server Info</td>
+			<td><?php echo $_SERVER['SERVER_SOFTWARE'] ?></td>
+		</tr>
+		<tr>
+			<td>PHP Version</td>
+			<td><?php echo ( function_exists( 'phpversion' ) ) ? phpversion() : 'Not sure'; ?></td>
+		</tr>
+		<tr>
+			<td>MYSQL Version</td>
+			<td><?php
+				global $wpdb;
+				echo $wpdb->db_version(); ?></td>
+		</tr>
+		<tr>
+			<td>PHP Post Max Size</td>
+			<td><?php echo ini_get( 'post_max_size' ); ?></td>
+		</tr>
+		<tr>
+			<td>PHP Max Execution Time</td>
+			<td><?php echo ini_get( 'max_execution_time' ); ?> Seconds</td>
+		</tr>
+		<tr>
+			<td>PHP Max Input Vars</td>
+			<td><?php echo ini_get( 'max_input_vars' ); ?></td>
+		</tr>
+		<tr>
+			<td>Max Upload Size</td>
+			<td><?php echo ini_get( "upload_max_filesize" ); ?></td>
+		</tr>
+		<tr>
+			<td>Default Time Zone</td>
+			<td>
+				<?php
+				if ( date_default_timezone_get() ) {
+					echo date_default_timezone_get();
+				}
+				if ( ini_get( 'date.timezone' ) ) {
+					echo ' ' . ini_get( 'date.timezone' );
+				}
+				?>
+			</td>
+		</tr>
+		<tr class="<?php echo ( ! function_exists( 'curl_version' ) ) ? 'bsf-alert' : ''; ?>">
+			<td>cURL</td>
+			<td>
+				<?php
+				if ( function_exists( 'curl_version' ) ) {
+					$curl_info = curl_version();
+					echo $curl_info['version'];
+				} else {
+					echo 'Not Enabled';
+				}
+				?>
+			</td>
+		</tr>
+		<tr class="<?php echo ( ! function_exists( 'curl_version' ) ) ? 'bsf-alert' : ''; ?>">
+			<td>SimpleXML</td>
+			<td>
+				<?php
+				if ( extension_loaded( 'simplexml' ) ) {
+					echo "All good, extension is installed";
+				} else {
+					echo "Oops! extension not installed, Icon Manager will not work";
+				}
+				?>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+	<table class="wp-list-table widefat fixed bsf-sys-info">
+		<tbody>
+		<tr class="alternate">
+			<th colspan="2"><?php echo __( 'Theme Information', 'bsf' ); ?></th>
+		</tr>
+		<?php $theme_data = wp_get_theme(); ?>
+		<tr>
+			<td>Name</td>
+			<td><?php echo $theme_data->Name ?></td>
+		</tr>
+		<tr>
+			<td>Version</td>
+			<td><?php echo $theme_data->Version ?></td>
+		</tr>
+		<tr>
+			<td>Author</td>
+			<td><a href="<?php echo $theme_data->ThemeURI ?>"><?php echo $theme_data->Author ?></a></td>
+		</tr>
+		</tbody>
+	</table>
+	<table class="wp-list-table widefat fixed bsf-sys-info bsf-table-active-plugin">
+		<tbody>
+		<tr class="alternate">
+			<th colspan="4"><?php echo __( 'Installed Plugins', 'bsf' ); ?></th>
+		</tr>
+		<?php
+		$plugins = get_plugins();
+		asort( $plugins );
+		foreach ( $plugins as $plugin_file => $plugin_data ) {
+			?>
+			<tr>
+				<td><?php echo str_pad( $plugin_data['Title'], 30 ); ?></td>
+				<td>
+					<?php
+					if ( is_plugin_active( $plugin_file ) ) {
+						echo str_pad( 'Active', 10 );
+					} else {
+						echo str_pad( 'Inactive', 10 );
+					}
+					?>
+				</td>
+				<td><?php echo str_pad( $plugin_data['Version'], 10 ) ?></td>
+				<td><?php echo $plugin_data['Author'] ?></td>
+			</tr>
+			<?php
+		}
+		?>
+		</tbody>
+	</table>
+
+	<?php
+}
+
+
+function get_bsf_systeminfo() {
+	$table = '<div class="bsf-system-info-wrapper">';
+	ob_start();
+	bsf_systeminfo();
+	$table .= ob_get_clean();
+	$table .= '</div>';
+
+	return $table;
+
+}
+
+function bsf_envato_redirect_url_callback() {
+
+	// bail if current user cannot manage_options.
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return false;
+	}
+
+	$envato_activate = new BSF_Envato_Activate();
+
+	$form_data = array();
+
+	$form_data['product_id'] 	= isset( $_GET['product_id'] ) ? esc_attr( $_GET['product_id'] ) : '';
+	$form_data['url'] 			= isset( $_GET['url'] ) ? esc_url_raw( $_GET['url'] ) : '';
+	$form_data['redirect'] 		= isset( $_GET['redirect'] ) ? esc_url_raw( $_GET['redirect'] ) : '';
+
+	$url = $envato_activate->envato_activation_url( $form_data );
+
+	$data = array(
+		'url' => esc_url_raw( $url )
+	);
+
+	return wp_send_json_success( $data );
+}
+
+add_action( 'wp_ajax_bsf_envato_redirect_url', 'bsf_envato_redirect_url_callback' );

@@ -14,7 +14,7 @@ if( $settings->image_type != 'none' ) {
 	<div class="uabb-infobox-left-right-wrap">
 	<?php 
 	if( $settings->cta_type == 'module' && !empty($settings->link) ) {
-		echo '<a href="' . $settings->link . '" target="' . $settings->link_target . '" class="uabb-infobox-module-link"></a>';
+		echo '<a href="' . $settings->link . '" target="' . $settings->link_target . '" '. BB_Ultimate_Addon_Helper::get_link_rel( $settings->link_target, 0, 0 ) .' class="uabb-infobox-module-link"></a>';
 	}
 	// Image left
 	$module->render_image('left'); 

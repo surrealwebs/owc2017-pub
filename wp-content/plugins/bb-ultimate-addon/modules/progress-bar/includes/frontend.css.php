@@ -3,11 +3,10 @@
 $settings->text_color = UABB_Helper::uabb_colorpicker( $settings, 'text_color' );
 $settings->number_color = UABB_Helper::uabb_colorpicker( $settings, 'number_color' );
 $settings->border_color = UABB_Helper::uabb_colorpicker( $settings, 'border_color' );
+$settings->before_after_color = UABB_Helper::uabb_colorpicker( $settings, 'before_after_color' );
 ?>
 
-
-
-<?php if( $settings->layout == 'vertical' || $settings->layout == 'circular' ) { ?>
+<?php if( $settings->layout == 'vertical' || $settings->layout == 'circular' || $settings->layout == 'semi-circular' ) { ?>
 
 .fl-node-<?php echo $id; ?> .uabb-pb-list{
     text-align: <?php echo $settings->overall_alignment; ?>;
@@ -24,7 +23,6 @@ $settings->border_color = UABB_Helper::uabb_colorpicker( $settings, 'border_colo
 	
 	<?php else: ?>
 		margin: 0 <?php echo ( $settings->spacing != '' ) ? $settings->spacing / 2 : '5'; ?>px 30px <?php echo ( $settings->spacing != '' ) ? $settings->spacing / 2 : '5'; ?>px;
-	
 	<?php endif; 
 
 	if( $settings->layout == 'circular' ) { ?>
@@ -32,10 +30,13 @@ $settings->border_color = UABB_Helper::uabb_colorpicker( $settings, 'border_colo
 		height: <?php echo !empty( $settings->circular_thickness ) ? $settings->circular_thickness : '300'; ?>px;
 		max-width: 100%;
 	
-	<?php } else { ?>
+	<?php } else if( $settings->layout == 'semi-circular' ) { ?>
+		width: <?php echo !empty( $settings->circular_thickness ) ? $settings->circular_thickness : '300'; ?>px;
+		height: auto;
+		max-width: 100%;
+		<?php } else { ?>
 		width: <?php echo !empty( $settings->vertical_width ) ? $settings->vertical_width : '300'; ?>px;
 		max-width: 100%;
-	
 	<?php } ?>
 }
 
@@ -246,21 +247,21 @@ if( count( $settings->horizontal ) > 0 ) {
 }
 
 <?php
-			} else if( $settings->layout == 'circular' ) {
+			} else if( $settings->layout == 'circular' || $settings->layout == 'semi-circular' ) {
 ?>
 
-.fl-node-<?php echo $id; ?> .uabb-layout-circular.uabb-progress-bar-<?php echo $i; ?> .uabb-svg-wrap svg circle {
+.fl-node-<?php echo $id; ?> .uabb-layout-<?php echo $settings->layout; ?>.uabb-progress-bar-<?php echo $i; ?> .uabb-svg-wrap svg circle {
 <?php 
 	$stroke_thickness = ( $settings->stroke_thickness != '' ) ? $settings->stroke_thickness : '10';
 	echo 'stroke-width: '. $stroke_thickness .'px;';
 ?>
 }
 
-.fl-node-<?php echo $id; ?> .uabb-layout-circular.uabb-progress-bar-<?php echo $i; ?> .uabb-svg-wrap svg .uabb-bar {
+.fl-node-<?php echo $id; ?> .uabb-layout-<?php echo $settings->layout; ?>.uabb-progress-bar-<?php echo $i; ?> .uabb-svg-wrap svg .uabb-bar {
 	<?php echo 'stroke: '. uabb_theme_base_color( $tmp[$i]->gradient_color ).';'; ?>
 }
 
-.fl-node-<?php echo $id; ?> .uabb-layout-circular.uabb-progress-bar-<?php echo $i; ?> .uabb-svg-wrap svg .uabb-bar-bg {
+.fl-node-<?php echo $id; ?> .uabb-layout-<?php echo $settings->layout; ?>.uabb-progress-bar-<?php echo $i; ?> .uabb-svg-wrap svg .uabb-bar-bg {
 <?php
 	if( !empty( $tmp[$i]->background_color ) ) {
 		echo 'stroke: '. $tmp[$i]->background_color .';';
@@ -279,7 +280,12 @@ if( count( $settings->horizontal ) > 0 ) {
 ?>
 .fl-node-<?php echo $id; ?> .uabb-progress-bar-wrapper.uabb-layout-circular {
 	max-width: <?php echo !empty( $settings->circular_thickness ) ? $settings->circular_thickness : '300'; ?>px;
-    max-height: <?php echo !empty( $settings->circular_thickness ) ? $settings->circular_thickness : '300'; ?>px;
+	max-height: <?php echo !empty( $settings->circular_thickness ) ? $settings->circular_thickness : '300'; ?>px;
+}
+
+.fl-node-<?php echo $id; ?> .uabb-progress-bar-wrapper.uabb-layout-semi-circular {
+	max-width: <?php echo !empty( $settings->circular_thickness ) ? $settings->circular_thickness : '300'; ?>px;
+	max-height: <?php echo !empty( $settings->circular_thickness ) ? $settings->circular_thickness / 2 : '150'; ?>px;
 }
 
 .fl-node-<?php echo $id; ?> .uabb-layout-vertical.uabb-progress-bar-style-style3 .uabb-progress-title {
@@ -330,13 +336,22 @@ if( $global_settings->responsive_enabled ) { // Global Setting If started
 		<?php
         if( $settings->layout == 'circular' ) {
         	if( $settings->circular_responsive == 'yes' ) {
-        ?>
-        .fl-node-<?php echo $id; ?> .uabb-pb-list li {
-            height: <?php echo ( $settings->circular_responsive_width != '' ) ? $settings->circular_responsive_width : '200'; ?>px;
-            width: <?php echo ( $settings->circular_responsive_width != '' ) ? $settings->circular_responsive_width : '200'; ?>px;
-            max-width: 100%;
-        }
-        <?php
+        	?>
+		        .fl-node-<?php echo $id; ?> .uabb-pb-list li {
+		            height: <?php echo ( $settings->circular_responsive_width != '' ) ? $settings->circular_responsive_width : '200'; ?>px;
+		            width: <?php echo ( $settings->circular_responsive_width != '' ) ? $settings->circular_responsive_width : '200'; ?>px;
+		            max-width: 100%;
+		        }
+        	<?php
+        	}
+        } else if( $settings->layout == 'semi-circular' ) {
+        	if( $settings->circular_responsive == 'yes' ) {
+	        ?>
+		        .fl-node-<?php echo $id; ?> .uabb-pb-list li {
+		            height: auto;
+		            width: <?php echo ( $settings->circular_responsive_width != '' ) ? $settings->circular_responsive_width : '200'; ?>px;
+		        }
+        	<?php
         	}
         } else if( $settings->layout == 'vertical' ) {
         	if( $settings->vertical_responsive == 'yes' ) {

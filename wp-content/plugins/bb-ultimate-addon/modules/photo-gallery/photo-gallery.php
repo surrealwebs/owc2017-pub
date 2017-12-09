@@ -13,11 +13,13 @@ class UABBPhotoGalleryModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Photo Gallery', 'uabb'),
 			'description'   	=> __('Display multiple photos in a gallery view.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/photo-gallery/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/photo-gallery/',
 			'editor_export'  	=> false,
-			'partial_refresh'	=> true
+			'partial_refresh'	=> true,
+			'icon'				=> 'format-gallery.svg',
 		));
 
 		$this->add_js('jquery-magnificpopup-uabb', BB_ULTIMATE_ADDON_URL . 'assets/js/global-scripts/jquery.magnificpopup.min.js', array('jquery'), '', true);
@@ -138,11 +140,11 @@ class UABBPhotoGalleryModule extends FLBuilderModule {
 				}
 
 				// Photo Link
-				if(isset($photo->sizes['large'])) {
-					$data->link = $photo->sizes['large']->url;
+				if(isset($photo->sizes['full'])) {
+					$data->link = $photo->sizes['full']->url;
 				}
 				else {
-					$data->link = $photo->sizes['full']->url;
+					$data->link = $photo->sizes['large']->url;
 				}
 				
 				// Push the photo data
@@ -189,7 +191,8 @@ FLBuilder::register_module('UABBPhotoGalleryModule', array(
 					),
 					'photos'        => array(
 						'type'          => 'multiple-photos',
-						'label'         => __('Photos', 'uabb')
+						'label'         => __('Photos', 'uabb'),
+						'connections'	=> array( 'multiple-photos' )
 					),
 					'photo_size'    => array(
 						'type'          => 'select',
@@ -495,6 +498,12 @@ FLBuilder::register_module('UABBPhotoGalleryModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-photo-gallery-caption',
+                            'property'		=> 'font-size',
+                            'unit'			=> 'px',
+                        )
                     ),
                     'line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -504,18 +513,34 @@ FLBuilder::register_module('UABBPhotoGalleryModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-photo-gallery-caption',
+                            'property'		=> 'line-height',
+                            'unit'			=> 'px',
+                        )
                     ),
                     'color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-photo-gallery-caption',
+                            'property'		=> 'color',
+                        )
                     ),
                     'caption_bg_color' => array( 
 						'type'       => 'color',
 						'label'     => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-photo-gallery-caption',
+                            'property'		=> 'background',
+                        )
 					),
 					'caption_bg_color_opc'    => array( 
 						'type'        => 'text',

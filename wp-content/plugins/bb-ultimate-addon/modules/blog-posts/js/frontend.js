@@ -14,10 +14,16 @@ var UABBBlogPosts;
         this.nodeClass           = '.fl-node-' + settings.id;
         this.id                 = settings.id;
         this.wrapperClass        = this.nodeClass + ' .uabb-blog-posts';
+        this.postClass          = this.nodeClass + ' .uabb-post-wrapper';
+        this.pagination         = settings.pagination;
         this.is_carousel         = settings.is_carousel;
         this.infinite         = settings.infinite;
         this.arrows         = settings.arrows;
         this.desktop         = settings.desktop;
+        this.moduleUrl  = settings.moduleUrl;
+        this.loaderUrl  = settings.loaderUrl;
+        this.prevArrow  = settings.prevArrow;
+        this.nextArrow  = settings.nextArrow;
         this.medium         = settings.medium;
         this.small         = settings.small;
         this.slidesToScroll         = settings.slidesToScroll;
@@ -26,6 +32,8 @@ var UABBBlogPosts;
         this.small_breakpoint         = settings.small_breakpoint;
         this.medium_breakpoint         = settings.medium_breakpoint;
         this.equal_height_box         = settings.equal_height_box;
+        this.mesonry_equal_height      = settings.mesonry_equal_height;
+        this.uabb_masonary_filter_type = settings.uabb_masonary_filter_type
 
         if( this.is_carousel == 'carousel' ) {
             this._uabbBlogPostCarousel();
@@ -38,9 +46,12 @@ var UABBBlogPosts;
         }
 
         if( settings.blog_image_position == 'background' ) {
-            //console.log('initiated');
             this._uabbBlogPostImageResize();
-        } 
+        }
+
+        if(this._hasPosts()) {
+               this._initInfiniteScroll();
+        }
     };
 
     UABBBlogPosts.prototype = {
@@ -58,11 +69,53 @@ var UABBBlogPosts;
         small_breakpoint        : '',
         medium_breakpoint       : '',
         equal_height_box        : 'yes',
+        mesonry_equal_height    : 'no',
+        uabb_masonary_filter_type : 'buttons',
+
+        _hasPosts: function()
+        {
+            return $(this.postClass).length > 0;
+        },
+
+        _initInfiniteScroll: function()
+        {
+            if(this.pagination == 'scroll' && typeof FLBuilder === 'undefined') {
+                var $this = this;
+                setTimeout(function(){
+                   $this._infiniteScroll();
+                }, 500);
+            }
+        },
+
+        _infiniteScroll: function(settings)
+        {
+            $(this.wrapperClass).infinitescroll({
+                navSelector     : this.nodeClass + ' .uabb-blogs-pagination',
+                nextSelector    : this.nodeClass + ' .uabb-blogs-pagination a.next',
+                itemSelector    : this.postClass,
+                prefill         : true,
+                bufferPx        : 200,
+                loading         : {
+                    msgText         : 'Loading',
+                    finishedMsg     : '',
+                    img             : this.moduleUrl + '/img/ajax-loader-grey.gif',
+                    speed           : 10,
+                }
+            }, $.proxy(this._infiniteScrollComplete, this));
+        },
+
+        _infiniteScrollComplete: function(elements)
+        {
+            var wrap = $(this.wrapperClass);
+            elements = $(elements);
+            if( this.is_carousel == 'masonary' ) {
+                wrap.masonry('appended', elements);
+            }
+        },
 
         _uabbBlogPostCarousel: function() {
             if( this.equal_height_box == 'yes' ) {
                 this._uabbBlogPostCarouselEqualHeight();
-                //this._uabbBlogPostGridHeight();
             }
 
             var grid = jQuery( this.nodeClass ).find( '.uabb-blog-posts-carousel' );
@@ -75,19 +128,23 @@ var UABBBlogPosts;
                 slidesToShow: this.desktop,
                 slidesToScroll: this.slidesToScroll,
                 autoplay: this.autoplay,
+                prevArrow: '<button type="button" data-role="none" class="slick-prev" aria-label="Previous" tabindex="0" role="button"><i class="fa '+ this.prevArrow +' "></i></button>',
+                nextArrow: '<button type="button" data-role="none" class="slick-next" aria-label="Next" tabindex="0" role="button"><i class="fa '+ this.nextArrow +' "></i></button>',
                 autoplaySpeed: this.autoplaySpeed,
                 adaptiveHeight: false,
                 responsive: [
                     {
                         breakpoint: this.medium_breakpoint,
                         settings: {
-                            slidesToShow: this.medium
+                            slidesToShow: this.medium,
+                            slidesToScroll: this.medium,
                         }
                     },
                     {
                         breakpoint: this.small_breakpoint,
                         settings: {
-                            slidesToShow: this.small
+                            slidesToShow: this.small,
+                            slidesToScroll: this.small,
                         }
                     }
                 ]
@@ -95,28 +152,51 @@ var UABBBlogPosts;
         },
 
         _uabbBlogPostMasonary: function() {
+
             var id = this.id,
                 nodeClass = this.nodeClass;
 
+            if( this.mesonry_equal_height == 'yes' ) {
+                LayoutMode = 'fitRows';
+            }
+            else {
+                LayoutMode = 'masonry';
+            }
+
             $grid = jQuery( nodeClass ).find('.uabb-blog-posts-masonary').isotope({
+                layoutMode: LayoutMode,
                 itemSelector: '.uabb-blog-posts-masonary-item-' + this.id,
                 masonry: {
                     columnWidth: '.uabb-blog-posts-masonary-item-' + this.id
                 }
             });
 
-            
-            jQuery( nodeClass ).find('.uabb-masonary-filters .uabb-masonary-filter-' + id).on('click', function(){
-                jQuery( this ).siblings().removeClass( 'uabb-masonary-current' );
-                jQuery( this ).addClass( 'uabb-masonary-current' );
-                var value = jQuery( this ).data( 'filter' );
-                $grid.isotope( { filter: value } )
-            });
+            if( this.uabb_masonary_filter_type == 'drop-down' ) {
 
-            jQuery( nodeClass + ' .uabb-blog-posts-masonary' ).masonry({
+                jQuery( nodeClass ).find('.uabb-masonary-filters').on('change', function() {
+                    value = jQuery( nodeClass ).find('.uabb-masonary-filters option:selected').data('filter');
+                    jQuery( nodeClass + ' .uabb-blog-posts-masonary' ).isotope( { filter: value } )
+                });
+            }
+            else {
+                jQuery( nodeClass ).find('.uabb-masonary-filters .uabb-masonary-filter-' + id).on('click', function(){
+                    jQuery( this ).siblings().removeClass( 'uabb-masonary-current' );
+                    jQuery( this ).addClass( 'uabb-masonary-current' );
+                    var value = jQuery( this ).data( 'filter' );
+                    jQuery( nodeClass + ' .uabb-blog-posts-masonary' ).isotope( { filter: value } )
+                });
+            }
+
+
+            if( this.mesonry_equal_height == 'yes' ) {
+                this._uabbBlogPostMesonryHeight();
+            }
+
+            // remove mesonry instance
+            /*jQuery( nodeClass + ' .uabb-blog-posts-masonary' ).masonry({
                 columnWidth: '.uabb-blog-posts-masonary-item-' + id,
                 itemSelector: '.uabb-blog-posts-masonary-item-' + id
-            });
+            });*/
         },
 
         _uabbBlogPostCarouselEqualHeight: function() {
@@ -234,6 +314,36 @@ var UABBBlogPosts;
                 }
 
                 selector.css( 'height', blog_post_height );
+            });
+        },
+
+        _uabbBlogPostMesonryHeight: function() {
+
+            var id = this.id,
+                nodeClass = '.fl-node-' + id,
+                grid = $( nodeClass ).find( '.uabb-blog-posts-masonary' ),
+                post_wrapper = grid.find('.uabb-post-wrapper'),
+                max_height = -1,
+                wrapper_height = -1;
+
+            post_wrapper.each(function( i ) {
+                var this_height = $( this ).outerHeight(),
+                    blog_post = $( this ).find( '.uabb-blog-post-inner-wrap' ),
+                    blog_post_height = blog_post.outerHeight();
+
+                if( max_height < blog_post_height ) {
+                    max_height = blog_post_height;
+                }
+
+                if ( wrapper_height < this_height ) {
+                    wrapper_height = this_height
+                }
+
+            });
+
+            post_wrapper.each( function( i ) {
+                var selector = jQuery( this ).find( '.uabb-blog-posts-shadow' );
+                selector.css( "height", max_height );
             });
         },
 

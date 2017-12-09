@@ -24,9 +24,12 @@ class ImageIconModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          => __('Image / Icon', 'uabb'),
 			'description'   => __('Image / Icon with effect', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/image-icon/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/image-icon/',
+            'partial_refresh'	=> true,
+			'icon'				=> 'format-image.svg',
 		));
 
 		$this->add_css( 'font-awesome' );
@@ -422,6 +425,12 @@ FLBuilder::register_module('ImageIconModule', array(
 						'maxlength'     => '5',
 						'size'          => '6',
 						'description'   => 'px',
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-icon-wrap .uabb-icon i, .uabb-icon-wrap .uabb-icon i:before',
+                     		'property'		=> 'font-size',
+                     		'unit'			=> 'px',
+                        )
 					),
 					'icon_align'         => array(
 						'type'          => 'select',
@@ -432,6 +441,11 @@ FLBuilder::register_module('ImageIconModule', array(
 							'center'        => __('Center', 'uabb'),
 							'right'         => __('Right', 'uabb')
 						),
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-imgicon-wrap',
+                     		'property'		=> 'text-align',
+                        )
 					)
 				)
 			),
@@ -460,11 +474,13 @@ FLBuilder::register_module('ImageIconModule', array(
 						'type'          => 'photo',
 						'label'         => __('Photo', 'uabb'),
 						'show_remove'	=> true,
+						'connections'   => array( 'photo' )
 					),
 					'photo_url'     => array(
 						'type'          => 'text',
 						'label'         => __('Photo URL', 'uabb'),
 						'placeholder'   => 'http://www.example.com/my-photo.jpg',
+						'connections'	=> array( 'url' )
 					),
 					'img_size'     => array(
 						'type'          => 'text',
@@ -473,6 +489,12 @@ FLBuilder::register_module('ImageIconModule', array(
 						'maxlength'     => '5',
 						'size'          => '6',
 						'description'   => 'px',
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-image .uabb-photo-img',
+                            'property'		=> 'width',
+                            'unit'			=> 'px',
+                        )
 					),
 					'img_align'         => array(
 						'type'          => 'select',
@@ -483,6 +505,11 @@ FLBuilder::register_module('ImageIconModule', array(
 							'center'        => __('Center', 'uabb'),
 							'right'         => __('Right', 'uabb')
 						),
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-imgicon-wrap',
+                            'property'		=> 'text-align',
+                        )
 					)
 				)
 			),
@@ -746,6 +773,11 @@ FLBuilder::register_module('ImageIconModule', array(
 		                'label'     => __('Icon Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-icon-wrap .uabb-icon i, .uabb-icon-wrap .uabb-icon i:before',
+                     		'property'		=> 'color',
+                        )
 					),
 		            'icon_hover_color' => array( 
 						'type'       => 'color',
@@ -763,6 +795,11 @@ FLBuilder::register_module('ImageIconModule', array(
 						'label'         => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-icon-wrap .uabb-icon i, .uabb-icon-wrap .uabb-icon i:before',
+                     		'property'		=> 'background',
+                        )
 					),
 		            'icon_bg_color_opc' => array( 
 						'type'        => 'text',

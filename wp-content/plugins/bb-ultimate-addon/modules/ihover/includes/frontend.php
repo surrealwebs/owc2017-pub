@@ -44,7 +44,7 @@
 		<?php
 		if( $settings->ihover_item[$i]->on_click == 'link' ) {
 		?>
-			<a target="<?php echo $settings->ihover_item[$i]->link_target; ?>" href="<?php echo $settings->ihover_item[$i]->link_url; ?>" class="uabb-ih-link">
+			<a target="<?php echo $settings->ihover_item[$i]->link_target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $settings->ihover_item[$i]->link_target, 0, 1 ); ?> href="<?php echo $settings->ihover_item[$i]->link_url; ?>" class="uabb-ih-link">
 		<?php
 		}
 		?>

@@ -13,10 +13,11 @@ class UABBTeamModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Team', 'uabb'),
 			'description'   	=> __('A Team module to show team member.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/team/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/team/',
-            'partial_refresh'	=> false
+            'partial_refresh'	=> true
 		));
 	}
 	
@@ -77,7 +78,7 @@ class UABBTeamModule extends FLBuilderModule {
 		if ( !empty( $this->settings->name ) ) {
 			$output  = '<div class="uabb-team-name" >';
 			$output .= '<'.$this->settings->tag_selection.' class="uabb-team-name-text">';
-			$output .= ( isset( $this->settings->enable_custom_link ) && $this->settings->enable_custom_link != 'no' ) ? '<a href="' . $this->settings->custom_link . '" target ="' . $this->settings->custom_link_target . '">' . $this->settings->name . '</a>' : $this->settings->name;
+			$output .= ( isset( $this->settings->enable_custom_link ) && $this->settings->enable_custom_link != 'no' ) ? '<a href="' . $this->settings->custom_link . '" target ="' . $this->settings->custom_link_target . '" '. BB_Ultimate_Addon_Helper::get_link_rel( $this->settings->custom_link_target, 0, 0 ) .'>' . $this->settings->name . '</a>' : $this->settings->name;
 			$output .= '</'.$this->settings->tag_selection.'>';
 			$output .= '</div>';
 			echo $output;
@@ -123,7 +124,7 @@ class UABBTeamModule extends FLBuilderModule {
 					continue;
 				}
 				$icon->link_target = ( isset( $icon->link_target ) ) ? $icon->link_target : '_blank';
-				echo '<a class="uabb-team-icon-link uabb-team-icon-'.$icon_count.'" href="'.$icon->link.'" target="' . $icon->link_target . '">';
+				echo '<a class="uabb-team-icon-link uabb-team-icon-'.$icon_count.'" href="'.$icon->link.'" target="' . $icon->link_target . '" '. BB_Ultimate_Addon_Helper::get_link_rel( $icon->link_target, 0, 0 ) .'>';
 				$imageicon_array = array(
 
 				  /* General Section */
@@ -237,6 +238,7 @@ FLBuilder::register_module('UABBTeamModule', array(
                         'type'          => 'photo',
 						'label'         => __( 'Member Image', 'uabb' ),
                         'show_remove'   => true,
+                        'connections' => array( 'photo' )
                     ),
                     'photo_url'     => array(
                         'type'          => 'text',
@@ -249,6 +251,12 @@ FLBuilder::register_module('UABBTeamModule', array(
                         'maxlength'     => '5',
                         'size'          => '6',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-image .uabb-photo-img',
+                            'property'      => 'width',
+                            'unit'			=> 'px'
+                        )
                     ),
                 )
             ),
@@ -271,14 +279,25 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'type'          => 'uabb-spacing',
 			            'label'         => __( 'Image Section Padding', 'uabb' ),
 			            'mode'			=> 'padding',
-			            'default'       => 'padding: 0px;' // Optional
+			            'default'       => 'padding: 0px;', // Optional
+			            'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-team-image',
+                            'property'      => 'padding',
+                            'unit'			=> 'px'
+                        )
 					),
 					'img_bg_color'    => array( 
 						'type'       => 'color',
                     	'label'      => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
-                    	'help'		 => __('For Image with padding, you can give background color for styling', 'uabb')
+                    	'help'		 => __('For Image with padding, you can give background color for styling', 'uabb'),
+                    	'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-team-image',
+                            'property'      => 'background',
+                        )
 					),
                     'img_bg_color_opc'    => array( 
 						'type'        => 'text',
@@ -310,8 +329,8 @@ FLBuilder::register_module('UABBTeamModule', array(
 		                'label'         => __( 'Image Hover Effect', 'uabb' ),
 		                'default'       => 'no',
 		                'options'       => array(
-		                 	'yes'			=> __('Simple','uabb'),
-							'color_gray'	=> __('Grayscale on Hover'),
+		                 	'yes'			=> __('Simple', 'uabb'),
+							'color_gray'	=> __('Grayscale on Hover', 'uabb'),
 		                ),
 					),
 					'img_grayscale_grayscale' => array(
@@ -320,7 +339,7 @@ FLBuilder::register_module('UABBTeamModule', array(
 		                'default'       => 'no',
 		                'options'       => array(
 		                 	'yes'			=> __('Simple','uabb'),
-							'gray_color'	=> __('Color on Hover','uabb'),
+							'gray_color'	=> __('Color on Hover', 'uabb'),
 		                ),
 					),
 				),
@@ -337,21 +356,32 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'type'          => 'text',
 						'label'         => __('Name', 'uabb'),
 						'default'		=> __('John Doe', 'uabb'),
-						/*'preview'       => array(
+						'connections' => array( 'string', 'html' ),
+						'preview'       => array(
 							'type'          => 'text',
-							'selector'      => '.uabb-infobox-title'
-						)*/
+							'selector'      => '.uabb-team-name-text'
+						)
 					),
 					'designation'	=> array(
 						'type'          => 'text',
 						'label'         => __('Designation', 'uabb'),
 						'default'       => __('CEO, Example Inc.', 'uabb'),
+						'connections' => array( 'string', 'html' ),
+						'preview'       => array(
+							'type'          => 'text',
+							'selector'      => '.uabb-team-desgn-text',
+						)
 					),
 					'description'	=> array(
 						'type'          => 'textarea',
 						'label'         => __('Description', 'uabb'),
 						'default'         => __('Use this space to tell a little about your team member. Make it interesting by mentioning his expertise, achievements, interests, hobbies and more.', 'uabb'),
 						'rows'          => '5',
+						'connections' => array( 'string', 'html' ),
+						'preview'       => array(
+							'type'          => 'text',
+							'selector'      => '.uabb-team-desc-text',
+						)
 					),
 				)
 			),
@@ -362,13 +392,24 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'type'          => 'uabb-spacing',
                         'label'         => __( 'Padding', 'uabb' ),
                         'mode'			=> 'padding',
-                        'default'       => 'padding: 15px;' // Optional
+                        'default'       => 'padding: 15px;', // Optional
+                        'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-team-content',
+							'property'		=> 'padding',
+							'unit'			=> 'px',
+						)
 					),
 					'text_bg_color'    => array( 
 						'type'       => 'color',
                     	'label'      => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-team-content',
+							'property'		=> 'background',
+						)
 					),
                     'text_bg_color_opc'    => array( 
 						'type'        => 'text',
@@ -388,6 +429,11 @@ FLBuilder::register_module('UABBTeamModule', array(
 							'left'			=> __( 'Left', 'uabb' ),
 							'right'			=> __( 'Right', 'uabb' )
 						),
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-team-content, .uabb-team-social',
+                            'property'      => 'text-align',
+                        )
 					),
 					'module_border_radius'	=> array(
 						'type'          => 'text',
@@ -395,7 +441,13 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'placeholder'   => '0',
 						'maxlength'     => '3',
 						'size'          => '6',
-						'description'   => 'px'
+						'description'   => 'px',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-team-wrap',
+                            'property'      => 'border-radius',
+                            'unit'			=> 'px'
+                        )
 					),
 				)
 			),
@@ -421,6 +473,7 @@ FLBuilder::register_module('UABBTeamModule', array(
                         'type'          => 'link',
                         'label'         => __('Link', 'uabb'),
                         'placeholder'   => 'http://www.example.com',
+                        'connections' => array( 'url' )
                     ),
                     'custom_link_target' => array(
                         'type'          => 'select',
@@ -487,6 +540,11 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'label'      => __('Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-separator',
+							'property'      => 'border-top-color'
+						),
 					),
 					'separator_height'	=> array(
 						'type'          => 'text',
@@ -557,52 +615,6 @@ FLBuilder::register_module('UABBTeamModule', array(
 					),
 				)
 			),
-			/*'name_margin' => array(
-				'title'         => __( 'Name Field Margins', 'uabb' ),
-				'fields'        => array(
-					'name_margin_top' => array(
-						'type'              => 'text',
-						'label'             => __('Top', 'uabb'),
-						'default'           => '0',
-						'placeholder'		=> '0',
-						'maxlength'         => '3',
-						'size'              => '4',
-						'description'       => 'px',
-					),
-					'name_margin_bottom' => array(
-						'type'              => 'text',
-						'label'             => __('Bottom', 'uabb'),
-						'default'           => '0',
-						'placeholder'		=> '0',
-						'maxlength'         => '3',
-						'size'              => '4',
-						'description'       => 'px',
-					),
-				)
-			),*/
-			/*'desc_margin' => array(
-				'title'         => __( 'Description Margins', 'uabb' ),
-				'fields'        => array(
-					'desc_margin_top' => array(
-						'type'              => 'text',
-						'label'             => __('Top', 'uabb'),
-						'default'           => '0',
-						'placeholder'		=> '0',
-						'maxlength'         => '3',
-						'size'              => '4',
-						'description'       => 'px',
-					),
-					'desc_margin_bottom' => array(
-						'type'              => 'text',
-						'label'             => __('Bottom', 'uabb'),
-						'default'           => '15',
-						'placeholder'		=> '0',
-						'maxlength'         => '3',
-						'size'              => '4',
-						'description'       => 'px',
-					)
-				)
-			),*/
 		)
 	),
 	
@@ -893,6 +905,12 @@ FLBuilder::register_module('UABBTeamModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-name-text, .uabb-team-name-text a',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px',
+                    	),
                     ),
                     'line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -902,12 +920,23 @@ FLBuilder::register_module('UABBTeamModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-name-text',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px',
+                    	),
                     ),
                     'color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-name-text, .uabb-team-name-text a',
+                            'property'	=> 'color',
+                    	),
                     ),
                     'name_margin_top' => array(
 						'type'              => 'text',
@@ -916,6 +945,12 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-name-text',
+                            'property'	=> 'margin-top',
+                            'unit'		=> 'px'
+                    	),
 					),
 					'name_margin_bottom' => array(
 						'type'              => 'text',
@@ -924,6 +959,12 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-name-text',
+                            'property'	=> 'margin-bottom',
+                            'unit'		=> 'px'
+                    	),
 					),
                 )
             ),
@@ -950,6 +991,12 @@ FLBuilder::register_module('UABBTeamModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-desgn-text',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px',
+                    	),
                     ),
                     'desg_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -959,12 +1006,23 @@ FLBuilder::register_module('UABBTeamModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-desgn-text',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px',
+                    	),
                     ),
                     'desg_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-desgn-text',
+                            'property'	=> 'color',
+                    	),
                     ),
                     'desg_margin_top' => array(
 						'type'              => 'text',
@@ -973,6 +1031,12 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-desgn-text',
+                            'property'	=> 'margin-top',
+                            'unit'		=> 'px'
+                    	),
 					),
 					'desg_margin_bottom' => array(
 						'type'              => 'text',
@@ -981,6 +1045,12 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-desgn-text',
+                            'property'	=> 'margin-bottom',
+                            'unit'		=> 'px'
+                    	),
 					),
                 )
             ),
@@ -1007,6 +1077,12 @@ FLBuilder::register_module('UABBTeamModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-desc-text',
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'desc_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -1016,12 +1092,23 @@ FLBuilder::register_module('UABBTeamModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-desc-text',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px'
+                    	),
                     ),
                     'desc_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-desc-text',
+                            'property'	=> 'color',
+                    	),
                     ),
                     'desc_margin_top' => array(
 						'type'              => 'text',
@@ -1030,6 +1117,12 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-desc-text',
+                            'property'	=> 'margin-top',
+                            'unit'		=> 'px',
+                    	),
 					),
 					'desc_margin_bottom' => array(
 						'type'              => 'text',
@@ -1038,6 +1131,12 @@ FLBuilder::register_module('UABBTeamModule', array(
 						'maxlength'         => '3',
 						'size'              => '4',
 						'description'       => 'px',
+						'preview'	=> array(
+                            'type'		=> 'css',
+                            'selector'	=> '.uabb-team-desc-text',
+                            'property'	=> 'margin-bottom',
+                            'unit'		=> 'px',
+                    	),
 					),
                 )
             ),

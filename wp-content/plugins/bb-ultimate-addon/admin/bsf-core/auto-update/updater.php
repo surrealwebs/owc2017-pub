@@ -3,20 +3,18 @@
 if(!function_exists('bsf_get_remote_version')) {
 	function bsf_get_remote_version($products, $check_license){
 		global $ultimate_referer;
-		global $bsf_product_validate_url;
 
-		$path = $bsf_product_validate_url.'?referer='.$ultimate_referer;
+		$path = get_api_url() . '?referer='.$ultimate_referer;
 
 		$data = array(
 				'action' => 'bsf_get_product_versions',
 				'ids' => $products,
 				'linceses_check' => $check_license
 			);
-		$request = @wp_remote_post(
+		$request = wp_remote_post(
 			$path, array(
 				'body' => $data,
-				'timeout' => '15',
-				'sslverify' => false
+				'timeout' => '30'
 			)
 		);
 
@@ -184,9 +182,9 @@ if(!function_exists('bsf_check_product_update')) {
 							}
 						}
 
-						if(isset($remote_data->bundled_products) && !empty($remote_data->bundled_products)) {
-							if(!empty($brainstrom_bundled_products)) {
-								foreach($brainstrom_bundled_products as $bkeys => $bps) {
+						if( isset($remote_data->bundled_products) && !empty($remote_data->bundled_products) ) {
+							if( !empty( $brainstrom_bundled_products ) && is_array( $brainstrom_bundled_products ) ) {
+								foreach( $brainstrom_bundled_products as $bkeys => $bps ) {
 									foreach ($bps as $bkey => $bp) {
 										if(!isset($bp->id))
 											continue;

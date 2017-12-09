@@ -57,10 +57,10 @@ final class UABBBuilderAdminSettings {
 	 */
 	static public function menu() 
 	{
-		if ( current_user_can( 'delete_users' ) ) {
+		if ( current_user_can( 'manage_options' )) {
 			
 			$title = UABB_PREFIX;
-			$cap   = 'delete_users';
+			$cap   = 'manage_options';
 			$slug  = 'uabb-builder-settings';
 			$func  = __CLASS__ . '::render';
 			add_submenu_page( 'options-general.php', $title, $title, $cap, $slug, $func );
@@ -377,20 +377,16 @@ final class UABBBuilderAdminSettings {
 
 		if ( isset( $_POST['fl-uabb-nonce'] ) && wp_verify_nonce( $_POST['fl-uabb-nonce'], 'uabb' ) ) {
 
-			$uabb['load_panels']        = false;
-			$uabb['load_templates']     = false;
-			/*$uabb['uabb-colorpicker']   = false;*/
-			$uabb['uabb-live-preview']  = false;
-			$uabb['uabb-row-separator'] = false;
-			$uabb['uabb-enable-beta-updates'] = false;
+			$uabb = UABB_Init::$uabb_options['fl_builder_uabb'];
 
-			if( isset( $_POST['uabb-enabled-panels'] ) ) {	$uabb['load_panels'] = true;	}
-			if( isset( $_POST['uabb-live-preview'] ) ) 	 {	$uabb['uabb-live-preview'] = true;	}
-			if( isset( $_POST['uabb-load-templates'] ) ) {	$uabb['load_templates'] = true;	}
-			if( isset( $_POST['uabb-google-map-api'] ) ) {	$uabb['uabb-google-map-api'] = $_POST['uabb-google-map-api']; }
+			isset( $_POST['uabb-enabled-panels'] ) ? $uabb['load_panels'] = true : $uabb['load_panels'] = false;
+			isset( $_POST['uabb-live-preview'] ) ? $uabb['uabb-live-preview'] = true : $uabb['uabb-live-preview'] = false;
+			isset( $_POST['uabb-load-templates'] ) ? $uabb['load_templates'] = true : $uabb['load_templates'] = false;
+			if( isset( $_POST['uabb-google-map-api'] ) ) {
+				$uabb['uabb-google-map-api'] = $_POST['uabb-google-map-api'];
+			}
 			/*if( isset( $_POST['uabb-colorpicker'] ) ) {		$uabb['uabb-colorpicker'] = true;	}*/
-			if( isset( $_POST['uabb-row-separator'] ) ) {	$uabb['uabb-row-separator'] = true;	}
-			if( isset( $_POST['uabb-enable-beta-updates'] ) ) {	$uabb['uabb-enable-beta-updates'] = true;	}
+			isset( $_POST['uabb-enable-beta-updates'] ) ? $uabb['uabb-enable-beta-updates'] = true : $uabb['uabb-enable-beta-updates'] = false;
 
 			FLBuilderModel::update_admin_settings_option( '_fl_builder_uabb', $uabb, false );
 		}
@@ -406,10 +402,28 @@ final class UABBBuilderAdminSettings {
 			if( isset( $_POST['uabb-contact-support-url'] ) ) 	{	$uabb['uabb-contact-support-url'] = sanitize_text_field( $_POST['uabb-contact-support-url'] );	}
 
 			/* Enable / Disable Template Cloud */
- 			$uabb['uabb-enable-template-cloud'] = false;
- 			if( isset( $_POST['uabb-enable-template-cloud'] ) ) {
- 				$uabb['uabb-enable-template-cloud'] = true;	
- 			}
+			$uabb['uabb-enable-template-cloud'] = false;
+			if( isset( $_POST['uabb-enable-template-cloud'] ) ) {
+				$uabb['uabb-enable-template-cloud'] = true;	
+			}
+
+			/* Enable / Disable Template Cloud */
+			$uabb['uabb-global-module-listing'] = false;
+			if( isset( $_POST['uabb-global-module-listing'] ) ) {
+				$uabb['uabb-global-module-listing'] = true;
+			}
+
+			/* Enable / Disable KB */
+			$uabb['uabb-enable-knowledge-base'] = true;
+			if( ! isset( $_POST['uabb-enable-knowledge-base'] ) ) {
+				$uabb['uabb-enable-knowledge-base'] = false;
+			}
+
+			/* Enable / Disable Template Cloud */
+			$uabb['uabb-enable-contact-support'] = true;
+			if( ! isset( $_POST['uabb-enable-contact-support'] ) ) {
+				$uabb['uabb-enable-contact-support'] = false;
+			}
 
 			if( isset( $_POST['uabb-hide-branding'] ) ) {
 				update_option( 'uabb_hide_branding', true );
@@ -444,8 +458,16 @@ final class UABBBuilderAdminSettings {
 			}else{
 				$modules = array( 'unset_all' => 'unset_all' );
 			}
-			
 
+			// update extension options
+			$extenstions_array = BB_Ultimate_Addon_Helper::get_all_extenstions();
+			$uabb = UABB_Init::$uabb_options['fl_builder_uabb'];
+
+			foreach ($extenstions_array as $slug => $name) {
+				$uabb[ $slug ] = true;
+				isset( $_POST[ $slug ] ) ? $uabb[ $slug ] = true : $uabb[ $slug ] = false;
+			}
+			FLBuilderModel::update_admin_settings_option( '_fl_builder_uabb', $uabb, false );
 			FLBuilderModel::update_admin_settings_option( '_fl_builder_uabb_modules', $modules, false );
 		}
 

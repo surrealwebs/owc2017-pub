@@ -8,7 +8,8 @@ $current_url = home_url(add_query_arg(array(),$wp->request));
 	<?php
 	if( count( $settings->screens ) > 0 ) {
 		foreach( $settings->screens as $screen ) {
-			$url = rtrim( $screen->link, '/' );
+			$screen_link = isset( $screen->link ) ? $screen->link : ''; 
+			$url = rtrim( $screen_link, '/' );
 			if( $url == $current_url ) {
 				$current_class = 'uabb-current-creative-link';
 			} else {
@@ -17,7 +18,7 @@ $current_url = home_url(add_query_arg(array(),$wp->request));
 	?>
 		<li class="uabb-creative-link uabb-cl-<?php echo $settings->link_style; ?> <?php echo $current_class; ?>">
 			<<?php echo $settings->link_typography_tag_selection; ?> class="uabb-cl-heading">
-				<a href="<?php echo $screen->link; ?>" target="<?php echo $screen->target; ?>" data-hover="<?php echo $screen->title; ?>"><?php $module->render_text( $screen->title ); ?></a>
+				<a href="<?php echo $screen_link; ?>" target="<?php echo $screen->target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $screen->target, 0, 1 ); ?> data-hover="<?php echo $screen->title; ?>"><?php $module->render_text( $screen->title ); ?></a>
 			</<?php echo $settings->link_typography_tag_selection; ?>>
 		</li>
 	<?php

@@ -251,6 +251,7 @@ if( $settings->icon_position == "left" ){ ?>
 	<?php
 			}
 		}*/
+		$settings->icon_image_size = isset( $settings->icon_image_size ) ? $settings->icon_image_size : 75;
 
 		if ( $settings->list_icon_style == 'circle' ) {
             $infolist_icon_size = $settings->icon_image_size / 2;
@@ -261,23 +262,58 @@ if( $settings->icon_position == "left" ){ ?>
         }else {
             $infolist_icon_size = $settings->icon_image_size;
         }
+		?>
+		.fl-node-<?php echo $id; ?> .uabb-info-list .uabb-info-list-icon .custom-character<?php echo $list_item_counter; ?> {
+
+			<?php if ( $settings->list_icon_style =="custom" ) {
+				$custom_extra_width = $settings->list_icon_bg_padding * 2;
+				if ( $settings->list_icon_border_style != "none" ) {
+					$custom_extra_width = $custom_extra_width + $settings->list_icon_border_width * 2;
+				}
+			?>
+			border-radius: <?php echo $settings->list_icon_bg_border_radius; ?>px;
+			<?php if ( $settings->list_icon_border_style !="none" ) { ?>
+				border: <?php echo $settings->list_icon_border_width;?>px <?php echo $settings->list_icon_border_style;?> <?php echo uabb_theme_text_color( $settings->list_icon_border_color );?>;
+			<?php } ?>
+			<?php
+			}
+			else { 
+				$custom_extra_width = 0; 
+			} ?>
+
+			text-align: center;
+			color: #<?php echo uabb_theme_base_color( $item->custom_color ); ?>;
+			font-size:<?php echo $infolist_icon_size; ?>px;
+			width:<?php echo $settings->icon_image_size + $custom_extra_width; ?>px;
+			height:<?php echo $settings->icon_image_size + $custom_extra_width; ?>px;
+			line-height:<?php echo $settings->icon_image_size + $custom_extra_width; ?>px;
+			<?php if ( $settings->list_icon_style != "simple" ) { ?>
+				background: <?php echo uabb_theme_base_color( $settings->list_icon_bg_color );?>;
+			<?php } ?>
+			<?php if ( $settings->list_icon_style =="circle" ) { ?>
+			border-radius: 100%;
+			<?php } ?>
+			<?php if ( $settings->icon_position == "top" ) { ?>
+				margin: auto;
+			<?php } ?>
+		}
+		<?php
 		$imageicon_array = array(
- 
+
             /* General Section */
-            'image_type' => $item->image_type,
-         
+            'image_type' => ( isset( $item->image_type ) ) ? $item->image_type : 'none',
             /* Icon Basics */
-            'icon' => $item->icon,
+            'icon' => ( isset( $item->icon ) ) ? $item->icon : '',
             'icon_size' => $infolist_icon_size,
             'icon_align' => "center",
          
             /* Image Basics */
-            'photo_source' => $item->photo_source,
-            'photo' => $item->photo,
-            'photo_url' => $item->photo_url,
+            'photo_source' => ( isset( $item->photo_source ) ) ? $item->photo_source : '',
+            'photo' => ( isset( $item->photo ) ) ? $item->photo : '',
+            'photo_url' => ( isset( $item->photo_url ) ) ? $item->photo_url : '',
             'img_size' => $settings->icon_image_size,
             'img_align' => "center",
-            'photo_src' => ( isset( $item->photo_src ) ) ? $item->photo_src : '' ,
+            'photo_src' => ( isset( $item->photo_src ) ) ? $item->photo_src : '',
          
             /* Icon Style */
             'icon_style' => $settings->list_icon_style,
@@ -294,7 +330,7 @@ if( $settings->icon_position == "left" ){ ?>
             'img_bg_border_radius' => $settings->list_icon_bg_border_radius,
 
             /* Icon Colors */ 
-		    'icon_color' => $item->icon_color,
+		    'icon_color' => ( isset( $item->icon_color ) ) ?  $item->icon_color : '',
 		    'icon_hover_color' => "",
 		    'icon_bg_color' => $settings->list_icon_bg_color,
 		    'icon_bg_color_opc' => $settings->list_icon_bg_color_opc,
@@ -314,45 +350,45 @@ if( $settings->icon_position == "left" ){ ?>
  		FLBuilder::render_module_css( 'image-icon', $id . " .info-list-icon-dynamic". $list_item_counter, $imageicon_array );
 
  		/* If No image no Icon selected than run this */
- 		if( $item->image_type == "none" && ( !isset( $item->icon ) || !isset( $item->photo_src ) || !isset( $item->photo_url ) ) )
+ 		if( ( isset( $item->image_type ) && $item->image_type == "none" ) && ( !isset( $item->icon ) || !isset( $item->photo_src ) || !isset( $item->photo_url ) ) )
  		{
  		?>
  		.fl-node-<?php echo $id;?> .info-list-icon-dynamic<?php echo $list_item_counter;?> .uabb-imgicon-wrap {
  			
- 			<?php if ( $settings->list_icon_style =="custom" ) { 
- 				$custom_extra_width = $settings->list_icon_bg_padding * 2;
- 				if ( $settings->list_icon_border_style != "none" ) {
+			<?php if ( $settings->list_icon_style =="custom" ) {
+				$custom_extra_width = $settings->list_icon_bg_padding * 2;
+				if ( $settings->list_icon_border_style != "none" ) {
 					$custom_extra_width = $custom_extra_width + $settings->list_icon_border_width * 2;
 				}
- 			?>
- 			border-radius: <?php echo $settings->list_icon_bg_border_radius; ?>px;
- 			<?php if ( $settings->list_icon_border_style !="none" ) { ?>
- 				border: <?php echo $settings->list_icon_border_width;?>px <?php echo $settings->list_icon_border_style;?> <?php echo uabb_theme_text_color( $settings->list_icon_border_color );?>;
- 			<?php } ?>
- 			<?php
- 			}else{ $custom_extra_width = 0; } ?>
+			?>
+			border-radius: <?php echo $settings->list_icon_bg_border_radius; ?>px;
+			<?php if ( $settings->list_icon_border_style !="none" ) { ?>
+				border: <?php echo $settings->list_icon_border_width;?>px <?php echo $settings->list_icon_border_style;?> <?php echo uabb_theme_text_color( $settings->list_icon_border_color );?>;
+			<?php } ?>
+			<?php
+			}else{ $custom_extra_width = 0; } ?>
 
  			width: <?php echo $settings->icon_image_size + $custom_extra_width;?>px;
  			height: <?php echo $settings->icon_image_size + $custom_extra_width;?>px;
  			<?php if ( $item->image_type == "none" && ( $item->icon == "" || $item->photo || $item->photo_url == "" ) ) { ?>
-			<?php if ( $settings->list_icon_style =="simple" ) { ?> 			
+			<?php if ( $settings->list_icon_style =="simple" ) { ?>
 			background: <?php echo uabb_theme_base_color( '' );?>;
 			<?php }else { ?>
- 			background: <?php echo uabb_theme_base_color( $settings->list_icon_bg_color );?>;
- 			<?php 
- 				}
- 			} ?>
+			background: <?php echo uabb_theme_base_color( $settings->list_icon_bg_color );?>;
+			<?php 
+				}
+			} ?>
 
- 			<?php if ( $settings->list_icon_style =="circle" ) { ?>
- 			border-radius: 50%;
- 			<?php } ?>
- 			<?php if ( $settings->icon_position =="top" ) { ?>
- 			margin: auto;
- 			<?php } ?>
+			<?php if ( $settings->list_icon_style =="circle" ) { ?>
+			border-radius: 50%;
+			<?php } ?>
+			<?php if ( $settings->icon_position =="top" ) { ?>
+			margin: auto;
+			<?php } ?>
+		}
+		<?php	
  		}
- 		<?php	
- 		}
- 		if( $item->image_type != "none" || ( ( isset( $item->icon ) && $item->icon != "" ) || ( isset( $item->photo_src ) && $item->photo_src != "" ) || ( isset( $item->photo_url ) && $item->photo_url != "" ) ) )
+ 		if( ( isset( $item->image_type ) && $item->image_type != "none" ) || ( ( isset( $item->icon ) && $item->icon != "" ) || ( isset( $item->photo_src ) && $item->photo_src != "" ) || ( isset( $item->photo_url ) && $item->photo_url != "" ) ) )
  		{
  		?>
 	 		.fl-node-<?php echo $id;?> .info-list-icon-dynamic<?php echo $list_item_counter;?> .uabb-imgicon-wrap .uabb-photo-img {
@@ -362,19 +398,19 @@ if( $settings->icon_position == "left" ){ ?>
 	 		}
 	 	<?php 
 	 	} 
-	 	if( $item->image_type == "none" && $settings->icon_position != 'top' ) {
+	 	if( ( isset( $item->image_type ) && $item->image_type == "none" ) && ( isset( $item->icon_position ) && $settings->icon_position != 'top' ) ) {
 	 	?>
-	 		.fl-node-<?php echo $id;?> .uabb-info-list-content-wrapper.<?php echo $settings->icon_position; ?> .info-list-content-dynamic<?php echo $list_item_counter;?> {
-	 			width: 100%;
-	 		}
- 		<?php
- 		}
+			.fl-node-<?php echo $id;?> .uabb-info-list-content-wrapper.<?php echo $settings->icon_position; ?> .info-list-content-dynamic<?php echo $list_item_counter;?> {
+				width: 100%;
+			}
+		<?php
+		}
 
- 		
-		if( $item->image_type == 'photo' && ( $settings->list_icon_style === "custom" || $settings->list_icon_style === "simple" ) ) :
+		if( ( isset( $item->image_type ) && $item->image_type == 'photo' ) && ( $settings->list_icon_style === "custom" || $settings->list_icon_style === "simple" ) ) :
 			$img_size = array();
 			if( $item->photo_source == 'library' && $item->photo != '' ) :
-				$img_size = ( isset( FLBuilderPhoto::get_attachment_data($item->photo)->url ) ) ? getimagesize( FLBuilderPhoto::get_attachment_data($item->photo)->url ) : '';
+				$img_size[0] = ( isset( FLBuilderPhoto::get_attachment_data($item->photo)->width ) ) ? FLBuilderPhoto::get_attachment_data($item->photo)->width : '';
+				$img_size[1] = ( isset( FLBuilderPhoto::get_attachment_data($item->photo)->height ) ) ? FLBuilderPhoto::get_attachment_data($item->photo)->height : '';
 			elseif( trim($item->photo_url) != '' ) :
 				$img_size = getimagesize( $item->photo_url );
 			endif;

@@ -7,12 +7,14 @@ class UABBSpacerGap extends FLBuilderModule {
         parent::__construct(array(
             'name'            => __( 'Spacer / Gap', 'uabb' ),
             'description'     => __( 'A totally awesome module!', 'uabb' ),
-            'category'        => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$extra_additions ),
+            'group'         => UABB_CAT,  
             'dir'             => BB_ULTIMATE_ADDON_DIR . 'modules/spacer-gap/',
             'url'             => BB_ULTIMATE_ADDON_URL . 'modules/spacer-gap/',
             'editor_export'   => true, // Defaults to true and can be omitted.
             'enabled'         => true, // Defaults to true and can be omitted.
-            'partial_refresh' => false, // Defaults to false and can be omitted.
+            'partial_refresh' => true, // Defaults to false and can be omitted.
+            'icon'            => 'minus.svg',
         ));
     }
 }
@@ -31,7 +33,13 @@ FLBuilder::register_module('UABBSpacerGap', array(
                         'placeholder'   => '10',
                         'class'         => 'uabb-spacer-gap-desktop',
                         'description'   => 'px',
-                        'help'          => __( 'This value will work for all devices.', 'uabb' )
+                        'help'          => __( 'This value will work for all devices.', 'uabb' ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-spacer-gap-preview.uabb-spacer-gap',
+                            'property'      => 'height',
+                            'unit'          => 'px',
+                        )
                     ),
                     'medium_device'   => array(
                         'type'          => 'text',
@@ -41,7 +49,6 @@ FLBuilder::register_module('UABBSpacerGap', array(
                         'class'         => 'uabb-spacer-gap-tab-landscape',
                         'description'   => 'px',
                     ),
-
                     'small_device'   => array(
                         'type'          => 'text',
                         'label'         => __('Small Device ( Mobile )', 'uabb'),

@@ -330,13 +330,13 @@ div.uabb-tabs > nav {
 
 /* Text editor support */
 
-.uabb-module-content .uabb-text-editor.uabb-tabs-desc *:not(a) {
+.uabb-module-content .uabb-text-editor.uabb-tabs-desc *:not(a):not(div.mejs-audio) {
     color: inherit;
 }
 .uabb-module-content .uabb-text-editor.uabb-tabs-desc *:not(i) {
     font-family: inherit;
 }
-.uabb-module-content .uabb-text-editor.uabb-tabs-desc *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+.uabb-module-content .uabb-text-editor.uabb-tabs-desc *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(div.mejs-audio) {
     font-size: inherit;
     line-height: inherit;   
 }

@@ -20,7 +20,8 @@ FLBuilder::register_settings_form('button_form_field', array(
                             'preview'         => array(
                                 'type'            => 'text',
                                 'selector'        => '.uabb-creative-button-text'
-                            )
+                            ),
+                            'connections' => array( 'string' )
                         ),
 
                     )
@@ -32,6 +33,7 @@ FLBuilder::register_settings_form('button_form_field', array(
                             'type'          => 'link',
                             'label'         => __('Link', 'uabb'),
                             'placeholder'   => 'http://www.example.com',
+                            'connections'   => array( 'url' )
                         ),
                         'link_target'   => array(
                             'type'          => 'select',

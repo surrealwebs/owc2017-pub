@@ -9,9 +9,10 @@ $settings->img_border_hover_color = UABB_Helper::uabb_colorpicker( $settings, 'i
 
 <?php 
     $settings->gutter =  ( $settings->gutter != '' ) ? $settings->gutter : '50';
-    $settings->gutter_lr =  ( $settings->gutter_lr != '' ) ? $settings->gutter_lr : '50';
+    $settings->gutter_lr =  ( $settings->gutter_lr != '' ) ? $settings->gutter_lr : '0';
 ?>
-.fl-node-<?php echo $id; ?> {
+.fl-node-<?php echo $id; ?>,
+.fl-row.fl-block-overlay-active .fl-node-<?php echo $id; ?> {
     max-width: 100%;
     <?php if( !empty( $settings->img_size ) ) : 
         $margin_left = $settings->margin_left != '' ? $settings->margin_left : '20';

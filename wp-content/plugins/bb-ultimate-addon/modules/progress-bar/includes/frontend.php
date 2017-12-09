@@ -1,28 +1,10 @@
-<?php
-
-/**
- * This file should be used to render each module instance.
- * You have access to two variables in this file: 
- * 
- * $module An instance of your module class.
- * $settings The module's settings.
- *
- * Example: 
- */
-//echo '<pre>'; print_r($module); echo '</pre>';
-//echo '<pre>'; print_r( $settings ); echo '</pre>';
-?>
-
 <div class="uabb-module-content uabb-pb-container">
 	<ul class="uabb-pb-list <?php echo ( $settings->vertical_responsive == 'yes' ) ? 'uabb-responsive-list' : ''; ?>">
 		<?php
-		// $layout = ( $settings->layout == 'circular' ) ? 'circular' : 'circular';
 		if( count( $settings->horizontal ) > 0 ) {
 			for( $i = 0; $i < count( $settings->horizontal ); $i++ ) {
 				$tmp = $settings->horizontal;
-				//echo '<pre>'; print_r( $tmp[$i] ); echo '</pre>';
 				if( is_object( $tmp[$i] ) ) {
-					//$number = ( $settings->layout == 'horizontal' ) ? $tmp[$i]->horizontal_number : $tmp[$i]->vertical_number;
 					$style = ( $settings->layout == 'horizontal' ) ? $settings->horizontal_style : $settings->vertical_style;
 					$tmp[$i]->horizontal_number = ( $tmp[$i]->horizontal_number != '' ) ? $tmp[$i]->horizontal_number : '80';
 		?><li>
@@ -46,9 +28,22 @@
 					<div class="uabb-percent-counter">0%</div>
 					<span class="uabb-percent-after-text uabb-ba-text"><?php echo $tmp[$i]->circular_after_number; ?></span>
 				</div>
-				<div class="uabb-svg-wrap" data-number="<?php echo $tmp[$i]->horizontal_number; ?>">	
+				<div class="uabb-svg-wrap" data-number="<?php echo $tmp[$i]->horizontal_number; ?>">
 					<?php $module->render_circle_progress_bar( $tmp[$i], $i ); ?>
 				</div>
+				<?php
+				} else if( $settings->layout == 'semi-circular' ) {
+				?>
+				<div class="uabb-percent-wrap">
+					
+					<div class="uabb-percent-counter">0%</div>
+				</div>
+				<div class="uabb-svg-wrap" data-number="<?php echo $tmp[$i]->horizontal_number; ?>">
+					<?php $module->render_semi_circle_progress_bar( $tmp[$i], $i ); ?>
+					
+				</div>
+				<span class="uabb-semi-progress-before uabb-ba-text"><?php echo $tmp[$i]->circular_before_number; ?></span>
+				<span class="uabb-semi-progress-after uabb-ba-text"><?php echo $tmp[$i]->circular_after_number; ?></span>
 				<?php
 				}
 				?>
@@ -58,5 +53,4 @@
 			}
 		}
 		?></ul>
-</div>
-			
+</div>		

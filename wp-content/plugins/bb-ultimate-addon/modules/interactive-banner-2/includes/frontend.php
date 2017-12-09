@@ -3,7 +3,10 @@
 	<?php
 		if( $settings->banner_image != '' ) {
 	?>
-	<img class="uabb-new-ib-img" alt="" src="<?php echo $settings->banner_image_src; ?>">
+	<?php
+		$alt      = $module->get_alt();
+	?>
+	<img class="uabb-new-ib-img" src="<?php echo $settings->banner_image_src; ?>" alt="<?php echo $alt; ?>">
 	<?php
 		}
 	?>
@@ -20,7 +23,7 @@
 	<?php
 	if( $settings->link_url != '' ) {
 	?>
-	<a class="uabb-new-ib-link" href="<?php echo $settings->link_url; ?>" target="<?php echo $settings->link_target; ?>"></a>
+	<a class="uabb-new-ib-link" href="<?php echo $settings->link_url; ?>" target="<?php echo $settings->link_target; ?>" <?php BB_Ultimate_Addon_Helper::get_link_rel( $settings->link_target, 0, 1 ); ?>></a>
 	<?php
 	}
 	?>

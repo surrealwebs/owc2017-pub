@@ -7,12 +7,14 @@ class UABBDualColorModule extends FLBuilderModule {
         parent::__construct(array(
             'name'            => __( 'Dual Color Heading', 'uabb' ),
             'description'     => __( 'A totally awesome module!', 'uabb' ),
-            'category'        => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
             'dir'             => BB_ULTIMATE_ADDON_DIR . 'modules/dual-color-heading/',
             'url'             => BB_ULTIMATE_ADDON_URL . 'modules/dual-color-heading/',
             'editor_export'   => true, // Defaults to true and can be omitted.
             'enabled'         => true, // Defaults to true and can be omitted.
-            'partial_refresh' => false, // Defaults to false and can be omitted.
+            'partial_refresh' => true, // Defaults to false and can be omitted.
+            'icon'            => 'text.svg',
         ));
     }
 }
@@ -34,7 +36,8 @@ FLBuilder::register_module('UABBDualColorModule', array(
                             'type'            => 'text',
                             'selector'        => '.uabb-first-heading-text'
                         ),
-                        'help'          => __( 'Enter first part of heading.', 'uabb' )
+                        'help'          => __( 'Enter first part of heading.', 'uabb' ),
+                        'connections'   => array( 'string', 'html' )
                     ),
                     'second_heading_text'     => array(
                         'type'          => 'text',
@@ -46,7 +49,8 @@ FLBuilder::register_module('UABBDualColorModule', array(
                             'type'            => 'text',
                             'selector'        => '.uabb-second-heading-text'
                         ),
-                        'help'          => __( 'Enter second part of heading.', 'uabb' )
+                        'help'          => __( 'Enter second part of heading.', 'uabb' ),
+                        'connections'   => array( 'string', 'html' )
                     ),
                 )
             ),
@@ -70,7 +74,14 @@ FLBuilder::register_module('UABBDualColorModule', array(
                                 'fields' => array()
                             )
                         ),
-                        'help'          => __( 'Adjust spacing between first & second part of heading.', 'uabb' )
+                        'help'          => __( 'Adjust spacing between first & second part of heading.', 'uabb' ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-first-heading-text',
+                            'property'        => 'margin-right',
+                            'unit'            => 'px'
+                        )
+                       
                     ),
                     'heading_margin'     => array(
                         'type'          => 'text',
@@ -114,7 +125,7 @@ FLBuilder::register_module('UABBDualColorModule', array(
                             'right'         => __('Right', 'uabb'),
                             'center'        => __('Center', 'uabb')
                         ),
-                        'help'          => __( 'Select alignment for complete element.', 'uabb' )
+                        'help'          => __( 'Select alignment for complete element.', 'uabb' ),
                     ),
                     'responsive_compatibility' => array(
                         'type' => 'select',
@@ -174,6 +185,12 @@ FLBuilder::register_module('UABBDualColorModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-dual-color-heading *',
+                            'property'        => 'font-size',
+                            'unit'           => 'px'
+                        )
                     ),
                     'dual_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -183,6 +200,12 @@ FLBuilder::register_module('UABBDualColorModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-dual-color-heading *',
+                            'property'        => 'line-height',
+                            'unit'           => 'px'
+                        )
                     ),
                 )
             ),

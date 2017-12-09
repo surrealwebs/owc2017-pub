@@ -32,17 +32,49 @@
     position: absolute;
     width: 100%;
     left: 0;
-    z-index: 1
 }
 
 .uabb-top-row-separator {
-    top: -1px;
+    top: 0;
     bottom: auto
 }
 
 .uabb-bottom-row-separator {
     top: auto;
-    bottom: -1px
+    bottom: 0;
+}
+
+.fl-builder-content-editing .fl-visible-medium.uabb-row,
+.fl-builder-content-editing .fl-visible-medium-mobile.uabb-row,
+.fl-builder-content-editing .fl-visible-mobile.uabb-row {
+    display: none !important;
+}
+
+@media (max-width: 992px) {
+
+    .fl-builder-content-editing .fl-visible-desktop.uabb-row,
+    .fl-builder-content-editing .fl-visible-mobile.uabb-row {
+        display: none !important;
+    }
+
+    .fl-builder-content-editing .fl-visible-desktop-medium.uabb-row,
+    .fl-builder-content-editing .fl-visible-medium.uabb-row,
+    .fl-builder-content-editing .fl-visible-medium-mobile.uabb-row {
+        display: block !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .fl-builder-content-editing .fl-visible-desktop.uabb-row,
+    .fl-builder-content-editing .fl-visible-desktop-medium.uabb-row,
+    .fl-builder-content-editing .fl-visible-medium.uabb-row {
+        display: none !important;
+    }
+
+    .fl-builder-content-editing .fl-visible-medium-mobile.uabb-row,
+    .fl-builder-content-editing .fl-visible-mobile.uabb-row {
+        display: block !important;
+    }
 }
 
 /*.ult-main-seperator-inner {
@@ -51,24 +83,37 @@
     width: 100%
 }*/
 
+.fl-responsive-preview-content .fl-builder-content-editing {
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+.uabb-row-separator svg {
+    width: 100%;
+}
+
 .uabb-top-row-separator.uabb-has-svg svg {
     position: absolute;
     padding: 0;
     margin: 0;
-    left: 0;
+    left: 50%;
     top: -1px;
     bottom: auto;
-    width: 100%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
 
 .uabb-bottom-row-separator.uabb-has-svg svg {
     position: absolute;
     padding: 0;
     margin: 0;
-    left: 0;
+    left: 50%;
     bottom: -1px;
     top: auto;
-    width: 100%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
 .uabb-bottom-row-separator.uabb-has-svg .uasvg-wave-separator {
     bottom: 0;
@@ -85,19 +130,57 @@
  *  Svg Half Circle Separator
  *  Curve Center Separator
  *  Waves Separator
+ *  Stamp
+ *  Grass
+ *  Slime
+ *  Grass Bend
+ *  Wave Slide
+ *  Muliple Triangles
+ *  Pine Tree
+ *  Pine Tree Bend
  *
  ***************************************/
 .uabb-bottom-row-separator.uabb-svg-triangle svg,
 .uabb-bottom-row-separator.uabb-xlarge-triangle svg,
 .uabb-top-row-separator.uabb-xlarge-triangle-left svg,
 .uabb-bottom-row-separator.uabb-svg-circle svg,
+.uabb-top-row-separator.uabb-slime-separator svg,
+.uabb-top-row-separator.uabb-grass-separator svg,
+.uabb-top-row-separator.uabb-grass-bend-separator svg,
+.uabb-bottom-row-separator.uabb-mul-triangles-separator svg,
+.uabb-top-row-separator.uabb-wave-slide-separator svg,
+.uabb-top-row-separator.uabb-pine-tree-separator svg,
+.uabb-top-row-separator.uabb-pine-tree-bend-separator svg,
+.uabb-bottom-row-separator.uabb-stamp-separator svg,
 .uabb-bottom-row-separator.uabb-xlarge-circle svg,
-.uabb-top-row-separator.uabb-wave-separator svg {
-    -webkit-transform: scaleY(-1);
-       -moz-transform: scaleY(-1);
-        -ms-transform: scaleY(-1);
-         -o-transform: scaleY(-1);
-            transform: scaleY(-1);
+.uabb-top-row-separator.uabb-wave-separator svg{
+    left: 50%;
+    -webkit-transform: translateX(-50%) scaleY(-1);
+       -moz-transform: translateX(-50%) scaleY(-1);
+        -ms-transform: translateX(-50%) scaleY(-1);
+         -o-transform: translateX(-50%) scaleY(-1);
+            transform: translateX(-50%) scaleY(-1);
+}
+
+/*
+ *  Big Triangle
+*/
+.uabb-bottom-row-separator.uabb-big-triangle svg {
+    left: 50%;
+    -webkit-transform: scale(1) scaleY(-1) translateX(-50%);
+       -moz-transform: scale(1) scaleY(-1) translateX(-50%);
+        -ms-transform: scale(1) scaleY(-1) translateX(-50%);
+         -o-transform: scale(1) scaleY(-1) translateX(-50%);
+            transform: scale(1) scaleY(-1) translateX(-50%);
+}
+
+.uabb-top-row-separator.uabb-big-triangle svg {
+    left: 50%;
+    -webkit-transform: translateX(-50%) scale(1);
+       -moz-transform: translateX(-50%) scale(1);
+        -ms-transform: translateX(-50%) scale(1);
+         -o-transform: translateX(-50%) scale(1);
+            transform: translateX(-50%) scale(1);
 }
 
 /**
@@ -106,19 +189,21 @@
  *
  ***************************************/
 .uabb-top-row-separator.uabb-xlarge-triangle-right svg {
-    -webkit-transform: scale(-1);
-       -moz-transform: scale(-1);
-        -ms-transform: scale(-1);
-         -o-transform: scale(-1);
-            transform: scale(-1);
+    left: 50%;
+    -webkit-transform: translateX(-50%) scale(-1);
+       -moz-transform: translateX(-50%) scale(-1);
+        -ms-transform: translateX(-50%) scale(-1);
+         -o-transform: translateX(-50%) scale(-1);
+            transform: translateX(-50%) scale(-1);
 }
 
 .uabb-bottom-row-separator.uabb-xlarge-triangle-right svg {
-    -webkit-transform: scaleX(-1);
-       -moz-transform: scaleX(-1);
-        -ms-transform: scaleX(-1);
-         -o-transform: scaleX(-1);
-            transform: scaleX(-1);
+    left: 50%;
+    -webkit-transform: translateX(-50%) scaleX(-1);
+       -moz-transform: translateX(-50%) scaleX(-1);
+        -ms-transform: translateX(-50%) scaleX(-1);
+         -o-transform: translateX(-50%) scaleX(-1);
+            transform: translateX(-50%) scaleX(-1);
 }
 
 /**
@@ -128,27 +213,30 @@
  *
  ***************************************/
 .uabb-top-row-separator.uabb-curve-up-separator svg {
-     -webkit-transform: scaleY(-1);
-       -moz-transform: scaleY(-1);
-        -ms-transform: scaleY(-1);
-         -o-transform: scaleY(-1);
-            transform: scaleY(-1);
+    left: 50%;
+     -webkit-transform: translateX(-50%) scaleY(-1);
+       -moz-transform: translateX(-50%) scaleY(-1);
+        -ms-transform: translateX(-50%) scaleY(-1);
+         -o-transform: translateX(-50%) scaleY(-1);
+            transform: translateX(-50%) scaleY(-1);
 }
 
 .uabb-top-row-separator.uabb-curve-down-separator svg {
-    -webkit-transform: scale(-1);
-       -moz-transform: scale(-1);
-        -ms-transform: scale(-1);
-         -o-transform: scale(-1);
-            transform: scale(-1);
+    left: 50%;
+    -webkit-transform: translateX(-50%) scale(-1);
+       -moz-transform: translateX(-50%) scale(-1);
+        -ms-transform: translateX(-50%) scale(-1);
+         -o-transform: translateX(-50%) scale(-1);
+            transform: translateX(-50%) scale(-1);
 }
 
 .uabb-bottom-row-separator.uabb-curve-down-separator svg {
-    -webkit-transform: scaleX(-1);
-       -moz-transform: scaleX(-1);
-        -ms-transform: scaleX(-1);
-         -o-transform: scaleX(-1);
-            transform: scaleX(-1);
+    left: 50%;
+    -webkit-transform: translateX(-50%) scaleX(-1);
+       -moz-transform: translateX(-50%) scaleX(-1);
+        -ms-transform: translateX(-50%) scaleX(-1);
+         -o-transform: translateX(-50%) scaleX(-1);
+            transform: translateX(-50%) scaleX(-1);
 }
 
 
@@ -160,60 +248,79 @@
  ***************************************/
 
 .uabb-top-row-separator.uabb-tilt-left-separator svg {
-    -webkit-transform: scale(-1);
-       -moz-transform: scale(-1);
-        -ms-transform: scale(-1);
-         -o-transform: scale(-1);
-            transform: scale(-1);
+    left: 50%;
+    -webkit-transform: translateX(-50%) scale(-1);
+       -moz-transform: translateX(-50%) scale(-1);
+        -ms-transform: translateX(-50%) scale(-1);
+         -o-transform: translateX(-50%) scale(-1);
+            transform: translateX(-50%) scale(-1);
 }
 
 .uabb-top-row-separator.uabb-tilt-right-separator svg{
-    -webkit-transform: scaleY(-1);
-       -moz-transform: scaleY(-1);
-        -ms-transform: scaleY(-1);
-         -o-transform: scaleY(-1);
-            transform: scaleY(-1);
+    left: 50%;
+    -webkit-transform: translateX(-50%) scaleY(-1);
+       -moz-transform: translateX(-50%) scaleY(-1);
+        -ms-transform: translateX(-50%) scaleY(-1);
+         -o-transform: translateX(-50%) scaleY(-1);
+            transform: translateX(-50%) scaleY(-1);
+}
+
+.uabb-bottom-row-separator.uabb-tilt-left-separator svg {
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+       -moz-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
+         -o-transform: translateX(-50%);
+            transform: translateX(-50%);
 }
 
 .uabb-bottom-row-separator.uabb-tilt-right-separator svg {
-    -webkit-transform: scaleX(-1);
-       -moz-transform: scaleX(-1);
-        -ms-transform: scaleX(-1);
-         -o-transform: scaleX(-1);
-            transform: scaleX(-1);
+    left: 50%;
+    -webkit-transform: translateX(-50%) scaleX(-1);
+       -moz-transform: translateX(-50%) scaleX(-1);
+        -ms-transform: translateX(-50%) scaleX(-1);
+         -o-transform: translateX(-50%) scaleX(-1);
+            transform: translateX(-50%) scaleX(-1);
+}
+
+.uabb-top-row-separator.uabb-tilt-left-separator,
+.uabb-top-row-separator.uabb-tilt-right-separator {
+    top: 0;
+}
+
+.uabb-bottom-row-separator.uabb-tilt-left-separator,
+.uabb-bottom-row-separator.uabb-tilt-right-separator {
+    bottom: 0;
 }
 
 /**
  *
  *  Clouds Separator
  *  Multi Triangle
+ *  Arrow Inward
+ *  Arrow Outward
  *
  ***************************************/
 
-.uabb-row-separator.uabb-cloud-separator svg {
-    left: -1px;
-    width: 100%;
-}
-
+.uabb-top-row-separator.uabb-arrow-outward-separator svg,
+.uabb-top-row-separator.uabb-arrow-inward-separator svg,
 .uabb-top-row-separator.uabb-cloud-separator svg,
 .uabb-top-row-separator.uabb-multi-triangle svg {
-    -webkit-transform: scaleY(-1);
-       -moz-transform: scaleY(-1);
-        -ms-transform: scaleY(-1);
-         -o-transform: scaleY(-1);
-            transform: scaleY(-1);
+    left: 50%;
+    -webkit-transform: translateX(-50%) scaleY(-1);
+       -moz-transform: translateX(-50%) scaleY(-1);
+        -ms-transform: translateX(-50%) scaleY(-1);
+         -o-transform: translateX(-50%) scaleY(-1);
+            transform: translateX(-50%) scaleY(-1);
 }
 
-.uabb-row-separator.uabb-round-split {
-    z-index: 1;
-    /*position: relative;*/
-
+.uabb-bottom-row-separator.uabb-multi-triangle svg {
+    bottom: -2px;
 }
 
 .uabb-row-separator.uabb-round-split:after,
 .uabb-row-separator.uabb-round-split:before {
     left: 0;
-    z-index: 10;
     width: 50%;
     background: inherit inherit/inherit inherit inherit inherit;
     content: '';
@@ -338,6 +445,7 @@
 .uabb-photo {
     line-height: 0;
     position: relative;
+    z-index: 2;
 }
 .uabb-photo-align-left {
     text-align: left;
@@ -568,6 +676,10 @@ ___________________________________________________________________________*/
 
 
 /*  Translate Button styles */
+
+.uabb-creative-button.uabb-creative-transparent-btn {
+    background: transparent;
+}
 .uabb-creative-button.uabb-creative-transparent-btn:after {
     content: '';
     position: absolute;
@@ -962,17 +1074,17 @@ a.uabb-creative-threed-btn.uabb-animate_right-btn {
 /* Media/Video CSS */
 .uabb-tab-acc-content .wp-video, 
 .uabb-tab-acc-content video.wp-video-shortcode, 
-.uabb-tab-acc-content .mejs-container, 
+.uabb-tab-acc-content .mejs-container:not(.mejs-audio), 
 .uabb-tab-acc-content .mejs-overlay.load,
 .uabb-adv-accordion-content .wp-video, 
 .uabb-adv-accordion-content video.wp-video-shortcode, 
-.uabb-adv-accordion-content .mejs-container, 
+.uabb-adv-accordion-content .mejs-container:not(.mejs-audio), 
 .uabb-adv-accordion-content .mejs-overlay.load {
     width: 100% !important;
     height: 100% !important;
 }
-.uabb-tab-acc-content .mejs-container,
-.uabb-adv-accordion-content .mejs-container {
+.uabb-tab-acc-content .mejs-container:not(.mejs-audio),
+.uabb-adv-accordion-content .mejs-container:not(.mejs-audio) {
     padding-top: 56.25%;
 }
 .uabb-tab-acc-content .wp-video, 
@@ -985,8 +1097,8 @@ a.uabb-creative-threed-btn.uabb-animate_right-btn {
 .uabb-adv-accordion-content video.wp-video-shortcode {
     position: relative;
 }
-.uabb-tab-acc-content .mejs-mediaelement,
-.uabb-adv-accordion-content .mejs-mediaelement {
+.uabb-tab-acc-content .mejs-container:not(.mejs-audio) .mejs-mediaelement,
+.uabb-adv-accordion-content .mejs-container:not(.mejs-audio) .mejs-mediaelement {
     position: absolute;
     top: 0;
     right: 0;

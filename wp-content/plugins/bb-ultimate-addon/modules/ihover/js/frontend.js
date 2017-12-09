@@ -5,9 +5,9 @@
     });
     $(document).ready(function () {
         uabb_ihover_init();
-		$(document).ajaxComplete(function(e, xhr, settings){
-			uabb_ihover_init();
-		});
+        $(document).ajaxComplete(function(e, xhr, settings){
+            uabb_ihover_init();
+        });
     });
     $(window).resize(function(){
         uabb_ihover_init();
@@ -27,16 +27,16 @@
                 $(el).find('.uabb-ih-item').addClass('uabb-ih-' + s);
             });
         });
-	}
+    }
 
     if(! /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
         var is_touch_device = false;
     else
         var is_touch_device = true;
 
-    jQuery('#page').click(function(){
+    /*jQuery('#page').click(function(){
         jQuery('.uabb-ih-hover').removeClass('uabb-ih-hover');
-    });
+    });*/
     if(!is_touch_device){
         jQuery('.uabb-ih-item').hover(function(event){
             //event.stopPropagation();
@@ -46,7 +46,7 @@
             jQuery(this).removeClass('uabb-ih-hover');
         });
     } else{
-        jQuery('.uabb-ih-item').click(function(event){
+        jQuery('.uabb-ih-item').on( 'click', function(event){
             //event.stopPropagation();
             if(jQuery(this).hasClass('uabb-ih-hover')){
                 jQuery(this).removeClass('uabb-ih-hover');

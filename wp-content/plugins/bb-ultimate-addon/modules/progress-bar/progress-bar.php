@@ -15,11 +15,13 @@ class ProgressBarModule extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('Progress Bar', 'uabb'),
             'description'   => __('Progress Bar', 'uabb'),
-            'category'		=> UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/progress-bar/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/progress-bar/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh'  => true
         ));
         $this->add_js('jquery-waypoints');
     }
@@ -110,14 +112,13 @@ class ProgressBarModule extends FLBuilderModule {
     }
 
     public function render_circle_progress_bar( $obj ) {
-               
+
         $obj->background_color = UABB_Helper::uabb_colorpicker( $obj, 'background_color', true );
         $obj->gradient_color   = UABB_Helper::uabb_colorpicker( $obj, 'gradient_color', true );
 
         $stroke_thickness = ( $this->settings->stroke_thickness != '' ) ? $this->settings->stroke_thickness : '10';
         $width = !empty( $this->settings->circular_thickness ) ? $this->settings->circular_thickness : 300;
         $pos = ( $width / 2 );
-        //$radius = $pos - ( 2 * $stroke_thickness );
         $radius = $pos - 10;
         $dash = number_format( ( ( M_PI * 2 ) * $radius ), 2, '.', '');
 
@@ -130,9 +131,27 @@ class ProgressBarModule extends FLBuilderModule {
         
         $txt = '<svg class="svg" viewBox="0 0 '. $width .' '. $width .'" version="1.1" preserveAspectRatio="xMinYMin meet">
             <circle class="uabb-bar-bg" r="'. $radius .'" cx="'. $pos .'" cy="'. $pos .'" fill=" ' . $obj->background_color . ' " stroke-dasharray="'. $dash .'" stroke-dashoffset="0" ></circle>
-            <circle class="uabb-bar" r="'. $radius .'" cx="'. $pos .'" cy="'. $pos .'" fill="transparent" stroke-dasharray="'. $dash .'" stroke-dashoffset="'. $dash .'" transform="rotate(-90.1 '. $pos .' '. $pos .')"></circle>
+            <circle class="uabb-bar" r="'. $radius .'" cx="'. $pos .'" cy="'. $pos .'" fill="transparent" stroke-dasharray="'. $dash .'" stroke-dashoffset="'. $dash .'"></circle>
         </svg>';
 
+        echo $html;
+    }
+
+    public function render_semi_circle_progress_bar( $obj ) {
+
+        $obj->background_color = UABB_Helper::uabb_colorpicker( $obj, 'background_color', true );
+        $obj->gradient_color   = UABB_Helper::uabb_colorpicker( $obj, 'gradient_color', true );
+
+        $stroke_thickness = ( $this->settings->stroke_thickness != '' ) ? $this->settings->stroke_thickness : '10';
+        $width = !empty( $this->settings->circular_thickness ) ? $this->settings->circular_thickness : 300;
+        $pos = ( $width / 2 );
+        $radius = $pos - ( $stroke_thickness / 2 );
+        $dash = number_format( ( ( M_PI * 2 ) * $radius ), 2, '.', '');
+
+        $html = '<svg class="svg" viewBox="0 0 '. $width .' '. $pos .'" version="1.1" preserveAspectRatio="xMinYMin meet">
+            <circle class="uabb-bar-bg" r="'. $radius .'" cx="'. $pos .'" cy="'. $pos .'" fill=" ' . $obj->background_color . ' " stroke-dasharray="'. $dash .'" stroke-dashoffset="0"></circle>
+            <circle class="uabb-bar" r="'. $radius .'" cx="'. $pos .'" cy="'. $pos .'" fill="transparent" stroke-dasharray="'. $dash .'" stroke-dashoffset="'. $dash .'" transform="rotate(-180 '. $pos .' '. $pos .')"></circle>
+        </svg>';
         echo $html;
     }
 
@@ -156,9 +175,10 @@ FLBuilder::register_module('ProgressBarModule', array(
                         'default'       => 'horizontal',
                         'help'          => __( 'Select different layouts for Progress Bar', 'uabb'),
                         'options'       => array(
-                            'horizontal'         => __('Horizontal', 'uabb'),
+                            'horizontal'        => __('Horizontal', 'uabb'),
                             'vertical'          => __('Vertical', 'uabb'),
                             'circular'          => __( 'Circular', 'uabb' ),
+                            'semi-circular'     => __( 'Semi Circular', 'uabb' ),
                         ),
                         'toggle'        => array(
                             'horizontal'         => array(
@@ -170,6 +190,10 @@ FLBuilder::register_module('ProgressBarModule', array(
                                 'fields' => array( 'stripped', 'overall_alignment' )
                             ),
                             'circular'  => array(
+                                'sections' => array( 'circular', 'before_after_typography' ),
+                                'fields' => array( 'overall_alignment' )
+                            ),
+                            'semi-circular'  => array(
                                 'sections' => array( 'circular', 'before_after_typography' ),
                                 'fields' => array( 'overall_alignment' )
                             )
@@ -212,7 +236,7 @@ FLBuilder::register_module('ProgressBarModule', array(
                         'label'         => __( 'Spacing', 'uabb' ),
                         'placeholder'       => '10',
                         'size'          => '8',
-                        'help'          => __( 'Space between progress bars', 'uabb' ),
+                        'help'          => __( 'Space between two progress bars', 'uabb' ),
                         'description'   => 'px',
                     ),
                     'stripped'     => array(
@@ -258,6 +282,12 @@ FLBuilder::register_module('ProgressBarModule', array(
                         'placeholder'       => '20',
                         'description'   => 'px',
                         'help'          => __( 'This is basically the height', 'uabb'),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-layout-horizontal .uabb-progress-box',
+                            'property'        => 'height',
+                            'unit'             => 'px' 
+                        )
                     ),
                     'horizontal_space_above'     => array(
                         'type'          => 'text',
@@ -265,13 +295,25 @@ FLBuilder::register_module('ProgressBarModule', array(
                         'size'          => '8',
                         'placeholder'       => '5',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-title, .uabb-progress-value',
+                            'property'        => 'padding-top',
+                            'unit'             => 'px' 
+                        )
                     ),
                     'horizontal_space_below'     => array(
                         'type'          => 'text',
-                        'label'         => __('Space below title', 'uabb'),
+                        'label'         => __('Space Below Title', 'uabb'),
                         'size'          => '8',
                         'placeholder'       => '5',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-title, .uabb-progress-value',
+                            'property'        => 'padding-bottom',
+                            'unit'             => 'px' 
+                        )
                     ),
                     'horizontal_vert_padding'     => array(
                         'type'          => 'text',
@@ -279,6 +321,21 @@ FLBuilder::register_module('ProgressBarModule', array(
                         'size'          => '8',
                         'placeholder'       => '5',
                         'description'   => 'px',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'rules'           => array(
+                                array(
+                                    'selector'     => '.uabb-progress-title, .uabb-progress-value',
+                                    'property'     => 'padding-top',
+                                    'unit'             => 'px'
+                                ),
+                                array(
+                                    'selector'     => '.uabb-progress-title, .uabb-progress-value',
+                                    'property'     => 'padding-bottom',
+                                    'unit'             => 'px'
+                                ),    
+                            )
+                        )
                     ),
                     'horizontal_horz_padding'     => array(
                         'type'          => 'text',
@@ -286,6 +343,21 @@ FLBuilder::register_module('ProgressBarModule', array(
                         'size'          => '8',
                         'placeholder'       => '10',
                         'description'   => 'px',
+                        'preview'       => array(
+                            'type'          => 'css',
+                            'rules'           => array(
+                                array(
+                                    'selector'     => '.uabb-progress-title, .uabb-progress-value',
+                                    'property'     => 'padding-left',
+                                    'unit'             => 'px'
+                                ),
+                                array(
+                                    'selector'     => '.uabb-progress-title, .uabb-progress-value',
+                                    'property'     => 'padding-right',
+                                    'unit'             => 'px'
+                                ),    
+                            )
+                        )
                     ),
                 )
             ),
@@ -436,6 +508,11 @@ FLBuilder::register_module('ProgressBarModule', array(
                                 'fields' => array( 'border_size', 'border_color' )
                             ),
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-wrap',
+                            'property'        => 'border-style',
+                        )
                     ),
                     'border_size'    => array(
                         'type'          => 'text',
@@ -443,18 +520,35 @@ FLBuilder::register_module('ProgressBarModule', array(
                         'placeholder'   => '1',
                         'size'          => '8',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-wrap',
+                            'property'        => 'border-width',
+                            'unit'             => 'px'
+                        )
                     ),
                     'border_color' => array( 
                         'type'       => 'color',
                         'label'      => __('Border Color', 'uabb'),
                         'default'    => 'dbdbdb',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-wrap',
+                            'property'        => 'border-color',
+                        )
                     ),
                     'border_radius'    => array(
                         'type'          => 'text',
                         'label'         => __( 'Border Radius', 'uabb' ),
                         'size'          => '8',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-wrap',
+                            'property'        => 'border-radius',
+                            'unit'             => 'px'
+                        )
                     ),
                 )
             ),
@@ -522,6 +616,12 @@ FLBuilder::register_module('ProgressBarModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-title',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
+                        )
                     ),
                     'text_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -531,12 +631,23 @@ FLBuilder::register_module('ProgressBarModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-title',
+                            'property'        => 'line-height',
+                            'unit'            => 'px'
+                        )
                     ),
                     'text_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-title',
+                            'property'        => 'color',
+                        )
                     ),
                 )
             ),
@@ -563,6 +674,12 @@ FLBuilder::register_module('ProgressBarModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ba-text',
+                            'property'        => 'font-size',
+                            'unit'              => 'px'
+                        )
                     ),
                     'before_after_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -572,12 +689,23 @@ FLBuilder::register_module('ProgressBarModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ba-text',
+                            'property'        => 'line-height',
+                            'unit'              => 'px'
+                        )
                     ),
                     'before_after_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-ba-text',
+                            'property'        => 'color',
+                        )
                     ),
                 )
             ),
@@ -604,6 +732,12 @@ FLBuilder::register_module('ProgressBarModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-value, .uabb-percent-counter',
+                            'property'         => 'font-size',
+                            'unit'             => 'px'
+                        )
                     ),
                     'number_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -613,12 +747,23 @@ FLBuilder::register_module('ProgressBarModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-value, .uabb-percent-counter',
+                            'property'         => 'line-height',
+                            'unit'             => 'px'
+                        )
                     ),
                     'number_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Progress Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-progress-value, .uabb-percent-counter',
+                            'property'         => 'color',
+                        )
                     ),
                 )
             ),
@@ -643,22 +788,26 @@ FLBuilder::register_settings_form('progress_bar_horizontal_item_form', array(
                             'label'         => __('Progress Value', 'uabb'),
                             'placeholder'       => '80',
                             'size'          => '8',
-                            'description'   => '%'
+                            'description'   => '%',
+                            'connections' => array( 'string' )
                         ),
                         'circular_before_number'     => array(
                             'type'          => 'text',
                             'label'         => __('Text Before Number', 'uabb'),
                             'default'       => __('Before Text', 'uabb'),
+                            'connections' => array( 'string', 'html' )
                         ),
                         'circular_after_number'     => array(
                             'type'          => 'text',
                             'label'         => __('Text After Number', 'uabb'),
                             'default'       => __('After Text', 'uabb'),
+                            'connections' => array( 'string', 'html' )
                         ),
                         'horizontal_before_number'     => array(
                             'type'          => 'text',
                             'label'         => __('Title', 'uabb'),
                             'default'       => __('Luck', 'uabb'),
+                            'connections' => array( 'string', 'html' )
                         ),
                     )
                 ),

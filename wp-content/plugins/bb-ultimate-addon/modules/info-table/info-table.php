@@ -14,12 +14,14 @@ class UABBInfoTableModule extends FLBuilderModule {
         parent::__construct(array(
             'name'              => __('Info Table', 'uabb'),
             'description'       => __('A basic info table.', 'uabb'),
-            'category'          => UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
             'dir'               => BB_ULTIMATE_ADDON_DIR . 'modules/info-table/',
             'url'               => BB_ULTIMATE_ADDON_URL . 'modules/info-table/',
             'editor_export'     => true, // Defaults to true and can be omitted.
             'enabled'           => true, // Defaults to true and can be omitted.
             'partial_refresh'   => true, // Defaults to false and can be omitted.
+            'icon'              => 'editor-table.svg',
         ));
     }
 }
@@ -39,16 +41,31 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                         'label'         => __( 'Heading', 'uabb' ),
                         'default'       => __( 'Heading', 'uabb' ),
                         'help'          => __('Enter Info-Table Title','uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.info-table-main-heading',
+                        )
                     ),
                     'sub_heading'     => array(
                         'type'          => 'text',
                         'label'         => __( 'Sub Heading', 'uabb' ),
                         'default'       => __( 'Sub Heading', 'uabb' ),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.info-table-sub-heading',
+                        )
                     ),
                     'it_long_desc'     => array(
                         'type'          => 'editor',
                         'label'         => '',
                         'default'       => __('Enter description text here.','uabb'),
+                        'connections'   => array( 'string', 'html' ),
+                        'preview'       => array(
+                            'type'          => 'text',
+                            'selector'      => '.info-table-description',
+                        )
                     ),
                     'it_link_type'          => array(
                         'type'          => 'select',
@@ -72,10 +89,12 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                     'button_text'   => array(
                         'type'      => 'text',
                         'label'     => __( 'Call to action button text', 'uabb' ),
+                        'connections'   => array( 'string', 'html' )
                     ),
                     'it_link'       => array(
                         'type'      => 'link',
-                        'label'     => __( 'Select URL', 'uabb' )
+                        'label'     => __( 'Select URL', 'uabb' ),
+                        'connections'   => array( 'url' )
                     ),
                     'it_link_target'   => array(
                         'type'          => 'select',
@@ -194,6 +213,12 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                         'maxlength'     => '5',
                         'size'          => '6',
                         'description'   => 'px',
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.info-table',
+                            'property'      => 'min-height',
+                            'unit'          => 'px',
+                        )
                     ),
                 )
             ),
@@ -352,6 +377,7 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                         'type'          => 'photo',
                         'label'         => __('Photo', 'uabb'),
                         'show_remove'   => true,
+                        'connections'         => array( 'photo' )
                     ),
                     'photo_url'     => array(
                         'type'          => 'text',
@@ -366,7 +392,10 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                         'description'   => 'px',
                         'placeholder'       => '150',
                         'preview'   => array(
-                            'type'      => 'refresh',
+                            'type'          => 'css',
+                            'selector'      => '.uabb-photo-img',
+                            'property'      => 'width',
+                            'unit'          => 'px',
                         ),
                     ),
                     'img_align'         => array(
@@ -769,6 +798,12 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.info-table-main-heading',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
+                        )
                     ),
                     'heading_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -778,12 +813,23 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.info-table-main-heading',
+                            'property'        => 'line-height',
+                            'unit'            => 'px'
+                        )
                     ),
                     'heading_color'        => array( 
                         'type'       => 'color',
                         'label'     => __( 'Color', 'uabb' ),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.info-table-main-heading',
+                            'property'        => 'color',
+                        )
                     ),
                 )
             ),
@@ -826,6 +872,12 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.info-table-sub-heading',
+                            'property'        => 'font-size',
+                            'unit'            => 'px',
+                        )
                     ),
                     'sub_heading_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -835,12 +887,23 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.info-table-sub-heading',
+                            'property'        => 'line-height',
+                            'unit'            => 'px',
+                        )
                     ),
                     'sub_heading_color'        => array( 
                         'type'       => 'color',
                         'label'     => __( 'Color', 'uabb' ),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.info-table-sub-heading',
+                            'property'        => 'color',
+                        )
                     ),
                 )
             ),
@@ -867,6 +930,12 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                       'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.info-table-description *',
+                            'property'        => 'font-size',
+                            'unit'            => 'px',
+                        )
                     ),
                     'description_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -876,12 +945,23 @@ FLBuilder::register_module('UABBInfoTableModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.info-table-description *',
+                            'property'        => 'line-height',
+                            'unit'            => 'px',
+                        )
                     ),
                     'description_color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                                'type'            => 'css',
+                                'selector'        => '.info-table-description *',
+                                'property'        => 'color',
+                        )
                     ),
                 )
             ),

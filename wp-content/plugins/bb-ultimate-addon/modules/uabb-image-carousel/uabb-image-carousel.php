@@ -13,16 +13,18 @@ class UABBImageCarouselModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Image Carousel', 'uabb'),
 			'description'   	=> __('Display multiple photos in a carousel view.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$extra_additions ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/uabb-image-carousel/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/uabb-image-carousel/',
 			'editor_export'  	=> false,
-			'partial_refresh'	=> true
+			'partial_refresh'	=> true,
+			'icon'				=> 'slides.svg',
 		));
 
-
-        $this->add_js( 'carousel', BB_ULTIMATE_ADDON_URL . 'assets/js/global-scripts/jquery-carousel.js', array(), '', true );
+        $this->add_js( 'carousel', BB_ULTIMATE_ADDON_URL . 'assets/js/global-scripts/jquery-carousel.js', array('jquery'), '', true );
         $this->add_js('jquery-magnificpopup-uabb', BB_ULTIMATE_ADDON_URL . 'assets/js/global-scripts/jquery.magnificpopup.min.js', array('jquery'), '', true);
+		$this->add_css('font-awesome');
 		$this->add_css('jquery-magnificpopup-uabb', BB_ULTIMATE_ADDON_URL . 'assets/css/global-styles/jquery.magnificpopup.css', array(), '');
 		// $this->add_js('jquery-magnificpopup');
 		// $this->add_css('jquery-magnificpopup');
@@ -150,7 +152,8 @@ FLBuilder::register_module('UABBImageCarouselModule', array(
 				'fields'        => array(
 					'photos'        => array(
 						'type'          => 'multiple-photos',
-						'label'         => __('Photos', 'uabb')
+						'label'         => __('Photos', 'uabb'),
+						'connections'	=> array( 'multiple-photos' )
 					),
 					'photo_size'    => array(
 						'type'          => 'select',
@@ -169,7 +172,6 @@ FLBuilder::register_module('UABBImageCarouselModule', array(
 						'placeholder'   => '20',
 						'size'   		=> '5',
 						'description'   => 'px',
-
 					),
 				)
 			),
@@ -264,10 +266,29 @@ FLBuilder::register_module('UABBImageCarouselModule', array(
 							'lightbox'      => __('Lightbox', 'uabb'),
 							'cta-link'      => __('Photo Custom Link', 'uabb')
 						),
+						'toggle' => array(
+							'cta-link' => array(
+								'fields' => array( 'click_action_target' )
+							),
+						),
 						'preview'       => array(
 							'type'          => 'none'
 						)
 					),
+
+					'click_action_target'   => array(
+                        'type'          => 'select',
+                        'label'         => __('Link Target', 'uabb'),
+                        'help'          => __( 'Controls where CTA link will open after click.', 'uabb' ),
+                        'default'       => '_blank',
+                        'options'       => array(
+                            '_self'         => __('Same Window', 'uabb'),
+                            '_blank'        => __('New Window', 'uabb')
+                        ),
+                        'preview'       => array(
+                            'type'          => 'none'
+                        )
+                    )
 				)
 			),
 		)
@@ -387,12 +408,22 @@ FLBuilder::register_module('UABBImageCarouselModule', array(
 						'label'         => __('Arrow Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.slick-prev i, .slick-next i',
+                            'property'        => 'color'
+                        )
 					),
 		            'arrow_background_color' => array( 
 						'type'       => 'color',
 						'label'         => __('Arrow Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.slick-prev i, .slick-next i',
+                            'property'        => 'background'
+                        )
 					),
 		            'arrow_background_color_opc' => array( 
 						'type'        => 'text',
@@ -553,7 +584,7 @@ FLBuilder::register_module('UABBImageCarouselModule', array(
                         ),
                         'preview'         => array(
                             'type'            => 'font',
-                            'selector'        => '.uabb-photo-gallery-caption'
+                            'selector'        => '.uabb-image-carousel-caption'
                         )
                     ),
                     'font_size'     => array(
@@ -564,6 +595,12 @@ FLBuilder::register_module('UABBImageCarouselModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-image-carousel-caption',
+                            'property'		=> 'font-size',
+                            'unit'			=> 'px'
+                        )
                     ),
                     'line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -573,18 +610,34 @@ FLBuilder::register_module('UABBImageCarouselModule', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-image-carousel-caption',
+                            'property'		=> 'line-height',
+                            'unit'			=> 'px'
+                        )
                     ),
                     'color'        => array( 
                         'type'       => 'color',
                         'label'      => __('Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-image-carousel-caption',
+                            'property'		=> 'color',
+                        )
                     ),
                     'caption_bg_color' => array( 
                         'type'       => 'color',
                         'label'     => __('Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-image-carousel-caption',
+                            'property'		=> 'background',
+                        )
 					),
 					'caption_bg_color_opc'    => array( 
 						'type'        => 'text',

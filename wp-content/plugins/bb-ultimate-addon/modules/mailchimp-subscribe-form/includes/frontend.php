@@ -6,7 +6,7 @@ if( defined( 'FL_BUILDER_VERSION' ) ) {
 	if( version_compare( $ver1, $ver2 ) < 0 ) {
 ?>
 	<div class='uabb-mailchimp-version-error'>
-		<span><?php echo __( 'Mailchimp Subscribe Form requires Beaver Builder versions above 1.8.4. Make sure you use latest Beaver Builder to view best results.' , 'uabb' ); ?></span>.
+		<span><?php echo __( 'Subscribe Form requires Beaver Builder versions above 1.8.4. Make sure you use latest Beaver Builder to view best results.' , 'uabb' ); ?></span>.
 	</div>
 <?php
 	} else {

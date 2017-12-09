@@ -1,6 +1,14 @@
+(function($) {
+
+	$(function() {
+		new UABBTabs({
+			id: '<?php echo $id ?>'
+		});
+	});
+
+})(jQuery);
 <?php
 $settings->responsive_breakpoint = ( isset( $settings->responsive_breakpoint ) && $settings->responsive_breakpoint != '' ) ? $settings->responsive_breakpoint : $global_settings->responsive_breakpoint;
-
 if( $settings->responsive == 'accordion' ) {
 ?>
 	jQuery(window).resize(function() {

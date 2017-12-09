@@ -13,11 +13,13 @@ class AdvancedSeparatorModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Advanced Separator', 'uabb'),
 			'description'   	=> __('A divider line to separate content.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/advanced-separator/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/advanced-separator/',
             'editor_export' 	=> false,
-			'partial_refresh'	=> true
+			'partial_refresh'	=> true,
+			'icon'				=> 'minus.svg',
 		));
 	}
 
@@ -162,6 +164,7 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
 		                'type'          => 'photo',
 		                'label'         => __('Photo', 'uabb'),
 		                'show_remove'   => true,
+		                'connections'	=> array( 'photo' )
 		            ),
 		            'photo_url'     => array(
 		                'type'          => 'text',
@@ -174,7 +177,13 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
 		                'maxlength'     => '5',
 		                'size'          => '6',
 		                'description'   => 'px',
-						'placeholder' => '50'
+						'placeholder' => '50',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-image-outter-wrap, .uabb-image .uabb-photo-img',
+                            'property'      => 'width',
+                            'unit'			=> 'px'
+                        )
 		            ),
 					'responsive_img_size'     => array(
 						'type'          => 'text',
@@ -361,6 +370,11 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
 		                        'fields'        => array('img_border_width', 'img_border_radius','img_border_color','img_border_hover_color' )
 		                    )
 		                ),
+		                'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-image .uabb-image-content',
+                            'property'      => 'border-style',
+                        )
 		            ),
 		            'img_border_width'    => array(
 		                'type'          => 'text',
@@ -369,6 +383,12 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
 		                'maxlength'     => '3',
 		                'size'          => '6',
 		                'placeholder'   => '1',
+		                'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-image .uabb-image-content',
+                            'property'      => 'border-width',
+                            'unit'			=> 'px'
+                        )
 		            ),
 		            'img_bg_border_radius'    => array(
 		                'type'          => 'text',
@@ -377,6 +397,12 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
 		                'maxlength'     => '3',
 		                'size'          => '6',
 		                'placeholder'   => '0',
+    	                'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-image .uabb-image-content',
+                            'property'      => 'border-radius',
+                            'unit'			=> 'px'
+                        )
 		            ),
 		        )
 		    ),
@@ -481,6 +507,11 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
 						'label'         => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-image .uabb-image-content',
+                            'property'      => 'background',
+                        )
 					),
 					'img_bg_color_opc' => array( 
 						'type'        => 'text',
@@ -514,6 +545,11 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
 						'label'         => __('Border Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-image .uabb-image-content',
+                            'property'      => 'border-color',
+                        )
 					),
 		            'img_border_hover_color' => array( 
 						'type'       => 'color',
@@ -533,7 +569,8 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
 						'preview'       => array(
 							'type'          => 'text',
 							'selector'      => '.uabb-divider-text',
-						)
+						),
+						'connections' => array( 'string' )
 					),
 				)
 			),
@@ -579,7 +616,8 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
                         'preview'       => array(
                             'type'      => 'css',
                             'selector'  => '.uabb-divider-text',
-                            'property'	=> 'font-size'
+                            'property'	=> 'font-size',
+                            'unit'		=> 'px',
                         )
 		            ),
 		            'text_line_height'    => array(
@@ -589,13 +627,24 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
 		                    'desktop'       => '',
 		                    'medium'        => '',
 		                    'small'         => '',
-		                )
+		                ),
+		                'preview'       => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-divider-text',
+                            'property'	=> 'line-height',
+                            'unit'		=> 'px',
+                        )
 		            ),
-		            'text_color'        => array( 
+		            'text_color'        => array(
 						'type'       => 'color',
 						'label'      => __('Text Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'       => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-divider-text',
+                            'property'	=> 'color',
+                        )
 					),
 		        )
 		    ),
@@ -652,6 +701,11 @@ FLBuilder::register_module('AdvancedSeparatorModule', array(
 							'double'        => __( 'Double', 'uabb' )
 						),
 						'help'          => __('The type of border to use. Double borders must have a height of at least 3px to render properly.', 'uabb'),
+						'preview'       => array(
+							'type'          => 'css',
+							'selector'      => '.uabb-separator, .uabb-separator-line > span',
+							'property'      => 'border-top-style'
+						)
 					),
 					'color' => array( 
 						'type'       => 'color',

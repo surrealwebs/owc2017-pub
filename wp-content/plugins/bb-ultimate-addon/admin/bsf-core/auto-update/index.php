@@ -217,7 +217,7 @@ $is_product_theme = false;
 <div class="wrap bsf-sp-screen">
 
 	<?php
-	global $bsf_support_url;
+	
 	$brainstrom_users = ( get_option( 'brainstrom_users' ) ) ? get_option( 'brainstrom_users' ) : array();
 	$brainstorm_users_skip = get_site_option( 'bsf_skip_author', false );
 	$bsf_user_name    = $bsf_user_email = $bsf_token = '';
@@ -461,6 +461,11 @@ $is_product_theme = false;
 								continue;
 							}
 
+							$remove_frm_registration = apply_filters( 'bsf_remove_'. $id .'_from_registration_listing', false, $id );
+							if ( $remove_frm_registration ) {
+								continue;
+							}
+
 							$step = ( isset( $plugin_data['step'] ) && $plugin_data['step'] != '' ) ? $plugin_data['step'] : 'step-product-registration';
 
 							$common_data = ' data-product-id="' . $id . '" ';
@@ -624,7 +629,7 @@ $is_product_theme = false;
 							<h2>Developer Access</h2>
 							<span class="bsf-span"><?php echo __( 'Enable Developer access', 'bsf' ) ?>
 								,<br/><?php echo __( 'Read more about developer access ', 'bsf' ); ?><a
-									href="<?php echo $bsf_support_url . 'license-registration-faqs/#developer-access' ?>"
+									href="<?php echo get_api_site() . 'license-registration-faqs/#developer-access' ?>"
 									target="_blank"><?php echo __( 'here', 'bsf' ) ?></a></span>
 
 							<form action="" class="bsf-cp-dev-access" method="post">
@@ -670,8 +675,8 @@ $is_product_theme = false;
 					<div class="bsf-column">
 						<div class="bsf-column-inner">
 							<h2>Request Support</h2>
-							<?php global $bsf_support_url; 
-							$request_support = apply_filters( 'agency_updater_request_support', $bsf_support_url . 'request-support/' );
+							<?php 
+							$request_support = apply_filters( 'agency_updater_request_support', get_api_site() . 'request-support/' );
 							?>
 							<span
 								class="bsf-span"><?php echo __( 'Having any trouble using our products? Head to our support center to get your issues resolved.', 'bsf' ); ?></span>
@@ -736,235 +741,9 @@ $is_product_theme = false;
 		<?php endif; ?>
 		<div id="bsf-system" class="bsf-tab">
 			<div class="inner">
-				<table class="wp-list-table widefat fixed bsf-sys-info">
-					<tbody>
-					<tr class="alternate">
-						<th colspan="2"><?php echo __( 'WordPress Environment', 'bsf' ); ?></th>
-					</tr>
-					<tr>
-						<td>Home URL</td>
-						<td><?php echo site_url(); ?></td>
-					</tr>
-					<tr>
-						<td>Site URL</td>
-						<td><?php echo site_url(); ?></td>
-					</tr>
-					<tr>
-						<?php global $wp_version ?>
-						<td>WP Version</td>
-						<td><?php echo $wp_version; ?></td>
-					</tr>
-					<tr>
-						<td>Multisite</td>
-						<td><?php echo ( is_multisite() ) ? 'Yes' : 'No'; ?></td>
-					</tr>
-					<?php
-					$limit = (int) ini_get( 'memory_limit' );
-					$usage = function_exists( 'memory_get_usage' ) ? round( memory_get_usage() / 1024 / 1024, 2 ) : 0;
-					?>
-					<tr>
-						<td>Memory Usage</td>
-						<td>
-							<?php echo $usage ?>
-							MB of
-							<?php echo $limit ?>
-							MB
-						</td>
-					</tr>
-					<tr>
-						<td>WP Memory Limit</td>
-						<td>
-							<?php echo WP_MEMORY_LIMIT ?>
-						</td>
-					</tr>
-					<tr>
-						<td>WP Debug</td>
-						<td><?php echo ( WP_DEBUG ) ? 'Enabled' : 'Disabled'; ?></td>
-					</tr>
-					<tr>
-						<td>WP Lang</td>
-						<td><?php echo $currentlang = get_bloginfo( 'language' ); ?></td>
-					</tr>
-					<tr>
-						<td>WP Uploads Directory</td>
-						<td>
-							<?php
-							$wp_up = wp_upload_dir();
-							echo ( is_writable( $wp_up['basedir'] ) ) ? 'Writable' : 'Readable';
-							?>
-						</td>
-					</tr>
-					<tr>
-						<td>BSF Updater Path</td>
-						<td>
-							<?php global $bsf_core_version; ?>
-							<?php echo '(v' . $bsf_core_version . ') ' . BSF_UPDATER_PATH; ?>
-						</td>
-					</tr>
-					<?php if ( defined( 'WPB_VC_VERSION' ) ) : ?>
-						<tr>
-							<td>vc_shortcode_output Filter</td>
-							<td>
-								<?php echo ( has_filter( 'vc_shortcode_output' ) ) ? 'Available' : 'Not Available'; ?>
-							</td>
-						</tr>
-					<?php endif; ?>
-					<?php
-					$mix           = array_merge( $bsf_product_plugins, $bsf_product_themes );
-					$temp_constant = '';
-					if ( ! empty( $mix ) ) :
-						foreach ( $mix as $key => $product ) :
-							$constant = strtoupper( str_replace( '-', '_', $product['id'] ) );
-							$constant = 'BSF_' . $constant . '_CHECK_UPDATES';
-							if ( defined( $constant ) && ( constant( $constant ) === 'false' || constant( $constant ) === false ) ) {
-								$temp_constant .= $constant . '<br/>';
-								continue;
-							}
-						endforeach;
-					endif;
-					if ( defined( 'BSF_CHECK_PRODUCT_UPDATES' ) && BSF_CHECK_PRODUCT_UPDATES == false ) {
-						$temp_constant .= 'BSF_CHECK_PRODUCT_UPDATES';
-					}
-					if ( $temp_constant != '' ) {
-						if ( ! defined( 'BSF_RESTRICTED_UPDATES' ) ) {
-							define( 'BSF_RESTRICTED_UPDATES', $temp_constant );
-						}
-					}
-					?>
-					<?php if ( defined( 'BSF_RESTRICTED_UPDATES' ) ) : ?>
-						<tr>
-							<td>Restrited Updates Filter</td>
-							<td>
-								<?php echo BSF_RESTRICTED_UPDATES; ?>
-							</td>
-						</tr>
-					<?php endif; ?>
-					</tbody>
-				</table>
-				<table class="wp-list-table widefat fixed bsf-sys-info">
-					<tbody>
-					<tr class="alternate">
-						<th colspan="2"><?php echo __( 'Server Environment', 'bsf' ); ?></th>
-					</tr>
-					<tr>
-						<td>Server Info</td>
-						<td><?php echo $_SERVER['SERVER_SOFTWARE'] ?></td>
-					</tr>
-					<tr>
-						<td>PHP Version</td>
-						<td><?php echo ( function_exists( 'phpversion' ) ) ? phpversion() : 'Not sure'; ?></td>
-					</tr>
-					<tr>
-						<td>MYSQL Version</td>
-						<td><?php 
-						global $wpdb;
-						echo $wpdb->db_version(); ?></td>
-					</tr>
-					<tr>
-						<td>PHP Post Max Size</td>
-						<td><?php echo ini_get( 'post_max_size' ); ?></td>
-					</tr>
-					<tr>
-						<td>PHP Max Execution Time</td>
-						<td><?php echo ini_get( 'max_execution_time' ); ?> Seconds</td>
-					</tr>
-					<tr>
-						<td>PHP Max Input Vars</td>
-						<td><?php echo ini_get( 'max_input_vars' ); ?></td>
-					</tr>
-					<tr>
-						<td>Max Upload Size</td>
-						<td><?php echo ini_get( "upload_max_filesize" ); ?></td>
-					</tr>
-					<tr>
-						<td>Default Time Zone</td>
-						<td>
-							<?php
-							if ( date_default_timezone_get() ) {
-								echo date_default_timezone_get();
-							}
-							if ( ini_get( 'date.timezone' ) ) {
-								echo ' ' . ini_get( 'date.timezone' );
-							}
-							?>
-						</td>
-					</tr>
-					<tr class="<?php echo ( ! function_exists( 'curl_version' ) ) ? 'bsf-alert' : ''; ?>">
-						<td>cURL</td>
-						<td>
-							<?php
-							if ( function_exists( 'curl_version' ) ) {
-								$curl_info = curl_version();
-								echo $curl_info['version'];
-							} else {
-								echo 'Not Enabled';
-							}
-							?>
-						</td>
-					</tr>
-					<tr class="<?php echo ( ! function_exists( 'curl_version' ) ) ? 'bsf-alert' : ''; ?>">
-						<td>SimpleXML</td>
-						<td>
-							<?php
-							if ( extension_loaded( 'simplexml' ) ) {
-								echo "All good, extension is installed";
-							} else {
-								echo "Oops! extension not installed, Icon Manager will not work";
-							}
-							?>
-						</td>
-					</tr>
-					</tbody>
-				</table>
-				<table class="wp-list-table widefat fixed bsf-sys-info">
-					<tbody>
-					<tr class="alternate">
-						<th colspan="2"><?php echo __( 'Theme Information', 'bsf' ); ?></th>
-					</tr>
-					<?php $theme_data = wp_get_theme(); ?>
-					<tr>
-						<td>Name</td>
-						<td><?php echo $theme_data->Name ?></td>
-					</tr>
-					<tr>
-						<td>Version</td>
-						<td><?php echo $theme_data->Version ?></td>
-					</tr>
-					<tr>
-						<td>Author</td>
-						<td><a href="<?php echo $theme_data->ThemeURI ?>"><?php echo $theme_data->Author ?></a></td>
-					</tr>
-					</tbody>
-				</table>
-				<table class="wp-list-table widefat fixed bsf-sys-info bsf-table-active-plugin">
-					<tbody>
-					<tr class="alternate">
-						<th colspan="4"><?php echo __( 'Installed Plugins', 'bsf' ); ?></th>
-					</tr>
-					<?php
-					$plugins = get_plugins();
-					asort( $plugins );
-					foreach ( $plugins as $plugin_file => $plugin_data ) {
-						?>
-						<tr>
-							<td><?php echo str_pad( $plugin_data['Title'], 30 ); ?></td>
-							<td>
-								<?php
-								if ( is_plugin_active( $plugin_file ) ) {
-									echo str_pad( 'Active', 10 );
-								} else {
-									echo str_pad( 'Inactive', 10 );
-								}
-								?>
-							</td>
-							<td><?php echo str_pad( $plugin_data['Version'], 10 ) ?></td>
-							<td><?php echo $plugin_data['Author'] ?></td>
-						</tr>
-						<?php
-					}
-					?>
-					</tbody>
-				</table>
+				<?php
+				echo bsf_systeminfo();
+				?>
 			</div>
 		</div>
 		<!-- bsf-system-tab -->

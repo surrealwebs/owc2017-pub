@@ -42,9 +42,9 @@ jQuery(document).ready(function( $ ) {
 		'image': {
 			titleSrc: function(item) {
 				<?php if($settings->show_captions == 'below') : ?>
-					return item.el.parent().next('.uabb-image-carousel-caption').text();
+					return item.el.data('caption');
 				<?php elseif($settings->show_captions == 'hover') : ?>
-					return item.el.next('.uabb-image-carousel-caption').text();
+					return item.el.data('caption');
 				<?php endif; ?>
 			}
 		}

@@ -49,8 +49,8 @@ class UABB_Init {
 
 	function includes() {
 
+		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-update.php';
 		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-helper.php';
-
  		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-cloud-templates.php';
 		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-admin-settings.php';
 		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-admin-settings-multisite.php';
@@ -60,6 +60,11 @@ class UABB_Init {
 		// Attachment Fields
 
 		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-attachment.php';
+		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-blog-posts.php';
+		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-wpml.php';
+
+		// Advanced Menu Walker
+		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-menu-walker.php';
 
 		//	fields
 		require_once BB_ULTIMATE_ADDON_DIR . 'fields/_config.php';
@@ -72,6 +77,8 @@ class UABB_Init {
 
 		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-extended-row-column.php';
 		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-ui-panel.php';
+		require_once BB_ULTIMATE_ADDON_DIR . 'includes/row.php';
+		require_once BB_ULTIMATE_ADDON_DIR . 'includes/column.php';
 
 		// Load the appropriate text-domain
 		$this->load_plugin_textdomain();
@@ -110,6 +117,7 @@ class UABB_Init {
 		}
 
 		add_filter( 'bsf_allow_beta_updates_uabb', array( $this, 'uabb_beta_updates_check' ) );
+		add_filter( 'bsf_license_not_activate_message_uabb', array( $this, 'license_not_active_message' ), 10, 3 );
 
 		if ( class_exists( 'FLCustomizer' ) ) {
 			$uabb_global_style = UABB_Global_Styling::get_uabb_global_settings();
@@ -131,8 +139,13 @@ class UABB_Init {
 		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-iconfonts.php';
 		require_once BB_ULTIMATE_ADDON_DIR . 'classes/class-uabb-model-helper.php';
 
-		// Ultimate Modules
 		$this->load_modules();
+	}
+
+	public function license_not_active_message( $not_activate, $license_status_class, $license_not_activate_message ) {
+		$not_activate = '<span class="license-error-heading ' . $license_status_class . ' ' . $license_not_activate_message . '">UPDATES UNAVAILABLE! Please enter your license key below to enable automatic updates.</span>';
+
+		return $not_activate;
 	}
 
 	public function uabb_customizer_save()
@@ -232,6 +245,12 @@ class UABB_Init {
   	function load_modules() {
 
   		$enable_modules = BB_Ultimate_Addon_Helper::get_builder_uabb_modules();
+
+		$is_child_theme	= is_child_theme();
+		$child_dir		= get_stylesheet_directory() . '/bb-ultimate-addon/modules/';
+		$theme_dir		= get_template_directory() . '/bb-ultimate-addon/modules/';
+		$addon_dir		= BB_ULTIMATE_ADDON_DIR . 'modules/';
+
 		foreach ( $enable_modules as $file => $name ) {
 
 			if ( $name == 'false' ) {
@@ -239,12 +258,12 @@ class UABB_Init {
 			}
 
 			$module_path	= $file . '/' .$file . '.php';
-			$child_path		= get_stylesheet_directory() . '/bb-ultimate-addon/modules/'.$module_path;
-			$theme_path		= get_template_directory() . '/bb-ultimate-addon/modules/'.$module_path;
-			$addon_path		= BB_ULTIMATE_ADDON_DIR . 'modules/' . $module_path;
+			$child_path		= $child_dir . $module_path;
+			$theme_path		= $theme_dir . $module_path;
+			$addon_path		= $addon_dir . $module_path;
 
 			// Check for the module class in a child theme.
-			if( is_child_theme() && file_exists($child_path) ) {
+			if( $is_child_theme && file_exists($child_path) ) {
 				require_once $child_path;
 			}
 

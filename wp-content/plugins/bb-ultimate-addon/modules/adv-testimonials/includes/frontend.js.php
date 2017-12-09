@@ -62,15 +62,16 @@ if ( $settings->tetimonial_layout == "slider" ) {
 		if( jQuery(selector).find('.uabb-testimonials') ){
 			setTimeout(function() {
 				var child_id = jQuery(selector).find('.fl-module-adv-testimonials').data('node');
-				console.log(child_id);
 				if( child_id != null && arrObj['testimonial_' + child_id] != undefined ) {
-					console.log(arrObj['testimonial_' + child_id]);
 					arrObj['testimonial_' + child_id].reloadSlider();
 				}
 			}, 250);
 		}
 	});
 
+	jQuery(window).load( function() {
+		testimonial_<?php echo $id; ?>.reloadSlider();
+	});
 <?php
 }
 ?>

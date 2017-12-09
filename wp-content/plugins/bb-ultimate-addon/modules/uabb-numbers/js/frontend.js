@@ -15,12 +15,13 @@ var UABBNumber;
 		this.layout				 = settings.layout;
 		this.type				 = settings.type;
 		this.number				 = settings.number;
+		this.numberFormat		 = settings.numberFormat;
+		this.locale				 = settings.locale;
 		this.max				 = settings.max;
 		this.speed 				 = settings.speed;
 		this.delay 				 = settings.delay;
 		this.breakPoints         = settings.breakPoints;
 		this.currentBrowserWidth = $( window ).width();
-
 		// initialize the menu 
 		this._initNumber();
 		
@@ -29,7 +30,6 @@ var UABBNumber;
 	UABBNumber.addCommas = function( n ){
 
 		var rgx = /(\d+)(\d{3})/;
-
 		n += '';
 		x  = n.split('.');
 		x1 = x[0];
@@ -38,7 +38,6 @@ var UABBNumber;
 		while (rgx.test(x1)) {
 			x1 = x1.replace(rgx, '$1' + ',' + '$2');
 		}
-		
 		return x1 + x2;
 	};
 
@@ -48,6 +47,8 @@ var UABBNumber;
 		layout 	                : '',
 		type 	                : '',
 		number 	                : 0,
+		numberFormat			: '',
+		locale 					: '',
 		max 	                : 0,
 		speed 					: 0,
 		delay 					: 0,
@@ -80,6 +81,8 @@ var UABBNumber;
 						this._triggerCircle();
 					} else if( this.layout == 'bars' ){
 						this._triggerBar();
+					} else if( this.layout == 'semi-circle' ){
+						this._triggerSemiCircle();
 					}
 					this._countNumber();
 				}.bind( this ), this.delay * 1000 );
@@ -89,6 +92,8 @@ var UABBNumber;
 					this._triggerCircle();
 				} else if( this.layout == 'bars' ){
 					this._triggerBar();
+				} else if( this.layout == 'semi-circle' ){
+						this._triggerSemiCircle();
 				}
 				this._countNumber();
 			}
@@ -98,10 +103,18 @@ var UABBNumber;
 
 			var $number = $( this.wrapperClass ).find( '.uabb-number-string' ),
 				$string = $number.find( '.uabb-number-int' ),
+				$counter_number = this.number;
 				current = 0;
-			
+
+			if( Number.isInteger( $counter_number ) ) {
+				var digits = 0;
+			} else {
+				var digits = $counter_number.toString().split(".")[1].length;
+			}
 			if ( ! $number.hasClass( 'uabb-number-animated') ) {
 
+	        	var $numFormat = this.numberFormat;
+    			var $locale = this.locale.replace(/_/,'-');
 
 			    $string.prop( 'Counter',0 ).animate({
 			        Counter: this.number
@@ -109,7 +122,15 @@ var UABBNumber;
 			        duration: this.speed,
 			        easing: 'swing',
 			        step: function ( now ) {
-			            $string.text( UABBNumber.addCommas( Math.ceil( now ) ) );
+
+			        	if($numFormat == 'locale') {
+			        		var $counter = now.toLocaleString($locale, { minimumFractionDigits: digits, maximumFractionDigits:digits });
+			        	} else if($numFormat == 'none') {
+			        		var $counter = now.toFixed(digits);
+			        	} else {
+			        		var $counter = UABBNumber.addCommas( now.toFixed(digits) );
+			        	}
+		            	$string.text( $counter );
 			        }
 			    });
 			    $number.addClass('uabb-number-animated');
@@ -143,6 +164,32 @@ var UABBNumber;
 			
 		},
 
+		_triggerSemiCircle: function(){
+
+			var $bar   = $( this.wrapperClass ).find( '.uabb-bar' ),
+				r      = $bar.attr('r'),
+				circle = Math.PI*(r*2)/2,
+				val    = this.number,
+				max    = this.type == 'percent' ? 100 : this.max;
+
+			if (val < 0) { val = 0;}
+			if (val > max) { val = max;}
+			
+			if( this.type == 'percent' ){
+				var pct = ( ( 100 - val ) /100) * circle;			
+			} else {
+				var pct = ( 1 - ( val / max ) ) * circle;
+			}
+
+		    $bar.animate({
+		        strokeDashoffset: pct
+		    }, {
+		        duration: this.speed,
+		        easing: 'swing'
+		    });
+			
+		},
+
 		_triggerBar: function(){
 
 			var $bar = $( this.wrapperClass ).find( '.uabb-number-bar' );
@@ -150,7 +197,7 @@ var UABBNumber;
 			if( this.type == 'percent' ){
 				var number = this.number > 100 ? 100 : this.number;
 			} else {
-				var number = Math.ceil( ( this.number / this.max ) * 100 );
+				var number = ( ( this.number / this.max ) * 100 );
 			}
 
 		    $bar.animate({

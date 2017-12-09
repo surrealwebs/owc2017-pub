@@ -24,12 +24,14 @@ class UABBPhotoModule extends FLBuilderModule {
 		parent::__construct(array(
 			'name'          	=> __('Photo', 'uabb'),
 			'description'   	=> __('Upload a photo or display one from the media library.', 'uabb'),
-			'category'      	=> UABB_CAT,
+			'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$content_modules ),
+            'group'         => UABB_CAT,
 			'dir'           	=> BB_ULTIMATE_ADDON_DIR . 'modules/uabb-photo/',
             'url'           	=> BB_ULTIMATE_ADDON_URL . 'modules/uabb-photo/',
 			'partial_refresh'	=> true,
 			'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+			'icon'				=> 'format-image.svg',
 		));
 	}
 
@@ -374,7 +376,7 @@ class UABBPhotoModule extends FLBuilderModule {
 			
 			$pathinfo    = pathinfo($url);
 			$dir         = $pathinfo['dirname'];
-			$ext         = $pathinfo['extension'];
+			$ext         = isset( $pathinfo['extension'] ) ? $pathinfo['extension'] :'';
 			$name        = wp_basename($url, ".$ext");
 			$new_ext     = strtolower($ext);
 			$filename    = "{$name}-{$crop}.{$new_ext}";
@@ -449,12 +451,19 @@ FLBuilder::register_module('UABBPhotoModule', array(
 						'type'          => 'photo',
 						'label'         => __('Photo', 'uabb'),
 						'show_remove'	=> true,
+						'connections'	=> array( 'photo' ),
 					),
 					'photo_size'         => array(
 						'type'          => 'text',
 						'label'         => __('Photo Size', 'uabb'),
 						'description'	=> 'px',
-						'size'			=> '8'
+						'size'			=> '8',
+						'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-photo-content img',
+                            'property'      => 'width',
+                            'unit'			=> 'px',
+                        )
 					),
 					'photo_url'     => array(
 						'type'          => 'text',
@@ -469,7 +478,12 @@ FLBuilder::register_module('UABBPhotoModule', array(
 							'left'          => __('Left', 'uabb'),
 							'center'        => __('Center', 'uabb'),
 							'right'         => __('Right', 'uabb')
-						)
+						),
+						'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-photo',
+                            'property'  => 'text-align',
+                        )
 					),
 					'responsive_align'         => array(
 						'type'          => 'select',
@@ -499,7 +513,11 @@ FLBuilder::register_module('UABBPhotoModule', array(
 					),
 					'caption'       => array(
 						'type'          => 'text',
-						'label'         => __('Caption', 'uabb')
+						'label'         => __('Caption', 'uabb'),
+						'preview'         => array(
+                            'type'          => 'text',
+                            'selector'      => '.uabb-photo-caption',
+                        )
 					)
 				)
 			),
@@ -603,7 +621,13 @@ FLBuilder::register_module('UABBPhotoModule', array(
                         'help'          => __('Space between icon and background','uabb'),
                         'maxlength'     => '3',
                         'size'          => '4',
-                        'description'   => 'px'
+                        'description'   => 'px',
+                        'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-photo .uabb-photo-content',
+                            'property'  => 'padding',
+                            'unit'		=> 'px'
+                        )
                     ),
 
                     'style_bg_color'    => array( 
@@ -611,6 +635,11 @@ FLBuilder::register_module('UABBPhotoModule', array(
                         'label'      => __('Background Color', 'uabb'),
 						'default'    => '',
 						'show_reset' => true,
+						'preview'  => array(
+                            'type'      => 'css',
+                            'selector'  => '.uabb-photo .uabb-photo-content',
+                            'property'  => 'background-color',
+                        )
 					),
                     'style_bg_color_opc'    => array( 
 						'type'        => 'text',

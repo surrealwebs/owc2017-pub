@@ -15,11 +15,13 @@ class CreativeLink extends FLBuilderModule {
         parent::__construct(array(
             'name'          => __('Creative Link', 'uabb'),
             'description'   => __('Creative Link', 'uabb'),
-            'category'		=> UABB_CAT,
+            'category'      => BB_Ultimate_Addon_Helper::module_cat( BB_Ultimate_Addon_Helper::$creative_modules ),
+            'group'         => UABB_CAT,
             'dir'           => BB_ULTIMATE_ADDON_DIR . 'modules/creative-link/',
             'url'           => BB_ULTIMATE_ADDON_URL . 'modules/creative-link/',
             'editor_export' => true, // Defaults to true and can be omitted.
             'enabled'       => true, // Defaults to true and can be omitted.
+            'partial_refresh' => true
         ));
     }
 
@@ -201,6 +203,11 @@ FLBuilder::register_module('CreativeLink', array(
                             'right'          => __('Right', 'uabb'),
                             'center'          => __( 'Center', 'uabb' ),
                         ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-cl-wrap .uabb-cl-ul',
+                            'property'      => 'text-align',
+                        )
                     ),
                     'spacing'    => array(
                         'type'          => 'text',
@@ -217,6 +224,12 @@ FLBuilder::register_module('CreativeLink', array(
                         'size'          => '8',
                         'description'   => 'px',
                         'help'          => __( 'Controls the bottom margin of each link. This setting is useful when links are distributed in more than one row for medium / small width devices. ', 'uabb' ),
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-cl-wrap .uabb-cl-ul li',
+                            'property'      => 'margin-bottom',
+                            'unit'          => 'px'
+                        )
                     ),
 
                     'mobile_structure' => array(
@@ -246,18 +259,31 @@ FLBuilder::register_module('CreativeLink', array(
                         'label'      => __('Link Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-cl-wrap .uabb-creative-link a',
+                            'property'      => 'color',
+                        )
                     ),
                     'link_hover_color' => array( 
                         'type'       => 'color',
                         'label'      => __('Link Hover Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'none',
+                        )
                     ),
                     'background_color' => array( 
                         'type'       => 'color',
                         'label'      => __('Background Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'          => 'css',
+                            'selector'      => '.uabb-cl-wrap .uabb-creative-link a',
+                            'property'      => 'background',
+                        )
                     ),
                     
                     'background_hover_color' => array( 
@@ -265,6 +291,9 @@ FLBuilder::register_module('CreativeLink', array(
                         'label'      => __('Background Hover Color', 'uabb'),
                         'default'    => '',
                         'show_reset' => true,
+                        'preview'         => array(
+                            'type'            => 'none',
+                        )
                     ),
                 )
             ),
@@ -350,6 +379,12 @@ FLBuilder::register_module('CreativeLink', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-creative-link a, .uabb-creative-link a span',
+                            'property'        => 'font-size',
+                            'unit'            => 'px'
+                        )
                     ),
                     'link_typography_line_height'    => array(
                         'type'          => 'uabb-simplify',
@@ -359,6 +394,12 @@ FLBuilder::register_module('CreativeLink', array(
                             'medium'        => '',
                             'small'         => '',
                         ),
+                        'preview'         => array(
+                            'type'            => 'css',
+                            'selector'        => '.uabb-creative-link a, .uabb-creative-link a span',
+                            'property'        => 'line-height',
+                            'unit'            => 'px'
+                        )
                     ),
                 )
             ),
@@ -378,12 +419,14 @@ FLBuilder::register_settings_form('screens_form', array(
                         'title'         => array(
                             'type'          => 'text',
                             'label'         => __('Title', 'uabb'),
-                            'default'         => __('Let\'s do this!', 'uabb'),
+                            'default'       => __('Let\'s do this!', 'uabb'),
+                            'connections'   => array( 'string', 'html' )
                         ),
                         'link'          => array(
                             'type'          => 'link',
                             'label'         => __('Link', 'uabb'),
                             'placeholder'   => 'http://www.example.com',
+                            'connections'   => array( 'url' )
                         ),
                         'target' => array(
                             'type'          => 'select',
