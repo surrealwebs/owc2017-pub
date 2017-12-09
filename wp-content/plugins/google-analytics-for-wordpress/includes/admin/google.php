@@ -183,7 +183,7 @@ final class MonsterInsights_GA {
 	private function get_notices() {
 		// Notice for no manual or profile GA
 		if ( $this->status === 'empty' ) {
-			add_action( 'admin_notices', array( $this, 'monsterinsights_show_admin_config_empty_notice' ) );
+			add_action( 'admin_notices', array( $this, 'monsterinsights_show_admin_config_empty_notice' ),6 );
 		}
 
 		$current_page = filter_input( INPUT_GET, 'page' );
@@ -196,17 +196,17 @@ final class MonsterInsights_GA {
 		
 			// Notice for GA Access token expired (needs re-authenticate)
 			if ( $this->status === 'expired' ) {
-				add_action( 'admin_notices', array( $this, 'monsterinsights_show_admin_config_expired_notice' ) );
+				add_action( 'admin_notices', array( $this, 'monsterinsights_show_admin_config_expired_notice' ),6 );
 			}
 			
 			// Notice for Needs Permissions
 			if ( $this->status === 'needs-permissions' ) {
-				add_action( 'admin_notices', array( $this, 'monsterinsights_show_admin_config_needs_permissions_notice' ) );
+				add_action( 'admin_notices', array( $this, 'monsterinsights_show_admin_config_needs_permissions_notice' ),6 );
 			}
 
 			// Notice for trouble connecting to Google
 			if ( $this->status === 'blocked' ) {
-				add_action( 'admin_notices', array( $this, 'monsterinsights_show_admin_config_blocked_notice' ) );
+				add_action( 'admin_notices', array( $this, 'monsterinsights_show_admin_config_blocked_notice' ),6 );
 			}
 		}
 	}
@@ -331,7 +331,50 @@ final class MonsterInsights_GA {
 						if ( isset( $item['type'] ) && 'WEB' != $item['type'] ) {
 							continue;
 						}
-						
+
+						/**
+						 * Future:
+						* // Accounts
+						* 	// Properties
+						* 		// Views
+						* $items = array(
+						* 	{account_id} => array(
+						* 		{property_id} => array(
+						* 			{view_id} => array( 
+						* 				'account_id'  => '',
+						* 				'property_id' => '',
+						* 				'view_id'	  => '',
+						* 				'url'		  => '',
+						* 				'view_name'	  => '',
+						* 				'ua_code'	  => '',
+						* 			),
+						* 		),
+						* 	),
+						* ),
+						**/
+						/*
+						CurrenT:
+						$accounts[ $item['accountId'] ] = array( 
+							'id'          => $item['accountId'],
+							'ua_code'     => $item['webPropertyId'],
+							'parent_name' => $item['websiteUrl'],
+							'items'       => array(
+								[ $item['internalWebPropertyId'] ]= array( 
+									'id'          => $item['webPropertyId'],
+									'name'        => $item['websiteUrl'],
+									'items'       => array(
+										[ $item['id'] ] = array( 
+											'name'    => $item['name'] . ' (' . $item['webPropertyId'] . ')',
+											'ua_code' => $item['webPropertyId'],
+											'id'      => $item['id'],
+										);
+									),
+								);
+							),
+						);
+						*/
+
+
 						if ( empty( $accounts[ $item['accountId'] ] ) ) {
 							$accounts[ $item['accountId'] ] = array( 
 								'id'          => $item['accountId'],
@@ -627,11 +670,15 @@ final class MonsterInsights_GA {
 		if ( empty( $profiles ) || ! is_array( $profiles ) ) { 
 			$profiles = $this->get_profiles();
 		}
-
+		
 		$optgroups = array();
 		foreach ( $profiles as $key => $value ) {
 			foreach ( $value['items'] as $subitem ) {
-				$optgroups[ $subitem['name'] ]['items'] = $subitem['items'];
+				if ( empty( $optgroups[ $subitem['name'] ]['items'] ) ) {
+					$optgroups[ $subitem['name'] ]['items'] = $subitem['items'];
+				} else {
+					$optgroups[ $subitem['name'] ]['items'] = array_merge( $optgroups[ $subitem['name'] ]['items'], $subitem['items'] );
+				}
 			}
 		}
 
@@ -747,6 +794,10 @@ final class MonsterInsights_GA {
 		$screen = get_current_screen(); 
 		if ( empty( $screen->id ) || strpos( $screen->id, 'monsterinsights' ) !== false ) {
 			return;
+		}
+		
+		if ( ! defined( 'MONSTERINSIGHTS_SHOWING_EMPTY_CONFIG_NOTICE' ) ) {
+			define( 'MONSTERINSIGHTS_SHOWING_EMPTY_CONFIG_NOTICE', true );
 		}
 		echo '<div class="error"><p>' . 
 			sprintf( esc_html__( 'Please configure your %1$sGoogle Analytics settings%2$s!', 'google-analytics-for-wordpress' ),
