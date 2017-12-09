@@ -23,7 +23,7 @@
 	foreach($_REQUEST as $name => $value)
 	{
 		// Create our associative array
-		$fields[$name] = $value;
+		$fields[$name] = sanitize_text_field($value);
 
 		// If we see a special field flag this as an ARB transaction
 		if($name == 'x_subscription_id')
@@ -146,7 +146,7 @@
 		{
 			//response 4? send an email to the admin
 			$pmproemail = new PMProEmail();
-			$pmproemail->data = array("body"=>__("<p>A payment is being held for review within Authorize.net.</p><p>Payment Information From Authorize.net", "pmpro") . ":<br />" . nl2br(var_export($fields, true)));
+			$pmproemail->data = array("body"=>__("<p>A payment is being held for review within Authorize.net.</p><p>Payment Information From Authorize.net", 'paid-memberships-pro' ) . ":<br />" . nl2br(var_export($fields, true)));
 			$pmproemail->sendEmail(get_bloginfo("admin_email"));
 		}
 	}

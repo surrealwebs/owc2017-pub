@@ -33,7 +33,7 @@ function pmpro_membership_level_profile_fields($user)
 	if(!$levels)
 		return "";
 ?>
-<h3><?php _e("Membership Level", "pmpro"); ?></h3>
+<h3><?php _e("Membership Level", 'paid-memberships-pro' ); ?></h3>
 <table class="form-table">
     <?php
 		$show_membership_level = true;
@@ -42,10 +42,10 @@ function pmpro_membership_level_profile_fields($user)
 		{
 		?>
 		<tr>
-			<th><label for="membership_level"><?php _e("Current Level", "pmpro"); ?></label></th>
+			<th><label for="membership_level"><?php _e("Current Level", 'paid-memberships-pro' ); ?></label></th>
 			<td>
 				<select name="membership_level">
-					<option value="" <?php if(empty($user->membership_level->ID)) { ?>selected="selected"<?php } ?>>-- <?php _e("None", "pmpro");?> --</option>
+					<option value="" <?php if(empty($user->membership_level->ID)) { ?>selected="selected"<?php } ?>>-- <?php _e("None", 'paid-memberships-pro' );?> --</option>
 				<?php
 					foreach($levels as $level)
 					{
@@ -71,7 +71,7 @@ function pmpro_membership_level_profile_fields($user)
 					if(!empty($membership_values->original_initial_payment) && $membership_values->original_initial_payment > 0)
 						echo "Paid " . pmpro_formatPrice($membership_values->original_initial_payment) . ".";
 					else
-						_e('Not paying.', 'pmpro');					
+						_e('Not paying.', 'paid-memberships-pro' );					
 				}                
 				else
                 {                    
@@ -79,7 +79,7 @@ function pmpro_membership_level_profile_fields($user)
                 }
                 ?>
                 </span>
-                <p id="cancel_description" class="description hidden"><?php _e("This will not change the subscription at the gateway unless the 'Cancel' checkbox is selected below.", "pmpro"); ?></p>
+                <p id="cancel_description" class="description hidden"><?php _e("This will not change the subscription at the gateway unless the 'Cancel' checkbox is selected below.", 'paid-memberships-pro' ); ?></p>
             </td>
 		</tr>
 		<?php
@@ -119,11 +119,11 @@ function pmpro_membership_level_profile_fields($user)
 				$selected_expires_year = (int)$current_year + 1;
 		?>
 		<tr>
-			<th><label for="expiration"><?php _e("Expires", "pmpro"); ?></label></th>
+			<th><label for="expiration"><?php _e("Expires", 'paid-memberships-pro' ); ?></label></th>
 			<td>
 				<select id="expires" name="expires">
-					<option value="0" <?php if(!$end_date) { ?>selected="selected"<?php } ?>><?php _e("No", "pmpro");?></option>
-					<option value="1" <?php if($end_date) { ?>selected="selected"<?php } ?>><?php _e("Yes", "pmpro");?></option>
+					<option value="0" <?php if(!$end_date) { ?>selected="selected"<?php } ?>><?php _e("No", 'paid-memberships-pro' );?></option>
+					<option value="1" <?php if($end_date) { ?>selected="selected"<?php } ?>><?php _e("Yes", 'paid-memberships-pro' );?></option>
 				</select>
 				<span id="expires_date" <?php if(!$end_date) { ?>style="display: none;"<?php } ?>>
 					on
@@ -153,13 +153,13 @@ function pmpro_membership_level_profile_fields($user)
         <tr class="more_level_options">
             <th></th>
             <td>
-                <label for="send_admin_change_email"><input value="1" id="send_admin_change_email" name="send_admin_change_email" type="checkbox"> Send the user an email about this change.</label>
+                <label for="send_admin_change_email"><input value="1" id="send_admin_change_email" name="send_admin_change_email" type="checkbox"> <?php _e( 'Send the user an email about this change.', 'paid-memberships-pro' ); ?></label>
             </td>
         </tr>
         <tr class="more_level_options">
             <th></th>
             <td>
-                <label for="cancel_subscription"><input value="1" id="cancel_subscription" name="cancel_subscription" type="checkbox"> Cancel this user's subscription at the gateway.</label>
+                <label for="cancel_subscription"><input value="1" id="cancel_subscription" name="cancel_subscription" type="checkbox"> <?php _e("Cancel this user's subscription at the gateway.", "paid-memberships-pro" ); ?></label>
             </td>
         </tr>
 		<?php
@@ -192,7 +192,7 @@ function pmpro_membership_level_profile_fields($user)
 				//cancelling sub or not
 				if($membership_level_select.val() == 0) {
                     jQuery("#cancel_subscription").attr('checked', true);
-                    jQuery("#current_level_cost").text("Not paying.");
+                    jQuery("#current_level_cost").text('<?php _e("Not paying.", "paid-memberships-pro" ); ?>');
                 }
                 else {
                     jQuery("#cancel_subscription").attr('checked', false);
@@ -239,7 +239,7 @@ function pmpro_membership_level_profile_fields($user)
                 if(jQuery(this).attr('checked') == 'checked')
                 {
                     jQuery("#cancel_description").hide();
-                    jQuery("#current_level_cost").text("Not paying.");
+                    jQuery("#current_level_cost").text('<?php _e("Not paying.", "paid-memberships-pro" ); ?>');
                 }
                 else
                 {

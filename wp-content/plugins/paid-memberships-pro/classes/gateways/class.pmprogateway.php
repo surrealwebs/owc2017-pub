@@ -52,7 +52,7 @@
 				else
 				{
 					if(empty($order->error))
-						$order->error = __("Unknown error: Authorization failed.", "pmpro");
+						$order->error = __("Unknown error: Authorization failed.", 'paid-memberships-pro' );
 					return false;
 				}
 			}
@@ -90,7 +90,7 @@
 						else
 						{
 							//add a period to the start date to account for the initial payment
-							$order->ProfileStartDate = date_i18n("Y-m-d", strtotime("+ " . $this->BillingFrequency . " " . $this->BillingPeriod, current_time("timestamp"))) . "T0:0:0";
+							$order->ProfileStartDate = date_i18n("Y-m-d", strtotime("+ " . $order->BillingFrequency . " " . $order->BillingPeriod, current_time("timestamp"))) . "T0:0:0";
 						}
 						
 						$order->ProfileStartDate = apply_filters("pmpro_profile_start_date", $order->ProfileStartDate, $order);
@@ -103,14 +103,14 @@
 							if($this->void($order))
 							{
 								if(!$order->error)
-									$order->error = __("Unknown error: Payment failed.", "pmpro");
+									$order->error = __("Unknown error: Payment failed.", 'paid-memberships-pro' );
 							}
 							else
 							{
 								if(!$order->error)
-									$order->error = __("Unknown error: Payment failed.", "pmpro");
+									$order->error = __("Unknown error: Payment failed.", 'paid-memberships-pro' );
 								
-								$order->error .= " " . __("A partial payment was made that we could not void. Please contact the site owner immediately to correct this.", "pmpro");
+								$order->error .= " " . __("A partial payment was made that we could not void. Please contact the site owner immediately to correct this.", 'paid-memberships-pro' );
 							}
 							
 							return false;								
@@ -126,7 +126,7 @@
 				else
 				{
 					if(empty($order->error))
-						$order->error = __("Unknown error: Payment failed.", "pmpro");
+						$order->error = __("Unknown error: Payment failed.", 'paid-memberships-pro' );
 					
 					return false;
 				}	

@@ -46,7 +46,7 @@
 		static function pmpro_gateways($gateways)
 		{
 			if(empty($gateways['check']))
-				$gateways['check'] = __('Pay by Check', 'pmpro');
+				$gateways['check'] = __('Pay by Check', 'paid-memberships-pro' );
 		
 			return $gateways;
 		}
@@ -98,16 +98,16 @@
 		?>
 		<tr class="pmpro_settings_divider gateway gateway_check" <?php if($gateway != "check") { ?>style="display: none;"<?php } ?>>
 			<td colspan="2">
-				<?php _e('Pay by Check Settings', 'pmpro'); ?>
+				<?php _e('Pay by Check Settings', 'paid-memberships-pro' ); ?>
 			</td>
 		</tr>
 		<tr class="gateway gateway_check" <?php if($gateway != "check") { ?>style="display: none;"<?php } ?>>
 			<th scope="row" valign="top">
-				<label for="instructions"><?php _e('Instructions', 'pmpro');?></label>					
+				<label for="instructions"><?php _e('Instructions', 'paid-memberships-pro' );?></label>					
 			</th>
 			<td>
-				<textarea id="instructions" name="instructions" rows="3" cols="80"><?php echo esc_textarea($values['instructions'])?></textarea>
-				<p><small><?php _e('Who to write the check out to. Where to mail it. Shown on checkout, confirmation, and invoice pages.', 'pmpro');?></small></p>
+				<textarea id="instructions" name="instructions" rows="3" cols="80"><?php echo wpautop(  wp_unslash( $values['instructions'] ) ); ?></textarea>
+				<p><small><?php _e('Who to write the check out to. Where to mail it. Shown on checkout, confirmation, and invoice pages.', 'paid-memberships-pro' );?></small></p>
 			</td>
 		</tr>	
 		<?php
@@ -149,7 +149,7 @@
 
 			if($gateway == "check" && !pmpro_isLevelFree($pmpro_level)) {
 				$instructions = pmpro_getOption("instructions");
-				echo '<div class="pmpro_check_instructions">' . wpautop($instructions) . '</div>';
+				echo '<div class="pmpro_check_instructions">' . wpautop(wp_unslash( $instructions )) . '</div>';
 			}
 		}
 
@@ -207,7 +207,7 @@
 				else
 				{
 					if(empty($order->error))
-						$order->error = __("Unknown error: Authorization failed.", "pmpro");
+						$order->error = __("Unknown error: Authorization failed.", 'paid-memberships-pro' );
 					return false;
 				}
 			}
@@ -245,7 +245,7 @@
 						else
 						{
 							//add a period to the start date to account for the initial payment
-							$order->ProfileStartDate = date_i18n("Y-m-d", strtotime("+ " . $this->BillingFrequency . " " . $this->BillingPeriod, current_time("timestamp"))) . "T0:0:0";
+							$order->ProfileStartDate = date_i18n("Y-m-d", strtotime("+ " . $order->BillingFrequency . " " . $order->BillingPeriod, current_time("timestamp"))) . "T0:0:0";
 						}
 						
 						$order->ProfileStartDate = apply_filters("pmpro_profile_start_date", $order->ProfileStartDate, $order);
@@ -259,14 +259,14 @@
 							if($this->void($order))
 							{
 								if(!$order->error)
-									$order->error = __("Unknown error: Payment failed.", "pmpro");
+									$order->error = __("Unknown error: Payment failed.", 'paid-memberships-pro' );
 							}
 							else
 							{
 								if(!$order->error)
-									$order->error = __("Unknown error: Payment failed.", "pmpro");
+									$order->error = __("Unknown error: Payment failed.", 'paid-memberships-pro' );
 								
-								$order->error .= " " . __("A partial payment was made that we could not void. Please contact the site owner immediately to correct this.", "pmpro");
+								$order->error .= " " . __("A partial payment was made that we could not void. Please contact the site owner immediately to correct this.", 'paid-memberships-pro' );
 							}
 							
 							return false;								
@@ -282,7 +282,7 @@
 				else
 				{
 					if(empty($order->error))
-						$order->error = __("Unknown error: Payment failed.", "pmpro");
+						$order->error = __("Unknown error: Payment failed.", 'paid-memberships-pro' );
 					
 					return false;
 				}	
