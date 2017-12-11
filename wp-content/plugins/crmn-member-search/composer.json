@@ -1,0 +1,43 @@
+{
+	"name": "nerdery/nrd-custom-builder-modules",
+	"description": "Nerdery Custom Builder Modules",
+	"keywords": [
+		"wordpress"
+	],
+	"homepage": "https://www.nerdery.com",
+	"license": "GPL-2.0+",
+	"authors": [
+		{
+			"name": "The Nerdery",
+			"email": "raber@nerdery.com",
+			"homepage": "https://www.nerdery.com"
+		}
+	],
+	"type": "wordpress-plugin",
+	"require": {
+		"xrstf/composer-php52": "^1.0.20"
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"autoload": {
+		"classmap": [
+			"src/"
+		],
+		"exclude-from-classmap": [
+			"index.php",
+			"test/",
+			"tests/"
+		]
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"xrstf\\Composer52\\Generator::onPostInstallCmd"
+		],
+		"post-update-cmd": [
+			"xrstf\\Composer52\\Generator::onPostInstallCmd"
+		],
+		"post-autoload-dump": [
+			"xrstf\\Composer52\\Generator::onPostInstallCmd"
+		]
+	}
+}
