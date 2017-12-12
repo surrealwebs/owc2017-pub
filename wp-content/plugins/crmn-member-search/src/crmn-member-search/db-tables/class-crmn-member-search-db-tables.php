@@ -117,24 +117,34 @@ class CRMN_Member_Search_DB_Tables {
 		 * NOTE: dbDelta is VERY FINICKY when creating or updating tables, make sure you read the docs thoroughly.
 		 *
 		 * The table fields are defined as follows...
-		 * +-----------------+---------------------+------+-----+---------+----------------+
-		 * | Field           | Type                | Null | Key | Default | Extra          |
-		 * +-----------------+---------------------+------+-----+---------+----------------+
-		 * | geo_id          | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
-		 * | geo_object_id   | bigint(20) unsigned | NO   | MUL | 0       |                |
-		 * | geo_latitude    | decimal(9,6)        | YES  | MUL | NULL    |                |
-		 * | geo_longitude   | decimal(9,6)        | YES  | MUL | NULL    |                |
-		 * | geo_object_type | varchar(20)         | NO   | MUL | WP_Post |                |
-		 * | geo_public      | tinyint(1)          | YES  |     | NULL    |                |
-		 * | geo_address     | text                | NO   |     | NULL    |                |
-		 * +-----------------+---------------------+------+-----+---------+----------------+
+		 * +--------------------------------+---------------------+------+-----+---------+----------------+
+		 * | Field                          | Type                | Null | Key | Default | Extra          |
+		 * +--------------------------------+---------------------+------+-----+---------+----------------+
+		 * | geo_id                         | bigint(20) unsigned | NO   | PRI | NULL    | auto_increment |
+		 * | geo_object_id                  | bigint(20) unsigned | NO   | MUL | 0       |                |
+		 * | geo_latitude                   | decimal(9,6)        | YES  | MUL | NULL    |                |
+		 * | geo_longitude                  | decimal(9,6)        | YES  | MUL | NULL    |                |
+		 * | geo_object_type                | varchar(20)         | NO   | MUL | WP_Post |                |
+		 * | geo_public                     | tinyint(1)          | YES  |     | NULL    |                |
+		 * | geo_address                    | text                | NO   |     | NULL    |                |
+		 * | is_member_of_acr_international | tinyint(1)          | NO   |     | 0       |                |
+		 * | is_rule_114_qualified_neutral  | tinyint(1)          | NO   |     | 0       |                |
+		 * | ever_had_license_revoked       | tinyint(1)          | NO   |     | 0       |                |
+		 * | services_provided              | text                | NO   |     | NULL    |                |
+		 * | general_adr_matters            | text                | NO   |     | NULL    |                |
+		 * | detailed_adr_matters           | text                | NO   |     | NULL    |                |
+		 * | additional_languages_spoken    | text                | NO   |     | NULL    |                |
+		 * | first_name                     | text                | NO   |     | NULL    |                |
+		 * | last_name                      | text                | NO   |     | NULL    |                |
+		 * | company                        | text                | NO   |     | NULL    |                |
+		 * +--------------------------------+---------------------+------+-----+---------+----------------+
 		 *
 		 * The inserted data would look something like this in the database:
-		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+
-		 * | geo_id | geo_object_id | geo_latitude | geo_longitude | geo_object_type | geo_public | geo_address       |
-		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+
-		 * |      1 |             2 |    44.830853 |    -93.299872 | WP_User         |          1 | 9555 James Ave... |
-		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+
+		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+--------------------------------+-------------------------------+--------------------------+-------------------+---------------------+----------------------+-----------------------------+------------+-----------+---------+
+		 * | geo_id | geo_object_id | geo_latitude | geo_longitude | geo_object_type | geo_public | geo_address       | is_member_of_acr_international | is_rule_114_qualified_neutral | ever_had_license_revoked | services_provided | general_adr_matters | detailed_adr_matters | additional_languages_spoken | first_name | last_name | company |
+		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+--------------------------------+-------------------------------+--------------------------+-------------------+---------------------+----------------------+-----------------------------+------------+-----------+---------+
+		 * |      1 |             2 |    44.830853 |    -93.299872 | WP_User         |          1 | 9555 James Ave... |                              1 |                             1 |                        1 |         Mediation | Business to Bus...  | ADR Training, Cir... | Chinese, Russian            | Richard    | Richards  | Nerdery |
+		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+--------------------------------+-------------------------------+--------------------------+-------------------+---------------------+----------------------+-----------------------------+------------+-----------+---------+
 		 *
 		 * Where,
 		 * geo_id is simply an auto-incrementing primary key,
@@ -149,18 +159,38 @@ class CRMN_Member_Search_DB_Tables {
 		 * @var string $sql
 		 */
 		$sql = "CREATE TABLE IF NOT EXISTS {$table_name} (
-	        geo_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-	        geo_object_id bigint(20) unsigned NOT NULL DEFAULT '0',
-	        geo_latitude DECIMAL(9,6) NULL,
-	        geo_longitude DECIMAL(9,6) NULL,
-	        geo_object_type varchar(20) NOT NULL DEFAULT 'WP_Post',
-	        geo_public tinyint(1) DEFAULT NULL,
-	        geo_address text NOT NULL,
+			geo_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			geo_object_id bigint(20) unsigned NOT NULL DEFAULT '0',
+			geo_latitude DECIMAL(9,6) NULL,
+			geo_longitude DECIMAL(9,6) NULL,
+			geo_object_type varchar(20) NOT NULL DEFAULT 'WP_Post',
+			geo_public tinyint(1) DEFAULT NULL,
+			geo_address text NOT NULL,
+			is_member_of_acr_international tinyint(1) DEFAULT 0,
+			is_rule_114_qualified_neutral tinyint(1) DEFAULT 0,
+			ever_had_license_revoked tinyint(1) DEFAULT 0,
+			services_provided varchar(255),
+			general_adr_matters varchar(255),
+			detailed_adr_matters varchar(255),
+			additional_languages_spoken varchar(255),
+			first_name varchar(255) not null,
+			last_name varchar(255) not null,
+			company varchar(255),
 			PRIMARY KEY  (geo_id),
 			KEY geo_object_id (geo_object_id),
 			KEY geo_object_type (geo_object_type),
 			KEY geo_latitude (geo_latitude),
-			KEY geo_longitude (geo_longitude)
+			KEY geo_longitude (geo_longitude),
+			INDEX idx_is_member_of_acr_international (is_member_of_acr_international),
+			INDEX idx_is_rule_114_qualified_neutral (is_rule_114_qualified_neutral),
+			INDEX idx_ever_had_license_revoked (ever_had_license_revoked),
+			INDEX idx_services_provided (services_provided),
+			INDEX idx_general_adr_matters (general_adr_matters),
+			INDEX idx_detailed_adr_matters (detailed_adr_matters),
+			INDEX idx_additional_languages_spoken (additional_languages_spoken),
+			INDEX idx_first_name (first_name),
+			INDEX idx_last_name (last_name),
+			INDEX idx_company (company)
 		) {$charset_collate};";
 
 		/**

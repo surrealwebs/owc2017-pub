@@ -145,27 +145,28 @@ class CRMN_Custom_My_Account_Endpoint {
             information up to date, site visitors will be able to search for you 
             based on data provided in this section.</p>';
 
-    $mypod = pods('user', get_current_user_id());
+    $mypod = pods( 'user', get_current_user_id() );
 
     $podFields = $mypod->fields();
 
     ob_start();
 
-    echo '<a href="' . esc_url( wc_get_endpoint_url( self::$edit_endpoint) ) . '" class="edit">' . __( 'Edit profile data.', 'woocommerce' ) . '</a>';
+    echo '<a href="' . esc_url( wc_get_endpoint_url( self::$edit_endpoint ) ) . '" class="edit">' . __( 'Edit profile data.', 'woocommerce' ) . '</a>';
 
     echo '<div class="pods-form-front"><ul class="pods-form-fields">';
 
-    foreach (self::$display_fields as $field) {
+    foreach ( self::$display_fields as $field ) {
 
-      $label = (!empty($podFields[$field]['label'])?$podFields[$field]['label']:'');
-      $data  = get_user_meta(get_current_user_id(), $field);
+      $label = ( ! empty( $podFields[ $field ]['label'] ) ? $podFields[ $field ]['label'] : '' );
+      $data  = get_user_meta( get_current_user_id(), $field );
 
       echo '<li class="pods-field">
-                <div class="pods-field-label pods-data"><label>' . __($label, 'crmn') . '</label></div>
+                <div class="pods-field-label pods-data"><label>' . __( $label, 'crmn' ) . '</label></div>
                 <div class="pods-field-input pods-data">';
 
-      $this->display_data_value_for_type($data, $podFields[$field]['type']);
-
+      if ( ! empty( $podFields[ $field ] ) ) {
+	      $this->display_data_value_for_type( $data, $podFields[ $field ]['type'] );
+      }
       echo '</div>
             </li>';
 
@@ -185,8 +186,8 @@ class CRMN_Custom_My_Account_Endpoint {
 
     echo '<p>Additional membership profile information. Please keep this information up to date so users can find your in the directory.</p>';
 
-    $mypod = pods('user', get_current_user_id());
-    echo $mypod->form(self::$display_fields, null, '/my-account/additional-profile-info/');
+    $mypod = pods( 'user', get_current_user_id() );
+    echo $mypod->form( self::$display_fields, null, '/my-account/additional-profile-info/' );
   }
 
   /**

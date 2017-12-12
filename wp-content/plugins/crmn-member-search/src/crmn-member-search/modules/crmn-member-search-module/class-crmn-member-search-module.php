@@ -112,17 +112,19 @@ class CRMN_Member_Search_Module extends FLBuilderModule {
 		 * @var array $definition
 		 */
 		$definition = array(
-			'first-name'              => FILTER_SANITIZE_STRING,
-			'last-name'               => FILTER_SANITIZE_STRING,
-			'company'                 => FILTER_SANITIZE_STRING,
-			'services-provided'       => FILTER_SANITIZE_STRING,
-			'areas-of-expertise'      => FILTER_SANITIZE_STRING,
-			'additional-languages'    => FILTER_SANITIZE_STRING,
-			'search-center'           => FILTER_SANITIZE_STRING,
-			'search-radius'           => FILTER_SANITIZE_NUMBER_INT,
-			'crm-member-search'       => FILTER_SANITIZE_STRING,
-			'_wp_http_referer'        => FILTER_SANITIZE_STRING,
-			'submit-directory-search' => FILTER_SANITIZE_STRING,
+			'first_name'                     => FILTER_SANITIZE_STRING,
+			'last_name'                      => FILTER_SANITIZE_STRING,
+			'company'                        => FILTER_SANITIZE_STRING,
+			'services-provided'              => FILTER_SANITIZE_STRING,
+			'areas-of-expertise'             => FILTER_SANITIZE_STRING,
+			'additional_languages_spoken'    => FILTER_SANITIZE_STRING,
+			'search-center'                  => FILTER_SANITIZE_STRING,
+			'search-radius'                  => FILTER_SANITIZE_NUMBER_INT,
+			'is_member_of_acr_international' => FILTER_SANITIZE_NUMBER_INT,
+			'is_rule_114_qualified_neutral'  => FILTER_SANITIZE_NUMBER_INT,
+			'crm-member-search'              => FILTER_SANITIZE_STRING,
+			'_wp_http_referer'               => FILTER_SANITIZE_STRING,
+			'submit-directory-search'        => FILTER_SANITIZE_STRING,
 		);
 
 		/**
@@ -258,10 +260,11 @@ class CRMN_Member_Search_Module extends FLBuilderModule {
 	 * @param float  $search_lng The longitudinal coordinate for center of radius search.
 	 * @param int    $distance The numeric distance of the radius to search within. Optional, defaults to 5.
 	 * @param string $unit The distance unit, "mi" or "km". Optional, defaults to "mi".
+	 * @param array  $extra_query The additional query data to search.
 	 *
 	 * @return stdClass[]|array An array of stdClass database row objects on success.
 	 */
-	public static function get_geodata_radius_search( $search_lat, $search_lng, $distance = 5, $unit = 'mi' ) {
+	public static function get_geodata_radius_search( $search_lat, $search_lng, $distance = 5, $unit = 'mi', $extra_query = array() ) {
 
 		/**
 		 * Radius of the Earth.
@@ -281,13 +284,76 @@ class CRMN_Member_Search_Module extends FLBuilderModule {
 		 */
 		global $wpdb;
 
+		$query_data = array(
+			$radius,
+			$search_lat,
+			$search_lng,
+			$search_lat,
+		);
+
+		$allowed_fields = array(
+			'is_member_of_acr_international' => '%d',
+			'is_rule_114_qualified_neutral' => '%d',
+			'services_provided' => '%s',
+			'general_adr_matters' => '%s',
+			'detailed_adr_matters' => '%s',
+			'additional_languages_spoken' => '%s',
+		);
+
+		$extra_query = array(
+			'is_member_of_acr_international' => 1,
+			'is_rule_114_qualified_neutral' => 1,
+			'additional_languages_spoken' => 'chinese, russian, german',
+		);
+
+
+		$query_where = '';
+
+		/*
+		 * Pull data from extra_query, if any.
+		 *
+		 * Add any data to the query data and add teh field to the where clause.
+		 */
+		if ( ! empty( $extra_query ) ) {
+			$query_where .= ' WHERE ';
+			$connector_and = '';
+			foreach ( $allowed_fields as $field_name => $type ) {
+				if ( ! empty( $extra_query[ $field_name ] ) || 0 === $extra_query[ $field_name ] ) {
+					switch ( $type ) {
+						case '%s':
+							$parts = explode( ',', $extra_query[ $field_name ] );
+
+							if ( count( $parts ) == 1 ) {
+								$query_data[] = '%' . trim( $wpdb->esc_like( $extra_query[ $field_name ] ) ) . '%';
+								$query_where  .= $connector_and . ' `' . $field_name . '` LIKE ' . $type;
+							} else {
+								$query_where .= $connector_and . ' ( ';
+
+								$connector = '';
+								foreach ( $parts as $part ) {
+									$query_data[] = '%' . trim( $wpdb->esc_like( $part ) ) . '%';
+
+									$query_where .= $connector . '`' . $field_name . '` LIKE %s ';
+
+									$connector = ' OR ';
+								}
+
+								$query_where .= ' ) ';
+							}
+							break;
+						case '%d':
+							$query_data[] = $extra_query[ $field_name ];
+							$query_where  .= $connector_and . ' `' . $field_name . '` = ' . $type . ' ';
+							break;
+					}
+				}
+				$connector_and = ' AND ';
+			}
+		}
 		/**
 		 * IFNULL so that a distance of 0 is legit.
 		 */
-		return $wpdb->get_results(
-			$wpdb->prepare(
-				"
-				SELECT *,
+		$query_distance = "SELECT *,
 				IFNULL(
 					%f * acos(
 						cos( radians( %f ) )
@@ -298,16 +364,18 @@ class CRMN_Member_Search_Module extends FLBuilderModule {
 					), 0
 				)
 				AS distance
-				FROM $wpdb->geodata
-				HAVING distance <= %d
-				ORDER BY distance;
-				",
-				$radius,
-				$search_lat,
-				$search_lng,
-				$search_lat,
-				$distance
-			)
-		);
+				FROM {$wpdb->geodata} ";
+
+		// Distance has to be last.
+		$query_data[] = $distance;
+
+		$query_order = " GROUP BY geo_id HAVING distance <= %d ORDER BY distance ASC";
+
+		$query_full = $query_distance . $query_where . $query_order;
+
+		error_log( $query_full );
+		error_log( print_r( $query_data , true ) );
+
+		return $wpdb->get_results( $wpdb->prepare( $query_full , $query_data ) );
 	}
 }
