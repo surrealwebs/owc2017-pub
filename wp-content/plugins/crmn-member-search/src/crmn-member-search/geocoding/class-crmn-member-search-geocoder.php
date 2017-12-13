@@ -98,15 +98,24 @@ class CRMN_Member_Search_Geocoder {
 	 */
 	public function geocode_address( $address = '' ) {
 
+		// Attempt to get an address if one was not passed in.
+		$address = ( empty( $address ) ? $this->address : $address );
+
 		/**
 		 * Remove line breaks / carriage returns / multiple consecutive spaces, from address string.
 		 *
 		 * @var string $address
 		 */
-		if ( is_string( $address ) ) {
-			$this->address_string = trim( preg_replace( '/\s+/', ' ', $address ) );
-		} elseif ( is_array( $address ) ) {
-			$this->address_string = trim( preg_replace( '/\s+/', ' ', implode( ' ', $address ) ) );
+		if ( ! empty( $address ) ) {
+			if ( is_string( $address ) ) {
+				$this->address_string = trim( preg_replace( '/\s+/', ' ', $address ) );
+			} elseif ( is_array( $address ) ) {
+				$this->address_string = trim( preg_replace( '/\s+/', ' ', implode( ' ', $address ) ) );
+			}
+		}
+
+		if ( empty( $this->address_string ) ) {
+			error_log( 'GEOCODING ERROR: No Address specified.' . PHP_EOL );
 		}
 
 		/**
@@ -168,6 +177,7 @@ class CRMN_Member_Search_Geocoder {
 
 		/** API Lookup failed for some reason */
 		if ( is_wp_error( $this->response ) ) {
+			error_log( 'GEOCODING ERROR: Lookup Failed. Is the API key active?' . PHP_EOL );
 			return array();
 		}
 

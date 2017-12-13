@@ -38,6 +38,11 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 	protected $address_keys;
 
 	/**
+	 * @var array
+	 */
+	protected $user_search_data;
+
+	/**
 	 * CRMN_Member_Search_WP_User_Geocoder constructor.
 	 *
 	 * @param int    $user_id
@@ -48,6 +53,8 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 		parent::__construct();
 
 		$this->user_id = $user_id;
+
+		error_log( 'Do we still have a user_id: [' . $user_id . ']' . PHP_EOL );
 
 		if ( empty( $this->user_id ) ) {
 			return;
@@ -68,24 +75,31 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 	public function geocode_run() {
 
 		if ( empty( $this->api_key ) ) {
+			error_log( 'GEOCODING ERROR: No API Key' . PHP_EOL );
 			return;
 		}
 
 		$this->address = $this->get_address();
 
 		if ( empty( $this->address ) ) {
+			error_log( 'GEOCODING ERROR: No Address' );
 			return;
 		}
 
-		$this->geodata = $this->geocode_address();
+		$this->geodata = $this->geocode_address( $this->address );
 
 		if ( empty( $this->geodata ) ) {
+			error_log( 'GEOCODING ERROR: No GEOCODED Data' );
 			return;
 		}
 
 		$this->update_user_meta();
 
 		$this->update_user_geotable();
+
+		$this->refresh_user_search_data();
+
+		$this->update_user_data_in_search_table();
 	}
 
 	/**
@@ -241,5 +255,131 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 		}
 
 		return $meta_values;
+	}
+
+	/**
+	 * Used to update the user's search data from the usermeta table.
+	 *
+	 * @return void.
+	 */
+	public function refresh_user_search_data() {
+		if ( ! $this->geocoded_user_exists() ) {
+			return;
+		}
+
+		$usermeta_single_data_point_fields = array(
+			'is_member_of_acr_international',
+			'is_rule_114_qualified_neutral',
+			'billing_company',
+		);
+		$usermeta_multi_data_point_fields = array(
+			'services_provided',
+			'general_adr_matters',
+			'detailed_adr_matters',
+			'additional_languages_spoken',
+		);
+
+		/** @var \WP_User $user */
+		$user = new WP_User( $this->user_id );
+
+		if ( empty( $user ) || is_wp_error( $user ) || $user->ID != $this->user_id ) {
+			return;
+		}
+
+		$user_data = array(
+			'first_name' => $user->first_name,
+			'last_name' => $user->last_name,
+		);
+
+		foreach ( $usermeta_single_data_point_fields as $meta_key ) {
+			$user_data[ $meta_key ] = get_user_meta( $this->user_id, $meta_key, true );
+		}
+
+		foreach ( $usermeta_multi_data_point_fields as $meta_key ) {
+			$field_data = get_user_meta( $this->user_id, $meta_key );
+
+			if ( empty( $field_data ) ) {
+				continue;
+			}
+
+			$user_data[ $meta_key ] = $this->condense_user_meta( $field_data );
+		}
+
+		/**
+		 * Change the array key of the billing company to fit the column name.
+		 */
+		if ( ! empty( $user_data['billing_company'] ) ) {
+			$user_data['billing'] = $user_data['billing_company'];
+			unset( $user_data['billing_company'] );
+		}
+
+		$this->user_search_data = $user_data;
+	}
+
+	/**
+	 * Saves the user's data in the search table.
+	 *
+	 * return void
+	 */
+	public function update_user_data_in_search_table() {
+		global $wpdb;
+
+		// If there's nothing to save there's no reason to be here.
+		if ( empty( $this->user_search_data ) ) {
+			error_log( 'No user search data set in object.' );
+			return;
+		}
+
+		$wpdb->update(
+			$wpdb->geodata,
+			array(
+				'is_member_of_acr_international' => $this->user_search_data['is_member_of_acr_international'],
+				'is_rule_114_qualified_neutral'  => $this->user_search_data['is_rule_114_qualified_neutral'],
+				'services_provided'              => $this->user_search_data['services_provided'],
+				'general_adr_matters'            => $this->user_search_data['general_adr_matters'],
+				'detailed_adr_matters'           => $this->user_search_data['detailed_adr_matters'],
+				'additional_languages_spoken'    => $this->user_search_data['additional_languages_spoken'],
+				'first_name'                     => $this->user_search_data['first_name'],
+				'last_name'                      => $this->user_search_data['last_name'],
+			),
+			array(
+				'geo_object_id'   => $this->user_id,
+				'geo_object_type' => 'WP_User',
+			),
+			array(
+				'%d',
+				'%d',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+				'%s',
+			),
+			array(
+				'%d',
+				'%s',
+			)
+		);
+
+	}
+
+	/**
+	 * Condense the results of a call to get_user_meta with single = false into a single value.
+	 *
+	 * @param array  $meta_data Array of meta data to condense to a string
+	 *
+	 * @return string
+	 */
+	public function condense_user_meta( $meta_data ) {
+
+		/*
+		 * If we have a scalar value there's nothing for us to condense.
+		 */
+		if ( is_scalar( $meta_data ) ) {
+			return $meta_data;
+		}
+
+		return implode( ', ', $meta_data );
 	}
 }

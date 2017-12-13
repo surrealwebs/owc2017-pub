@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: CRMN My Account Endpoints
- * Plugin URI:
+ * Plugin URI:  http://www.nerdery.com
  * Description: Creates custom post tyoes for Conflict Resolution MN
- * Author:
+ * Author: BaconPress OWC
  * Version: 0.0.1
- * Author URI:
+ * Author URI: http://www.nerdery.com
  */
 
 

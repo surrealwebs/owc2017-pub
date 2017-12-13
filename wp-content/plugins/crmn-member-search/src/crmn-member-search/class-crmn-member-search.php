@@ -145,6 +145,15 @@ class CRMN_Member_Search {
 		 * @see    \CRMN_Member_Search_Hooks_Public::woocommerce_customer_save_address()
 		 */
 		$this->hook_loader->add_action( 'woocommerce_customer_save_address', $public_hooks, 'woocommerce_customer_save_address', 10, 2 );
+
+		/**
+		 * Update the user's meta data in the search table after pods table is saved.
+		 *
+		 * @action pods_api_processed_form
+		 *
+		 * @see    \CRMN_Member_Search_Hooks_Public::pods_user_save_meta()
+		 */
+		$this->hook_loader->add_action( 'pods_api_processed_form', $public_hooks, 'pods_user_save_meta', 10, 3 );
 	}
 
 	/**

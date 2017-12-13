@@ -154,3 +154,18 @@ template: bb-theme
     border: none !important;
     background: none !important;
 }
+
+.woocommerce-MyAccount-content .pods-form-ui-field .pods-pick-values {
+    overflow: auto !important;
+}
+
+.search-result-members {
+    border: 1px solid #EDEDED;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.search-result-members .name {
+    font-weight: bold;
+}
+

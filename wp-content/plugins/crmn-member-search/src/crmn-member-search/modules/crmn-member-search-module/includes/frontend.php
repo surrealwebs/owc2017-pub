@@ -325,24 +325,39 @@ if ( $module::is_member_search() ) {
 	</form>
 </div>
 
-<?php if ( $module::is_member_search() && ! empty( $seach_results ) ) : ?>
+<?php if ( $module::is_member_search() && ! empty( $search_results ) ) : ?>
+
+	<h3><?php _e( 'We found the following members within your specified search area', 'crm-member-search' ); ?></h3>
+	<h4><em><?php echo count( $search_results ); ?> Result<?php echo ( count( $search_results ) > 1 ? 's' : '' ); ?></em></h4>
+
 	<?php foreach ( $search_results as $search_result ) : ?>
-		<div class="search-result">
+		<div class="search-result-members">
 			<div class="name"><?php echo esc_html( $search_result->first_name ) . ' ' . esc_html( $search_result->last_name ); ?></div>
-			<div class="company"><?php echo esc_html( $search_result->company ); ?></div>
+			<?php if ( ! empty( $search_result->company ) ) : ?>
+			<div class="company">- <em><?php echo esc_html( $search_result->company ); ?></em></div>
+			<?php endif; ?>
+			<?php if ( ! empty( $search_result->geo_address ) ) : ?>
+			<div class="address"><?php echo str_replace( ',', '<br/>', esc_html( $search_result->geo_address ) ); ?></div>
+			<?php endif; ?>
 			<div class="details">
 				<ul>
 					<?php if ( !empty( $search_result->is_member_of_acr_international ) ) : ?>
-						<li><?php echo __( 'Is a member of ACR International', 'crm-member-search' ); ?></li>
+						<li><label><?php echo __( 'Is a member of ACR International', 'crm-member-search' ); ?></label></li>
 					<?php endif; ?>
 					<?php if ( !empty( $search_result->is_rule_114_qualified_neutral ) ) : ?>
-						<li><?php echo __( 'Is a Rule 114 Qualified Neutral', 'crm-member-search' ); ?></li>
+						<li><label><?php echo __( 'Is a Rule 114 Qualified Neutral', 'crm-member-search' ); ?></label></li>
 					<?php endif; ?>
 					<?php if ( !empty( $search_result->additional_languages_spoken ) ) : ?>
-						<li>Additional Languages Spoken: <?php echo esc_html( $search_result->additional_languages_spoken ); ?></li>
+						<li><label>Additional Languages Spoken:</label> <?php echo esc_html( $search_result->additional_languages_spoken ); ?></li>
 					<?php endif; ?>
 					<?php if ( !empty( $search_result->services_provided ) ) : ?>
-						<li>Services Provided: <?php echo esc_html( $search_result->services_provided ); ?></li>
+						<li><label>Services Provided:</label> <?php echo esc_html( $search_result->services_provided ); ?></li>
+					<?php endif; ?>
+					<?php if ( !empty( $search_result->general_adr_matters ) ) : ?>
+						<li><label>General ADR Matters:</label> <?php echo esc_html( $search_result->general_adr_matters ); ?></li>
+					<?php endif; ?>
+					<?php if ( !empty( $search_result->detailed_adr_matters ) ) : ?>
+						<li><label>Detailed ADR Matters:</label> <?php echo esc_html( $search_result->detailed_adr_matters ); ?></li>
 					<?php endif; ?>
 				</ul>
 			</div>

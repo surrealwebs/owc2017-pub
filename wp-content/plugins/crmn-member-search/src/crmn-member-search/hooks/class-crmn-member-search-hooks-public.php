@@ -65,7 +65,37 @@ class CRMN_Member_Search_Hooks_Public {
 	 * @return mixed
 	 */
 	public function woocommerce_customer_save_address( $user_id = 0, $load_address = 'billing' ) {
+
+		error_log( 'user_id: ' . $user_id . PHP_EOL );
+
 		new CRMN_Member_Search_WP_User_Geocoder( $user_id, $load_address );
+		return $user_id;
+	}
+
+	/**
+	 * Fires after the form has been processed and save_pod_item has run.
+	 *
+	 * @param int       $id     Item ID.
+	 * @param array     $params save_pod_item parameters.
+	 * @param null|Pods $obj    Pod object (if set).
+	 *
+	 * @return int|null User ID if we have one, null otherwise.
+	 */
+	public function pods_user_save_meta( $id, $params, $obj = null ) {
+
+		// If we are not on a user data form we don't want additional processing.
+		if ( empty( $params['pod'] ) || 'user' != $params['pod'] ) {
+			return null;
+		}
+
+		$user_id = ( ! empty( $params['id'] ) ? $params['id'] : null );
+
+		if ( empty( $user_id ) ) {
+			return null;
+		}
+
+		new CRMN_Member_Search_WP_User_Geocoder( $user_id );
+
 		return $user_id;
 	}
 }
