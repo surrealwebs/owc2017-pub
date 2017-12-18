@@ -2,9 +2,7 @@
 /**
  * CRMN Member Search plugin bootstrap file.
  *
- * @todo Need to write queries for member searches (only 1 basic for search radius exists).
  * @todo Need to write transient cache for member search queries.
- * @todo Need to output results.
  *
  * @package           CRMN_Member_Search
  *
@@ -12,7 +10,7 @@
  * Plugin Name:       CRMN Member Search
  * Plugin URI:        http://tc2017.overnightwebsitechallenge.com/teams/233
  * Description:       Adds member geocoding and geodata search capability.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            BaconPress
  * Author URI:        http://tc2017.overnightwebsitechallenge.com/teams/233
  * License:           GPL-2.0+
@@ -38,7 +36,7 @@ define( 'CRMN_PLUGIN_NAME', 'crmn-member-search' );
  *
  * @const string CRMN_PLUGIN_VERSION
  */
-define( 'CRMN_PLUGIN_VERSION', '1.0.0' );
+define( 'CRMN_PLUGIN_VERSION', '1.0.1' );
 
 /**
  * The full directory path to the main plugin file.

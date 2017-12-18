@@ -65,9 +65,6 @@ class CRMN_Member_Search_Hooks_Public {
 	 * @return mixed
 	 */
 	public function woocommerce_customer_save_address( $user_id = 0, $load_address = 'billing' ) {
-
-		error_log( 'user_id: ' . $user_id . PHP_EOL );
-
 		new CRMN_Member_Search_WP_User_Geocoder( $user_id, $load_address );
 		return $user_id;
 	}
@@ -84,7 +81,7 @@ class CRMN_Member_Search_Hooks_Public {
 	public function pods_user_save_meta( $id, $params, $obj = null ) {
 
 		// If we are not on a user data form we don't want additional processing.
-		if ( empty( $params['pod'] ) || 'user' != $params['pod'] ) {
+		if ( empty( $params['pod'] ) || 'user' !== $params['pod'] ) {
 			return null;
 		}
 

@@ -14,6 +14,103 @@ if ( ! defined( 'ABSPATH' ) ) {
 class CRMN_Member_Search_Module extends FLBuilderModule {
 
 	/**
+	 * Store the user's search query.
+	 *
+	 * @var array $directory_search_user_query
+	 */
+	public $directory_search_user_query = array();
+
+	/**
+	 * Store the user's search radius center.
+	 *
+	 * @var array $search_center
+	 */
+	public $search_center = array();
+
+	/**
+	 * Extra search query params.
+	 *
+	 * @var array $extra_query
+	 */
+	public $extra_query = array();
+
+	/**
+	 * The allowed form fields and their sanitize mapping for $_POST input.
+	 *
+	 * These should match the form input fields,
+	 * if the field should map to one of the SQL table columns,
+	 * then make sure that this, the SQL table column, and the field input all match,
+	 * and what we are allowing to search on in the wp_geodata table,
+	 * plus a couple of extra bits specific to the search form like the nonce and referer and submit.
+	 * If you add/edit/remove fields from the wp_geodata table that are to be searchable,
+	 * update this AND $allowed_extra_query_fields.
+	 *
+	 * @see \CRMN_Member_Search_DB_Tables::install_table()
+	 *
+	 * $_POST could contain something like the following...
+	 * Array (
+	 *     'first-name'              => 'Richard'
+	 *     'last-name'               => 'Aber'
+	 *     'company'                 => 'Nerdery'
+	 *     'services_provided'       => 'mediation'
+	 *     'areas-of-expertise'      => 'training'
+	 *     'additional-languages'    => 'chinese'
+	 *     'search-center'           => '55431'
+	 *     'search-radius'           => '5'
+	 *     'crm-member-search'       => 'e88cef0fa3'
+	 *     '_wp_http_referer'        => '/'
+	 *     'submit-directory-search' => 'Directory Search'
+	 * )
+	 *
+	 * @var array $input_definition
+	 */
+	public static $input_definition = array(
+		'is_member_of_acr_international' => FILTER_SANITIZE_NUMBER_INT,
+		'is_rule_114_qualified_neutral'  => FILTER_SANITIZE_NUMBER_INT,
+		'ever_had_license_revoked'       => FILTER_SANITIZE_NUMBER_INT,
+		'services_provided'              => FILTER_SANITIZE_STRING,
+		'general_adr_matters'            => FILTER_SANITIZE_STRING,
+		'detailed_adr_matters'           => FILTER_SANITIZE_STRING,
+		'additional_languages_spoken'    => FILTER_SANITIZE_STRING,
+		'first_name'                     => FILTER_SANITIZE_STRING,
+		'last_name'                      => FILTER_SANITIZE_STRING,
+		'company'                        => FILTER_SANITIZE_STRING,
+		'search-center'                  => FILTER_SANITIZE_STRING,
+		'search-radius'                  => FILTER_SANITIZE_NUMBER_INT,
+		'crm-member-search'              => FILTER_SANITIZE_STRING,
+		'_wp_http_referer'               => FILTER_SANITIZE_STRING,
+		'submit-directory-search'        => FILTER_SANITIZE_STRING,
+	);
+
+	/**
+	 * The allowed extra query fields and their sprintf mapping for SQL query.
+	 *
+	 * These should match what we are allowing to search on in the wp_geodata table.
+	 * If you add/edit/remove fields from the wp_geodata table that are to be searchable,
+	 * update this AND $input_definition.
+	 *
+	 * The following placeholders can be used in the query string: %d (integer) %f (float) %s (string).
+	 *
+	 * @link https://developer.wordpress.org/reference/classes/wpdb/prepare/
+	 *
+	 * @see \CRMN_Member_Search_DB_Tables::install_table()
+	 *
+	 * @var array $allowed_extra_query_fields
+	 */
+	public static $allowed_extra_query_fields = array(
+		'is_member_of_acr_international' => '%d',
+		'is_rule_114_qualified_neutral'  => '%d',
+		'ever_had_license_revoked'       => '%d',
+		'services_provided'              => '%s',
+		'general_adr_matters'            => '%s',
+		'detailed_adr_matters'           => '%s',
+		'additional_languages_spoken'    => '%s',
+		'first_name'                     => '%s',
+		'last_name'                      => '%s',
+		'company'                        => '%s',
+	);
+
+	/**
 	 * CRMN_Member_Search_Module constructor.
 	 */
 	public function __construct() {
@@ -79,53 +176,17 @@ class CRMN_Member_Search_Module extends FLBuilderModule {
 	 *
 	 * @return array
 	 */
-	public static function get_directory_search_user_query() {
+	public function get_directory_search_user_query() {
 
 		if ( ! self::is_member_search() ) {
 			return array();
 		}
 
-		$crm_member_search       = filter_input( INPUT_POST, 'crm-member-search', FILTER_SANITIZE_SPECIAL_CHARS );
+		$crm_member_search = filter_input( INPUT_POST, 'crm-member-search', FILTER_SANITIZE_SPECIAL_CHARS );
 
 		if ( ! wp_verify_nonce( $crm_member_search, 'crm-directory-search' ) ) {
 			return array();
 		}
-
-		/**
-		 * Definition for the array mapping to be used by filter_input_array.
-		 *
-		 * $_POST could contain something like the following...
-		 * Array (
-		 *     'first-name'              => 'Richard'
-		 *     'last-name'               => 'Aber'
-		 *     'company'                 => 'Nerdery'
-		 *     'services-provided'       => 'mediation'
-		 *     'areas-of-expertise'      => 'training'
-		 *     'additional-languages'    => 'chinese'
-		 *     'search-center'           => '55431'
-		 *     'search-radius'           => '5'
-		 *     'crm-member-search'       => 'e88cef0fa3'
-		 *     '_wp_http_referer'        => '/'
-		 *     'submit-directory-search' => 'Directory Search'
-		 * )
-		 *
-		 * @var array $definition
-		 */
-		$definition = array(
-			'first_name'                     => FILTER_SANITIZE_STRING,
-			'last_name'                      => FILTER_SANITIZE_STRING,
-			'company'                        => FILTER_SANITIZE_STRING,
-			'services-provided'              => FILTER_SANITIZE_STRING,
-			'areas-of-expertise'             => FILTER_SANITIZE_STRING,
-			'additional_languages_spoken'    => FILTER_SANITIZE_STRING,
-			'search-center'                  => FILTER_SANITIZE_STRING,
-			'search-radius'                  => FILTER_SANITIZE_NUMBER_INT,
-			'is_member_of_acr_international' => FILTER_SANITIZE_NUMBER_INT,
-			'is_rule_114_qualified_neutral'  => FILTER_SANITIZE_NUMBER_INT,
-			'crm-member-search'              => FILTER_SANITIZE_STRING,
-			'_wp_http_referer'               => FILTER_SANITIZE_STRING,
-			'submit-directory-search'        => FILTER_SANITIZE_STRING,
-		);
 
 		/**
 		 * Sanitized version of $_POST.
@@ -139,7 +200,7 @@ class CRMN_Member_Search_Module extends FLBuilderModule {
 		 *
 		 * @var array $post_input
 		 */
-		$post_input = filter_input_array( INPUT_POST, $definition, true );
+		$post_input = filter_input_array( INPUT_POST, self::$input_definition, true );
 
 		if ( empty( $post_input ) || ! is_array( $post_input ) ) {
 			return array();
@@ -284,76 +345,21 @@ class CRMN_Member_Search_Module extends FLBuilderModule {
 		 */
 		global $wpdb;
 
-		$query_data = array(
-			$radius,
-			$search_lat,
-			$search_lng,
-			$search_lat,
-		);
+		$where_clause = self::get_where_clause( $extra_query );
 
-		$allowed_fields = array(
-			'is_member_of_acr_international' => '%d',
-			'is_rule_114_qualified_neutral' => '%d',
-			'services_provided' => '%s',
-			'general_adr_matters' => '%s',
-			'detailed_adr_matters' => '%s',
-			'additional_languages_spoken' => '%s',
-		);
+		// @codingStandardsIgnoreStart
 
-		$extra_query = array(
-			'is_member_of_acr_international' => 1,
-			'is_rule_114_qualified_neutral' => 1,
-			'additional_languages_spoken' => 'chinese, russian, german',
-		);
-
-
-		$query_where = '';
-
-		/*
-		 * Pull data from extra_query, if any.
-		 *
-		 * Add any data to the query data and add teh field to the where clause.
-		 */
-		if ( ! empty( $extra_query ) ) {
-			$query_where .= ' WHERE ';
-			$connector_and = '';
-			foreach ( $allowed_fields as $field_name => $type ) {
-				if ( ! empty( $extra_query[ $field_name ] ) || 0 === $extra_query[ $field_name ] ) {
-					switch ( $type ) {
-						case '%s':
-							$parts = explode( ',', $extra_query[ $field_name ] );
-
-							if ( count( $parts ) == 1 ) {
-								$query_data[] = '%' . trim( $wpdb->esc_like( $extra_query[ $field_name ] ) ) . '%';
-								$query_where  .= $connector_and . ' `' . $field_name . '` LIKE ' . $type;
-							} else {
-								$query_where .= $connector_and . ' ( ';
-
-								$connector = '';
-								foreach ( $parts as $part ) {
-									$query_data[] = '%' . trim( $wpdb->esc_like( $part ) ) . '%';
-
-									$query_where .= $connector . '`' . $field_name . '` LIKE %s ';
-
-									$connector = ' OR ';
-								}
-
-								$query_where .= ' ) ';
-							}
-							break;
-						case '%d':
-							$query_data[] = $extra_query[ $field_name ];
-							$query_where  .= $connector_and . ' `' . $field_name . '` = ' . $type . ' ';
-							break;
-					}
-				}
-				$connector_and = ' AND ';
-			}
-		}
 		/**
-		 * IFNULL so that a distance of 0 is legit.
+		 * Technically this breaks WPCS due to the use of *seemingly unescaped* {$where_clause}.
+		 * HOWEVER, we do actually follow best practice by escaping where we construct that clause.
+		 * Be absolutely certain that you're not opening this up to attack if you modify it.
+		 *
+		 * We use IFNULL so that a distance of 0 is legit.
 		 */
-		$query_distance = "SELECT *,
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				"
+				SELECT *,
 				IFNULL(
 					%f * acos(
 						cos( radians( %f ) )
@@ -364,18 +370,114 @@ class CRMN_Member_Search_Module extends FLBuilderModule {
 					), 0
 				)
 				AS distance
-				FROM {$wpdb->geodata} ";
+				FROM $wpdb->geodata
+				{$where_clause}
+				HAVING distance <= %d
+				ORDER BY distance ASC;
+				",
+				$radius,
+				$search_lat,
+				$search_lng,
+				$search_lat,
+				$distance
+			)
+		);
 
-		// Distance has to be last.
-		$query_data[] = $distance;
+		// @codingStandardsIgnoreEnd
 
-		$query_order = " GROUP BY geo_id HAVING distance <= %d ORDER BY distance ASC";
+		return $results;
+	}
 
-		$query_full = $query_distance . $query_where . $query_order;
+	/**
+	 * Construct the WHERE clause for our MySQL query.
+	 *
+	 * @param array $extra_query
+	 *
+	 * @return string
+	 */
+	public static function get_where_clause( $extra_query = array() ) {
 
-		error_log( $query_full );
-		error_log( print_r( $query_data , true ) );
+		/**
+		 * The global wpdb WordPress Database abstraction object.
+		 *
+		 * @global wpdb $wpdb
+		 */
+		global $wpdb;
 
-		return $wpdb->get_results( $wpdb->prepare( $query_full , $query_data ) );
+		/**
+		 * @var string $where_clause
+		 */
+		$where_clause = '';
+
+		if ( empty( $extra_query ) ) {
+			return $where_clause;
+		}
+
+		$allowed = self::$allowed_extra_query_fields;
+
+		foreach ( $extra_query as $key => $value ) {
+
+			if ( ! empty( $value ) && array_key_exists( $key, $allowed ) ) {
+
+				/**
+				 * The following placeholders can be used in the query string: %d (integer) %f (float) %s (string).
+				 *
+				 * @link https://developer.wordpress.org/reference/classes/wpdb/prepare/
+				 */
+				switch ( $allowed[ $key ] ) {
+					case '%d':
+						// @codingStandardsIgnoreStart
+						$where_clause .= $wpdb->prepare( " AND {$key} = %d", $value );
+						// @codingStandardsIgnoreEnd
+						break;
+					case '%f':
+						// @codingStandardsIgnoreStart
+						$where_clause .= $wpdb->prepare( " AND {$key} = %f", $value );
+						// @codingStandardsIgnoreEnd
+						break;
+					case '%s':
+						// @codingStandardsIgnoreStart
+						$like = '%' . $wpdb->esc_like( $value ) . '%';
+						$where_clause .= $wpdb->prepare( " AND {$key} LIKE %s", $like );
+						// @codingStandardsIgnoreEnd
+						break;
+				}
+			}
+		}
+
+		return 'WHERE 1 = 1' . $where_clause;
+	}
+
+	/**
+	 * Set the extra search query vars.
+	 */
+	public function set_extra_query() {
+
+		/**
+		 * There is not search.
+		 */
+		if ( empty( $this->directory_search_user_query ) ) {
+			return;
+		}
+
+		/**
+		 * Only set those that are allowed.
+		 */
+		foreach ( $this->directory_search_user_query as $query_field => $query_value ) {
+			if ( ! empty( $query_value ) && array_key_exists( $query_field, self::$allowed_extra_query_fields ) ) {
+				$extra[ $query_field ] = $query_value;
+			}
+		}
+
+		if ( ! empty( $extra ) ) {
+			$this->extra_query = $extra;
+		}
+	}
+
+	/**
+	 * Get the extra search query vars.
+	 */
+	public function get_extra_query() {
+		return $this->extra_query;
 	}
 }

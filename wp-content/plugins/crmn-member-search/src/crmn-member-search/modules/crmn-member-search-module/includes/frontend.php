@@ -17,8 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-$search_results = array();
-
 /**
  * If the form was submitted, get the search query vars from $_POST for setting form state.
  */
@@ -27,40 +25,80 @@ if ( $module::is_member_search() ) {
 	/**
 	 * The search query could look something like the following...
 	 * Array (
-	 *     'first_name'                 => 'Richard'
-	 *     'last_name'                  => 'Aber'
-	 *     'company'                    => 'Nerdery'
-	 *     'services-provided'          => 'mediation'
-	 *     'areas-of-expertise'         => 'training'
-	 *     additional_languages_spoken' => 'chinese'
-	 *     'search-center'              => '55431'
-	 *     'search-radius'              => '5'
-	 *     'crm-member-search'          => 'e88cef0fa3'
-	 *     '_wp_http_referer'           => '/'
-	 *     'submit-directory-search'    => 'Directory Search'
+	 *     'first_name'                  => 'Richard'
+	 *     'last_name'                   => 'Aber'
+	 *     'company'                     => 'Nerdery'
+	 *     'services_provided'           => 'mediation'
+	 *     'detailed_adr_matters'        => 'training'
+	 *     'additional_languages_spoken' => 'chinese'
+	 *     'search-center'               => '55431'
+	 *     'search-radius'               => '5'
+	 *     'crm-member-search'           => 'e88cef0fa3'
+	 *     '_wp_http_referer'            => '/'
+	 *     'submit-directory-search'     => 'Directory Search'
 	 * )
 	 *
-	 * @var array $search_query
+	 * @var array $directory_search_user_query
 	 */
-	$directory_search_user_query = $module::get_directory_search_user_query();
-	// error_log( 'directory_search_query = ' . print_r( $directory_search_query, true ) );
+	$module->directory_search_user_query = $module->get_directory_search_user_query();
 
-	if ( ! empty( $directory_search_user_query ) ) {
-//		$module::get_directory_search_db_query( $directory_search_user_query );
+	/**
+	 * Get our search center.
+	 */
+	if ( ! empty( $module->directory_search_user_query ) ) {
 		$geocoder = new CRMN_Member_Search_Geocoder();
-		$geocode_address = $geocoder->geocode_address( $directory_search_user_query['search-center'] );
-//		error_log( '$geocode_address = ' . print_r( $geocode_address, true ) );
+		$module->search_center = $geocoder->geocode_address( $module->directory_search_user_query['search-center'] );
 	}
 
-	if ( ! empty( $geocode_address ) ) {
-		$search_results = $module::get_geodata_radius_search( $geocode_address['geo_latitude'], $geocode_address['geo_longitude'], $directory_search_user_query['search-radius'], 'mi', $directory_search_user_query );
-		error_log( '$test = ' . print_r( $search_results, true ) );
-	}
+	/**
+	 * Run the search.
+	 */
+	if ( ! empty( $module->search_center ) ) {
 
-	// $module::get_geodata_radius_search();
+		/**
+		 * Set the extra query vars.
+		 */
+		$module->set_extra_query();
+
+		$search_results = $module::get_geodata_radius_search(
+			$module->search_center['geo_latitude'],
+			$module->search_center['geo_longitude'],
+			$module->directory_search_user_query['search-radius'],
+			'mi',
+			$module->get_extra_query()
+		);
+	}
 }
 
 ?>
+
+<?php if ( $module::is_member_search() ) : ?>
+
+	<?php if ( ! empty( $search_results ) ) : ?>
+		<h3>
+			<?php
+			printf(
+				/* translators: placeholder is a digit representing the number of search results found */
+				esc_html__( '%d members found.', 'crm-member-search' ),
+				count( $search_results )
+			);
+			?>
+		</h3>
+	<?php endif; ?>
+
+	<?php if ( empty( $search_results ) ) : ?>
+		<h3>
+			<?php esc_html_e( 'No members found.', 'crm-member-search' ); ?>
+		</h3>
+
+		<h4>
+			<em>
+				<?php esc_html_e( 'Try another search.', 'crm-member-search' ); ?>
+			</em>
+		</h4>
+	<?php endif; ?>
+
+<?php endif; ?>
 
 <div id="<?php echo esc_attr( $id ); ?>" class="crmn-directory-wrapper">
 
@@ -111,11 +149,11 @@ if ( $module::is_member_search() ) {
 					   value="">
 			</div>
 			<div class="col-sm-6 form-group">
-				<label for="services-provided">
+				<label for="services_provided">
 					<?php echo esc_html_x( 'Services Provided', 'label', 'crmn-member-search' ); ?>
 				</label>
-				<select name="services-provided"
-						id="services-provided"
+				<select name="services_provided"
+						id="services_provided"
 						class="form-control">
 					<option value="">Any</option>
 					<option>Mediation</option>
@@ -139,32 +177,32 @@ if ( $module::is_member_search() ) {
 					<?php
 
 					$general_adr_matters = array(
-						"Family matter – married and non-married",
-						"Business to Business",
-						"Business to Consumer",
-						"Neighbor/Neighborhood",
-						"Employment",
-						"Juvenile",
-						"School Issue",
-						"Elder Issue",
-						"Real Estate",
-						"Landlord Tenant",
-						"Personal Injury/Torts",
-						"Government/Courts",
-						"Civil Rights/EEOC",
-						"Group(s)",
-						"Guardianship/Conservatorship",
-						"Health Care",
+						'Family matter – married and non-married',
+						'Business to Business',
+						'Business to Consumer',
+						'Neighbor/Neighborhood',
+						'Employment',
+						'Juvenile',
+						'School Issue',
+						'Elder Issue',
+						'Real Estate',
+						'Landlord Tenant',
+						'Personal Injury/Torts',
+						'Government/Courts',
+						'Civil Rights/EEOC',
+						'Group(s)',
+						'Guardianship/Conservatorship',
+						'Health Care',
 					);
 
 					foreach ( $general_adr_matters as $matter ) {
-						echo '<option value="' . esc_attr( $matter ) . '">' . esc_html( $matter ) . '</option>' . PHP_EOL;
+						echo '<option value="' . esc_attr( $matter ) . '">' . esc_html( $matter ) . '</option>';
 					}
 					?>
 				</select>
 			</div>
 			<div class="col-sm-6 form-group">
-				<label for="areas-of-expertise">
+				<label for="detailed_adr_matters">
 					<?php echo esc_html_x( 'Detailed ADR Matters', 'label', 'crmn-member-search' ); ?>
 				</label>
 				<?php
@@ -172,42 +210,42 @@ if ( $module::is_member_search() ) {
 				 * These should probably be pulled from wherever our account form options are coming from.
 				 */
 				?>
-				<select name="detailed_adr_matters" id="areas-of-expertise" class="form-control">
+				<select name="detailed_adr_matters" id="detailed_adr_matters" class="form-control">
 					<option value="">Any</option>
 
 					<?php
 
 					$detailed_adr_matters = array(
-						"ADR Training",
-						"Arbitration / Mediation (Arb Med)",
-						"Circles",
-						"Collaborative Law",
-						"Consensual Special Magistrate",
-						"Custody, Support or Property Division",
-						"Divorce",
-						"Divorce Arbitration",
-						"Early Neutral Evaluation",
-						"Early neutral Evaluation – Custody",
-						"Early neutral Evaluation – Financial",
-						"Elder / family issues",
-						"Elder / medical issues",
-						"Elder care",
-						"Employment",
-						"Group Facilitator",
-						"Labor/Management",
-						"Large Group",
-						"Mediation / Arbitration (Med Arb)",
-						"Mini-Trial",
-						"Neutral Fact Finding",
-						"Non-binding Advisory Opinion",
-						"Organizational Development",
-						"Parenting Consultant",
-						"Parenting Time Expediter",
-						"Post Divorce",
-						"Restorative Justice	Summary",
-						"Jury Trial",
-						"Transformative Mediation",
-						"Worker's Compensation",
+						'ADR Training',
+						'Arbitration / Mediation (Arb Med)',
+						'Circles',
+						'Collaborative Law',
+						'Consensual Special Magistrate',
+						'Custody, Support or Property Division',
+						'Divorce',
+						'Divorce Arbitration',
+						'Early Neutral Evaluation',
+						'Early neutral Evaluation – Custody',
+						'Early neutral Evaluation – Financial',
+						'Elder / family issues',
+						'Elder / medical issues',
+						'Elder care',
+						'Employment',
+						'Group Facilitator',
+						'Labor/Management',
+						'Large Group',
+						'Mediation / Arbitration (Med Arb)',
+						'Mini-Trial',
+						'Neutral Fact Finding',
+						'Non-binding Advisory Opinion',
+						'Organizational Development',
+						'Parenting Consultant',
+						'Parenting Time Expediter',
+						'Post Divorce',
+						'Restorative Justice	Summary',
+						'Jury Trial',
+						'Transformative Mediation',
+						'Worker\'s Compensation',
 					);
 
 					foreach ( $detailed_adr_matters as $matter ) {
@@ -327,37 +365,86 @@ if ( $module::is_member_search() ) {
 
 <?php if ( $module::is_member_search() && ! empty( $search_results ) ) : ?>
 
-	<h3><?php _e( 'We found the following members within your specified search area', 'crm-member-search' ); ?></h3>
-	<h4><em><?php echo count( $search_results ); ?> Result<?php echo ( count( $search_results ) > 1 ? 's' : '' ); ?></em></h4>
+	<h3>
+		<?php esc_html_e( 'We found the following members within your specified search area', 'crm-member-search' ); ?>
+	</h3>
+	<h4>
+		<em>
+			<?php echo count( $search_results ); ?> Result<?php echo ( count( $search_results ) > 1 ? 's' : '' ); ?>
+		</em>
+	</h4>
 
 	<?php foreach ( $search_results as $search_result ) : ?>
 		<div class="search-result-members">
-			<div class="name"><?php echo esc_html( $search_result->first_name ) . ' ' . esc_html( $search_result->last_name ); ?></div>
+			<div class="name">
+				<?php echo esc_html( $search_result->first_name ) . ' ' . esc_html( $search_result->last_name ); ?>
+			</div>
 			<?php if ( ! empty( $search_result->company ) ) : ?>
-			<div class="company">- <em><?php echo esc_html( $search_result->company ); ?></em></div>
+				<div class="company">
+					-
+					<em>
+						<?php echo esc_html( $search_result->company ); ?>
+					</em>
+				</div>
 			<?php endif; ?>
 			<?php if ( ! empty( $search_result->geo_address ) ) : ?>
-			<div class="address"><?php echo str_replace( ',', '<br/>', esc_html( $search_result->geo_address ) ); ?></div>
+				<div class="address">
+					<?php
+					echo str_replace( ',', '<br/>', esc_html( $search_result->geo_address ) ); // ?
+					?>
+				</div>
 			<?php endif; ?>
 			<div class="details">
 				<ul>
-					<?php if ( !empty( $search_result->is_member_of_acr_international ) ) : ?>
-						<li><label><?php echo __( 'Is a member of ACR International', 'crm-member-search' ); ?></label></li>
+					<?php if ( ! empty( $search_result->is_member_of_acr_international ) ) : ?>
+						<li>
+							<label>
+								<?php esc_html_e( 'Is a member of ACR International', 'crm-member-search' ); ?>
+							</label>
+						</li>
 					<?php endif; ?>
-					<?php if ( !empty( $search_result->is_rule_114_qualified_neutral ) ) : ?>
-						<li><label><?php echo __( 'Is a Rule 114 Qualified Neutral', 'crm-member-search' ); ?></label></li>
+					<?php if ( ! empty( $search_result->is_rule_114_qualified_neutral ) ) : ?>
+						<li>
+							<label>
+								<?php esc_html_e( 'Is a Rule 114 Qualified Neutral', 'crm-member-search' ); ?>
+							</label>
+						</li>
 					<?php endif; ?>
-					<?php if ( !empty( $search_result->additional_languages_spoken ) ) : ?>
-						<li><label>Additional Languages Spoken:</label> <?php echo esc_html( $search_result->additional_languages_spoken ); ?></li>
+
+
+					<?php if ( ! empty( $search_result->additional_languages_spoken ) ) : ?>
+						<li>
+							<label>
+								<?php esc_html_e( 'Additional Languages Spoken:', 'crm-member-search' ); ?>
+							</label>
+							<?php echo esc_html( $search_result->additional_languages_spoken ); ?>
+						</li>
 					<?php endif; ?>
-					<?php if ( !empty( $search_result->services_provided ) ) : ?>
-						<li><label>Services Provided:</label> <?php echo esc_html( $search_result->services_provided ); ?></li>
+
+
+					<?php if ( ! empty( $search_result->services_provided ) ) : ?>
+						<li>
+							<label>
+								<?php esc_html_e( 'Services Provided:', 'crm-member-search' ); ?>
+							</label>
+							<?php echo esc_html( $search_result->services_provided ); ?>
+						</li>
 					<?php endif; ?>
-					<?php if ( !empty( $search_result->general_adr_matters ) ) : ?>
-						<li><label>General ADR Matters:</label> <?php echo esc_html( $search_result->general_adr_matters ); ?></li>
+					<?php if ( ! empty( $search_result->general_adr_matters ) ) : ?>
+						<li>
+							<label>
+								<?php esc_html_e( 'General ADR Matters:', 'crm-member-search' ); ?>
+							</label>
+							<?php echo esc_html( $search_result->general_adr_matters ); ?>
+						</li>
 					<?php endif; ?>
-					<?php if ( !empty( $search_result->detailed_adr_matters ) ) : ?>
-						<li><label>Detailed ADR Matters:</label> <?php echo esc_html( $search_result->detailed_adr_matters ); ?></li>
+					<?php if ( ! empty( $search_result->detailed_adr_matters ) ) : ?>
+						<li>
+							<label>
+								<?php esc_html_e( 'Detailed ADR Matters:', 'crm-member-search' ); ?>
+							</label>
+							<?php echo esc_html( $search_result->detailed_adr_matters ); ?>
+						</li>
 					<?php endif; ?>
 				</ul>
 			</div>

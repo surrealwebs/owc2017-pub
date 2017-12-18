@@ -54,8 +54,6 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 
 		$this->user_id = $user_id;
 
-		error_log( 'Do we still have a user_id: [' . $user_id . ']' . PHP_EOL );
-
 		if ( empty( $this->user_id ) ) {
 			return;
 		}
@@ -263,6 +261,7 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 	 * @return void.
 	 */
 	public function refresh_user_search_data() {
+
 		if ( ! $this->geocoded_user_exists() ) {
 			return;
 		}
@@ -296,6 +295,7 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 		}
 
 		foreach ( $usermeta_multi_data_point_fields as $meta_key ) {
+
 			$field_data = get_user_meta( $this->user_id, $meta_key );
 
 			if ( empty( $field_data ) ) {
@@ -322,11 +322,11 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 	 * return void
 	 */
 	public function update_user_data_in_search_table() {
+
 		global $wpdb;
 
 		// If there's nothing to save there's no reason to be here.
 		if ( empty( $this->user_search_data ) ) {
-			error_log( 'No user search data set in object.' );
 			return;
 		}
 

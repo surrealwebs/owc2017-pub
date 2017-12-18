@@ -95,6 +95,10 @@ class CRMN_Member_Search_Geocoder {
 	 * @link https://developers.google.com/maps/documentation/geocoding/usage-limits Usage Limits doc
 	 * @link https://developers.google.com/maps/documentation/geocoding/intro#geocoding Intro to geocoding doc
 	 * @link https://developers.google.com/maps/faq#geocoder_queryformat Geocoder Query Format doc
+	 *
+	 * @param string $address
+	 *
+	 * @return array
 	 */
 	public function geocode_address( $address = '' ) {
 
