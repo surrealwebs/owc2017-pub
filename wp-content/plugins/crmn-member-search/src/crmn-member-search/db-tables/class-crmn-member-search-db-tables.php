@@ -137,14 +137,15 @@ class CRMN_Member_Search_DB_Tables {
 		 * | first_name                     | text                | NO   |     | NULL    |                |
 		 * | last_name                      | text                | NO   |     | NULL    |                |
 		 * | company                        | text                | NO   |     | NULL    |                |
+		 * | opt_out_public_search          | tinyint(1)          | NO   |     | 0       |                |
 		 * +--------------------------------+---------------------+------+-----+---------+----------------+
 		 *
 		 * The inserted data would look something like this in the database:
-		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+--------------------------------+-------------------------------+--------------------------+-------------------+---------------------+----------------------+-----------------------------+------------+-----------+---------+
-		 * | geo_id | geo_object_id | geo_latitude | geo_longitude | geo_object_type | geo_public | geo_address       | is_member_of_acr_international | is_rule_114_qualified_neutral | ever_had_license_revoked | services_provided | general_adr_matters | detailed_adr_matters | additional_languages_spoken | first_name | last_name | company |
-		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+--------------------------------+-------------------------------+--------------------------+-------------------+---------------------+----------------------+-----------------------------+------------+-----------+---------+
-		 * |      1 |             2 |    44.830853 |    -93.299872 | WP_User         |          1 | 9555 James Ave... |                              1 |                             1 |                        1 |         Mediation | Business to Bus...  | ADR Training, Cir... | Chinese, Russian            | Richard    | Richards  | Nerdery |
-		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+--------------------------------+-------------------------------+--------------------------+-------------------+---------------------+----------------------+-----------------------------+------------+-----------+---------+
+		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+--------------------------------+-------------------------------+--------------------------+-------------------+---------------------+----------------------+-----------------------------+------------+-----------+---------+-----------------------+
+		 * | geo_id | geo_object_id | geo_latitude | geo_longitude | geo_object_type | geo_public | geo_address       | is_member_of_acr_international | is_rule_114_qualified_neutral | ever_had_license_revoked | services_provided | general_adr_matters | detailed_adr_matters | additional_languages_spoken | first_name | last_name | company | opt_out_public_search |
+		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+--------------------------------+-------------------------------+--------------------------+-------------------+---------------------+----------------------+-----------------------------+------------+-----------+---------+-----------------------+
+		 * |      1 |             2 |    44.830853 |    -93.299872 | WP_User         |          1 | 9555 James Ave... |                              1 |                             1 |                        1 |         Mediation | Business to Bus...  | ADR Training, Cir... | Chinese, Russian            | Richard    | Richards  | Nerdery |                     0 |
+		 * +--------+---------------+--------------+---------------+-----------------+------------+-------------------+--------------------------------+-------------------------------+--------------------------+-------------------+---------------------+----------------------+-----------------------------+------------+-----------+---------+-----------------------+
 		 *
 		 * Where,
 		 * geo_id is simply an auto-incrementing primary key,
@@ -176,6 +177,7 @@ class CRMN_Member_Search_DB_Tables {
 			first_name varchar(255) not null,
 			last_name varchar(255) not null,
 			company varchar(255),
+			opt_out_public_search tinyint(1) default 0
 			PRIMARY KEY  (geo_id),
 			KEY geo_object_id (geo_object_id),
 			KEY geo_object_type (geo_object_type),
@@ -190,7 +192,8 @@ class CRMN_Member_Search_DB_Tables {
 			INDEX idx_additional_languages_spoken (additional_languages_spoken),
 			INDEX idx_first_name (first_name),
 			INDEX idx_last_name (last_name),
-			INDEX idx_company (company)
+			INDEX idx_company (company),
+			INDEX idx_opt_out (opt_out_public_search)
 		) {$charset_collate};";
 
 		/**
