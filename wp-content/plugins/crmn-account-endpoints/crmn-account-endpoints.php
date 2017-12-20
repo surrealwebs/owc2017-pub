@@ -33,8 +33,9 @@ class CRMN_Custom_My_Account_Endpoint {
     'general_adr_matters',
     'detailed_adr_matters',
     'additional_languages_spoken',
-    'member_bio',
-    'member_cv',
+    'opt_out_public_search',
+//    'member_bio', // These two fields are not needed ATM, but may be needed in the future.
+//    'member_cv',
   ];
 
 
