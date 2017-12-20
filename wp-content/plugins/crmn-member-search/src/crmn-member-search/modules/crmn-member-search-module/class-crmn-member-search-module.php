@@ -436,8 +436,11 @@ class CRMN_Member_Search_Module extends FLBuilderModule {
 						// @codingStandardsIgnoreEnd
 						break;
 					case '%s':
+						// Double % is needed because we wpdb::prepare later on
+						// and it attempts to replace %'s this will have unexpected
+						// results/behavior
 						// @codingStandardsIgnoreStart
-						$like = '%' . $wpdb->esc_like( $value ) . '%';
+						$like = '%%' . $wpdb->esc_like( $value ) . '%%';
 						$where_clause .= $wpdb->prepare( " AND {$key} LIKE %s", $like );
 						// @codingStandardsIgnoreEnd
 						break;
@@ -445,7 +448,7 @@ class CRMN_Member_Search_Module extends FLBuilderModule {
 			}
 		}
 
-		return 'WHERE 1 = 1' . $where_clause;
+		return 'WHERE opt_out_public_search = 0 ' . $where_clause;
 	}
 
 	/**
