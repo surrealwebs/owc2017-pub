@@ -26,14 +26,18 @@ class CRMN_Custom_My_Account_Endpoint {
   public static $edit_endpoint = 'additional-profile-info-edit';
 
   public static $display_fields = [
-    'is_member_of_acr_international',
-    'is_rule_114_qualified_neutral',
-    'ever_had_license_revoked',
-    'services_provided',
-    'general_adr_matters',
-    'detailed_adr_matters',
-    'additional_languages_spoken',
-    'opt_out_public_search',
+	'profile_picture',
+	'phone_number',
+	'email_address',
+	'website_address',
+	'is_member_of_acr_international',
+	'is_rule_114_qualified_neutral',
+	'ever_had_license_revoked',
+	'services_provided',
+	'general_adr_matters',
+	'detailed_adr_matters',
+	'additional_languages_spoken',
+	'opt_out_public_search',
 //    'member_bio', // These two fields are not needed ATM, but may be needed in the future.
 //    'member_cv',
   ];
@@ -205,25 +209,38 @@ class CRMN_Custom_My_Account_Endpoint {
    * @param array $data User data.
    * @param string $type the the of the data being passed in.
    */
-  public function display_data_value_for_type($data, $type) {
-    switch($type) {
-      case 'boolean':
-        $this->display_boolean_data_value($data);
-        break;
-      case 'pick':
-        $this->display_pick_data_value($data);
-        break;
-      case 'wysiwyg':
-        $this->display_wysiwyg_value($data);
-        break;
-      case 'file':
-        $this->display_file_value($data);
-        break;
-      default:
-        // no-op
-        break;
-    }
-  }
+	public function display_data_value_for_type($data, $type) {
+		switch($type) {
+			case 'boolean':
+				$this->display_boolean_data_value($data);
+				break;
+			case 'pick':
+				$this->display_pick_data_value($data);
+				break;
+			case 'wysiwyg':
+				$this->display_wysiwyg_value($data);
+				break;
+			case 'file':
+				$this->display_file_value($data);
+				break;
+			case 'email':
+				$this->display_email( $data );
+				break;
+			case 'website':
+				$this->display_website( $data );
+				break;
+			case 'phone':
+				$this->display_phone( $data );
+				break;
+
+			default:
+				error_log( 'Unknown data type' );
+				error_log( $type );
+				error_log( print_r( $data, true ) );
+				// no-op
+				break;
+		}
+	}
 
   /**
    * Take a boolean selection and convert to Yes/No then display
@@ -263,7 +280,7 @@ class CRMN_Custom_My_Account_Endpoint {
    * @param array $data User data.
    */
   public function display_wysiwyg_value( $data ) {
-    $out = '<em>' . esc_html( __( 'You do not have a Bio at this time.', 'crmn' ) ) . '</em>';
+    $out = '<em>' . esc_html( __( '(No information provided.)', 'crmn' ) ) . '</em>';
     if ( ! empty( $data[0] ) ) {
       $out = wp_kses_post( $data[0] );
     }
@@ -282,11 +299,44 @@ class CRMN_Custom_My_Account_Endpoint {
       $title = $data[0]['post_title'];
       $url = $data[0]['guid'];
 
-      $out = '<a href="' . $url . '">' . esc_html( __( 'Click to view your CV', 'crmn' ) ) . '</a>';
+      $out = '<a href="' . $url . '">' . esc_html( __( 'Click to view your file', 'crmn' ) ) . '</a>';
     }
 
     echo $out;
   }
+
+	/**
+	 * Display this field as an email address.
+	 *
+	 * @param mixed $data The data for this field.
+	 */
+	public function display_email( $data ) {
+		if ( ! empty( $data[0] ) ) {
+			echo '<a href="mailto:' . esc_attr( $data[0] ) . '">' . esc_html( $data[0] ) . '</a>';
+		}
+	}
+
+	/**
+	 * Display this field as a link.
+	 *
+	 * @param mixed $data The data for this field.
+	 */
+	public function display_website( $data ) {
+		if ( ! empty( $data[0] ) ) {
+			echo '<a href="' . esc_attr( $data[0] ) . '" target="_blank">' . esc_html( $data[0] ) . '</a>';
+		}
+	}
+
+	/**
+	 * Display this field as a phone number link.
+	 *
+	 * @param mixed $data The data for this field.
+	 */
+	public function display_phone( $data ) {
+		if ( ! empty( $data[0] ) ) {
+			echo '<a href="tel:' . esc_attr( $data[0] ) . '" target="_blank">' . esc_html( $data[0] ) . '</a>';
+		}
+	}
 
 }
 
