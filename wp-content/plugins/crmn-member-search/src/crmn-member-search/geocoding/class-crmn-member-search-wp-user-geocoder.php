@@ -270,6 +270,7 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 			'is_member_of_acr_international',
 			'is_rule_114_qualified_neutral',
 			'billing_company',
+			'opt_out_public_search',
 		);
 		$usermeta_multi_data_point_fields = array(
 			'services_provided',
@@ -341,6 +342,7 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 				'additional_languages_spoken'    => $this->user_search_data['additional_languages_spoken'],
 				'first_name'                     => $this->user_search_data['first_name'],
 				'last_name'                      => $this->user_search_data['last_name'],
+				'opt_out_public_search'          => $this->user_search_data['opt_out_public_search'],
 			),
 			array(
 				'geo_object_id'   => $this->user_id,
@@ -355,6 +357,7 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 				'%s',
 				'%s',
 				'%s',
+				'%d',
 			),
 			array(
 				'%d',
@@ -378,6 +381,10 @@ class CRMN_Member_Search_WP_User_Geocoder extends CRMN_Member_Search_Geocoder {
 		 */
 		if ( is_scalar( $meta_data ) ) {
 			return $meta_data;
+		}
+
+		if ( is_array( $meta_data ) && empty( $meta_data[0] ) ) {
+			return '';
 		}
 
 		return implode( ', ', $meta_data );
