@@ -294,12 +294,10 @@ class CRMN_Custom_My_Account_Endpoint {
    * @param array $data File data if any have been uploaded.
    */
   public function display_file_value( $data ) {
-    $out = '<em>' . esc_html( __( 'You have not uploaded a file yet.', 'crmn' ) ) . '</em>';
-    if ( ! empty( $data[0] ) ) {
-      $title = $data[0]['post_title'];
-      $url = $data[0]['guid'];
 
-      $out = '<a href="' . $url . '">' . esc_html( __( 'Click to view your file', 'crmn' ) ) . '</a>';
+    $out = '<em>' . esc_html( __( 'You have not uploaded a file yet.', 'crmn' ) ) . '</em>';
+    if ( ! empty( $data[0] ) && wp_attachment_is_image( $data[0]['ID'] ) ) {
+      $out = wp_get_attachment_image( $data[0]['ID'], array( 275, 0 ) );
     }
 
     echo $out;
